@@ -1,0 +1,121 @@
+/*
+COLOR PALETTE
+  lightgreen: rgb(210, 239, 232); 
+  green: rgb(95, 198, 173); 
+  yellow: rgb(217, 255, 102);
+  blue: rgb(52, 75, 201);
+*/
+
+/* CSS Reset */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+/* Utilities */
+.container {
+	margin: 0 auto;
+	max-width: 540px;
+}
+
+/* Generiche  */
+body {
+	padding: 0.5rem;
+	font-family: Inter, sans-serif;
+	background-color: rgba(52, 16, 57, 0.927);
+}
+
+header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 0.5rem;
+}
+
+h1 {
+	color: rgb(52, 16, 57);
+	font-size: 1.25rem;
+}
+
+/* Pannello */
+.panel {
+	padding: 0.5rem;
+	border-radius: 1rem;
+	background-color: rgb(255, 192, 201);
+}
+
+/* Elementi del modulo aggiungi termine */
+.add-term {
+	display: flex;
+	gap: 1rem;
+	margin-top: 2rem;
+	position: relative; 
+	/* override this inline for aspect ratio other than square */
+}
+
+input {
+	font-size: 1.2rem;
+	padding: 0.3rem;
+	border-radius: 0.8rem;
+	border: none;
+	flex-grow: 1;
+	background-color: rgb(254, 251, 185);
+}
+
+button {
+	cursor: pointer;
+	padding: 0.5rem;
+	border: none;
+	border-radius: 1rem;
+	background-color: rgb(160, 9, 147);
+	border-style: inset;
+}
+
+.empty-list-message {
+	text-align: center;
+	font-weight: bold;
+	font-size: 1.5rem;
+	background-color: rgb(254, 251, 185);
+}
+
+/*Terms list panel */
+
+.term-item {
+	display:flex;
+	align-items: center;
+	list-style-type: none;
+	margin: 1rem 0;
+	font-size: 1.5rem;
+}
+
+.term-check , .term-text , .term-delete {
+	line-height:  2rem;
+	padding: 0 0.5rem;
+}
+
+.term-text {
+	width: 100%;
+	background-color: rgb(254, 251, 185);
+}
+
+.term-check:hover {
+	background-color: rgb(250, 210, 28);
+  }
+
+.term-check {
+	cursor: pointer;
+	border-radius: 0.5rem 0 0 0.5rem;
+	background-color: rgb(217, 255, 102);
+	width: 2rem;
+}
+
+.term-delete:hover {
+	background-color: rgb(250, 210, 28);
+}
+
+.term-delete {
+	cursor: pointer;
+	border-radius: 0 0.5rem 0.5rem 0;
+	background-color: rgb(255, 175, 175);
+}
