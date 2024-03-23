@@ -7,7 +7,7 @@ const termsList = document.querySelector('.terms-list');
 const emptyListMessage = document.querySelector('.empty-list-message');
 
 // Create a key for the local storage
-const STORAGE_KEY = '__natalingo.12__';
+const STORAGE_KEY = '__natalingo.13__';
 // Define a terms list array
 let terms = [];
 console.log(terms);
