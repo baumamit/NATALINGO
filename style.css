@@ -99,23 +99,24 @@ button {
 	background-color: rgb(254, 251, 185);
 }
 
-.term-check:hover {
+.term-edit, .term-arrow-up, .term-arrow-down {
+	background-color: rgb(254, 251, 185);
+	line-height:  2rem;
+	padding-left: 0.1rem;
+}
+
+.term-check:hover, .term-delete:hover, .term-edit:hover, .term-arrow-up:hover, .term-arrow-down:hover {
 	background-color: rgb(250, 210, 28);
+	cursor: pointer;
   }
 
 .term-check {
-	cursor: pointer;
 	border-radius: 0.5rem 0 0 0.5rem;
 	background-color: rgb(217, 255, 102);
 	width: 2rem;
 }
 
-.term-delete:hover {
-	background-color: rgb(250, 210, 28);
-}
-
 .term-delete {
-	cursor: pointer;
 	border-radius: 0 0.5rem 0.5rem 0;
 	background-color: rgb(255, 175, 175);
 }
