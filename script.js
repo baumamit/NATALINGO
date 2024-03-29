@@ -1,7 +1,11 @@
+
+// # INITIALIZE MONGODB STORAGE SERVER ON PAGE RESTART
+import {mongoDBinitialize} from "./initializeMongodb.mjs";
+mongoDBinitialize();
 // # INITIALIZE ON PAGE RESTART
 
 // Create a key for the local storage
-const STORAGE_KEY = '__natalingo.40__';
+const STORAGE_KEY = '__natalingo.41__';
 
 // Import page elemetns
 const button = document.querySelector('button');
