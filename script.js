@@ -1,7 +1,6 @@
-
 // # INITIALIZE MONGODB STORAGE SERVER ON PAGE RESTART
-import {mongoDBinitialize} from "./initializeMongodb.mjs";
-mongoDBinitialize();
+/*import *as MongoDB from "./mongoDB.js";
+MongoDB.mongoDBinitialize();*/
 // # INITIALIZE ON PAGE RESTART
 
 // Create a key for the local storage
@@ -15,11 +14,11 @@ const termsList = document.querySelector('.terms-list');
 const emptyListMessage = document.querySelector('.empty-list-message');
 
 // Define empty node list for clickable checkmarks from the page's HTML code
-let checks = document.querySelectorAll('.no-check');
+let checks = document.createElement(null);
 // Define empty node list for clickable trash bins from the page's HTML code
-let trashBins = document.querySelectorAll('.no-delete');
+let trashBins = document.createElement(null);
 // Define empty node list for clickable items from the page's HTML code
-let pencils = document.querySelectorAll('.no-edit');
+let pencils = document.createElement(null);
 
 // Define a terms list array
 let terms = [];
@@ -36,6 +35,10 @@ const storage = localStorage.getItem(STORAGE_KEY);
 if (storage) {
   //Save the terms list
   terms = JSON.parse(storage);
+  // Rebuild all terms on page refresh
+  for (let editIndex = 0; editIndex < terms.length; editIndex++) {
+    terms[editIndex].edit_mode = false;
+  }
   // Load the terms list to the viewport
   loadTerms();
   // React to term clicks
@@ -52,14 +55,118 @@ function respondToClickedTerms() {
   checks = document.querySelectorAll('.term-check');
   // Retrieve clickable trash bins from the page's HTML code
   trashBins = document.querySelectorAll('.term-delete');
-  // Retrieve clickable items from the page's HTML code
+  // Retrieve clickable edit icons from the page's HTML code
   pencils = document.querySelectorAll('.term-edit');
+
+  // Retrieve clickable text boxes from the page's HTML code
 //  termTexts = document.querySelectorAll('.term-text');
 //  termItems = document.querySelectorAll('.term-item');
 
   // Create an HTML template for each existing term
   terms.forEach(function(term, index) {
+    pencils[index].addEventListener('click', function editTerm() {
+      // Function to edit a specific term in the viewport if pencil is clicked
+      console.log(`start term.edit_mode=${term.edit_mode}, `+`index=${index}`);
 
+      for (let editIndex = 0; editIndex < terms.length; editIndex++) {
+        if (editIndex === index) {
+          //Toggle editing/reading mode
+          terms[editIndex].edit_mode = !terms[editIndex].edit_mode;
+        }
+        else {
+          // Keep or switch back to reading mode
+          terms[editIndex].edit_mode = false;
+        }
+      }
+
+      // Update the local storage and the viewport
+      saveToLocalStorage();
+      // Reload the terms list in the viewport
+      loadTerms();
+
+      if (term.edit_mode === true) {
+        // Retrieve clickable checkmarks from the page's HTML code
+        checks = document.querySelectorAll('.term-check');
+        // Retrieve clickable trash bins from the page's HTML code
+        trashBins = document.querySelectorAll('.term-delete');
+        // Retrieve clickable edit icons from the page's HTML code
+        pencils = document.querySelectorAll('.term-edit');
+
+        // Retrieve clickable items from the page's temporary HTML code
+        const arrowUp = document.querySelector('.term-arrow-up');
+        const arrowDown = document.querySelector('.term-arrow-down');
+
+        // If the term is not at the top...
+        if (index > 0) {
+          arrowUp.addEventListener('click', function arrowUpListener () {
+          // Function to move term one level up in the list
+            // Save both terms
+            index -= 1;
+            const tempTerm0 = terms[index].valueOf();
+            const tempTerm1 = terms[index+1].valueOf();
+            // Swap terms in the array
+            terms.splice(index, 2, tempTerm1, tempTerm0);
+
+            // Update the local storage and the viewport
+            saveToLocalStorage();
+            // Reload the terms list in the viewport
+            loadTerms();
+            // Flip back to keep editing
+            terms[index].edit_mode = false;
+            // Continue to edit term
+            editTerm();
+          }, { once: false });
+        }
+            
+        // If the term is not at the bottom...
+        if (index < terms.length-1) {
+          arrowDown.addEventListener('click', function arrowDownListener () {
+          //Function to move term one level down in the list
+            // Save both terms
+            const tempTerm0 = terms[index].valueOf();
+            const tempTerm1 = terms[index+1].valueOf();
+            // Swap terms in the array
+            terms.splice(index, 2, tempTerm1, tempTerm0);
+            index += 1;
+
+            // Update the local storage and the viewport
+            saveToLocalStorage();
+            // Reload the terms list in the viewport
+            loadTerms();
+            // Flip back to keep editing
+            terms[index].edit_mode = false;
+            // Continue to edit term
+            editTerm();
+            }, { once: false });
+        }
+      }
+      else {
+      // if (term.edit_mode === false) switch back to reading mode
+        // Switch back to reading mode
+        term.edit_mode = false;
+        // Update the local storage and the view port
+        saveToLocalStorage();
+        // Reload the terms list in the viewport
+        loadTerms();
+      }
+      // React to term clicks
+      respondToClickedTerms();
+
+      console.log(`finish term.edit_mode=${term.edit_mode}, `+`index=${index}`);
+    });
+    
+    // Delete clicked trash bin sign term
+    trashBins[index].addEventListener('click', function () {
+      // Remove term from the terms list
+      terms.splice(index, 1);
+      // Update the local storage and the viewport
+      saveToLocalStorage();
+      // Reload the terms list in the viewport
+      loadTerms();
+      // React to term clicks
+      respondToClickedTerms();
+    });
+    
     //Toggle clicked checkmark
     checks[index].addEventListener('click', function () {
       //Toggle checkmark click status
@@ -76,101 +183,6 @@ function respondToClickedTerms() {
       saveToLocalStorage();
     });
 
-    // Delete clicked trash bin sign term
-    trashBins[index].addEventListener('click', function () {
-      // Remove term from the terms list
-      terms.splice(index, 1);
-      // Update the local storage and the viewport
-      saveToLocalStorage();
-      // Reload the terms list in the viewport
-      loadTerms();
-      // React to term clicks
-      respondToClickedTerms();
-    });
-    
-
-    // Define alternative index for term editing mode
-    let editIndex = index;
-    pencils[index].addEventListener('click', function editTerm() {
-      // Function to edit a specific term in the viewport if pencil is clicked
-      console.log(`start term.edit_mode=${term.edit_mode}, `+`index=${index}, `+`editIndex=${editIndex}`);
-
-      //Toggle clicked pencil icon
-      term.edit_mode = !term.edit_mode;
-      // Update the local storage and the view port
-      saveToLocalStorage();
-
-      if (term.edit_mode === true) {
-
-        // Update the local storage and the viewport
-        saveToLocalStorage();
-        // Reload the terms list in the viewport
-        loadTerms();
-
-        // Retrieve clickable items from the page's temporary HTML code
-        let arrowUp = document.querySelector('.term-arrow-up');
-        let arrowDown = document.querySelector('.term-arrow-down');  
-    
-        //If the term is not at the top...
-        if (editIndex > 0){
-          arrowUp.addEventListener('click', function arrowUpListener () {
-            //Function to move term one level up in the list
-            // Save both terms
-            editIndex -= 1;
-            const tempTerm0 = terms[editIndex].valueOf();
-            const tempTerm1 = terms[editIndex+1].valueOf();
-            // Swap terms in the array
-            terms.splice(editIndex, 2, tempTerm1, tempTerm0);
-
-            // Update the local storage and the viewport
-            saveToLocalStorage();
-            // Reload the terms list in the viewport
-            loadTerms();
-
-            // Switch back to reading mode
-            term.edit_mode = false;
-            // Continue to edit term
-            editTerm();
-          }, { once: true });
-        }
-            
-        //If the term is not at the bottom...
-        if (editIndex < terms.length-1){
-          arrowDown.addEventListener('click', function arrowDownListener () {
-
-            //Function to move term one level down in the list
-            // Save both terms
-            const tempTerm0 = terms[editIndex].valueOf();
-            const tempTerm1 = terms[editIndex+1].valueOf();
-            // Swap terms in the array
-            terms.splice(editIndex, 2, tempTerm1, tempTerm0);
-            editIndex += 1;
-
-            // Update the local storage and the viewport
-            saveToLocalStorage();
-            // Reload the terms list in the viewport
-            loadTerms();
-
-            // Switch back to reading mode
-            term.edit_mode = false;
-            // Continue to edit term
-            editTerm();
-            }, { once: true });
-        }
-      }
-      else {
-        // Switch back to reading mode on if pencil is clicked again
-        term.edit_mode = false;
-        // Update the local storage and the view port
-        saveToLocalStorage();
-        // Reload the terms list in the viewport
-        loadTerms();
-      }
-      // React to term clicks
-      respondToClickedTerms();
-
-      console.log(`finish term.edit_mode=${term.edit_mode}, `+`index=${index}, `+`editIndex=${editIndex}`);
-    });
   });
   console.log('finish respondToClickedTerms');
 }
@@ -238,7 +250,7 @@ function loadTerms() {
 
 // Function to create an HTML template for a givven term
 function createTermHTML(term) {
-  console.log('execute createTermHTML');
+//  console.log('execute createTermHTML');
   // Choose checkmark icon iF clicked
   let checkmarkIcon = "images/check_maybe.svg";
   if (term.check_click) {
@@ -258,6 +270,20 @@ function createTermHTML(term) {
       <img src="images/arrow_down.svg" alt="Arrow Down Icon" height="20">
     </div>
     `;
+/*
+    const textnode = document.createElement("input");
+    // Create a class attribute:
+    const att = document.createAttribute("class");
+    // Set the value of the class attribute:
+    att.value = "term-text";
+    // Add the class attribute to the new element:
+    textnode.setAttributeNode(att); 
+
+    const node = document.createElement("li");
+    node.appendChild(textnode);
+    term.outerHTML.after(node); 
+    console.log(node.outerHTML);
+*/
   }
 
   // Return the following HTML

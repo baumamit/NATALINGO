@@ -1,6 +1,5 @@
 // # INITIALIZE MONGODB STORAGE SERVER ON PAGE RESTART
-
-export function mongoDBinitialize() {
+//export function mongoDBinitialize() {
   
   const username = encodeURIComponent("baumamit");
   const password = encodeURIComponent("Amit1986");
@@ -29,4 +28,4 @@ export function mongoDBinitialize() {
     }
   }
   run().catch(console.dir);
-}
+//}
