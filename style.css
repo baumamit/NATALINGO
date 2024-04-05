@@ -19,9 +19,9 @@ COLOR PALETTE
 	max-width: 540px;
 }
 
-/* Generiche  */
+/* Generic  */
 body {
-	padding: 0.5rem;
+	padding: 0rem;
 	font-family: Inter, sans-serif;
 	background-color: rgba(52, 16, 57, 0.927);
 }
@@ -29,23 +29,25 @@ body {
 header {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
-	margin-bottom: 0.5rem;
+	justify-content:space-around;
+	margin-bottom: 1rem;
+	background-color: rgb(160, 9, 147);
 }
 
 h1 {
-	color: rgb(52, 16, 57);
-	font-size: 1.25rem;
+	color: rgb(254, 251, 185);
+	font-size: 1.5rem;
+	text-align: right;
 }
 
-/* Pannello */
+/* Panel */
 .panel {
 	padding: 0.5rem;
 	border-radius: 1rem;
-	background-color: rgb(255, 192, 201);
+	background-color: rgb(255, 202, 210);
 }
 
-/* Elementi del modulo aggiungi termine */
+/* "Add Term" module elements */
 .add-term {
 	display: flex;
 	gap: 1rem;
@@ -77,7 +79,7 @@ button {
 	font-weight: bold;
 	font-size: 1.5rem;
 	background-color: rgb(254, 251, 185);
-	min-height: 500;
+	line-height: 5rem;
 }
 
 /*Terms list panel */

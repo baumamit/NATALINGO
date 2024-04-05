@@ -50,19 +50,6 @@ respondToClickedTerms();
 
 // # FUNCTIONS
 
-// Function to read edited term input
-function updateTermFromInput(index) {
-  // Retrieve updated term value from the page's temporary HTML code
-  updatedTermBox = document.querySelector('.term-text-edit');
-  const updatedTermText = updatedTermBox.value.trim();
-  if (updatedTermText.length > 0) {
-  // If term was edited...
-    terms[index].text = updatedTermText;
-    // Update the local storage and the viewport
-    saveToLocalStorage();
-  }
-}
-
 // Function that responds to uploaded term clicks in the viewport
 function respondToClickedTerms() {
   // Retrieve clickable checkmarks from the page's HTML code
@@ -115,6 +102,8 @@ function respondToClickedTerms() {
         if (index > 0) {
           arrowUp.addEventListener('click', function() {
           // Function to move term one level up in the list on arrow click
+            // Replace and save edited term with user input
+            updateTermFromInput(index);
             // Save both terms
             index -= 1;
             const tempTerm0 = terms[index].valueOf();
@@ -137,6 +126,8 @@ function respondToClickedTerms() {
         if (index < terms.length-1) {
           arrowDown.addEventListener('click', function() {
           // Function to move term one level down in the list on arrow click
+            // Replace and save edited term with user input
+            updateTermFromInput(index);
             // Save both terms
             const tempTerm0 = terms[index].valueOf();
             const tempTerm1 = terms[index+1].valueOf();
@@ -200,6 +191,19 @@ function respondToClickedTerms() {
       saveToLocalStorage();
     });
   });
+}
+
+// Function to read edited term input
+function updateTermFromInput(index) {
+  // Retrieve updated term value from the page's temporary HTML code
+  updatedTermBox = document.querySelector('.term-text-edit');
+  const updatedTermText = updatedTermBox.value.trim();
+  if (updatedTermText.length > 0) {
+  // If term was edited...
+    terms[index].text = updatedTermText;
+    // Update the local storage and the viewport
+    saveToLocalStorage();
+  }
 }
 
 // Function that adds a new term to the end of the terms array from a user input
