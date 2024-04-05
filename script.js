@@ -4,7 +4,7 @@ MongoDB.mongoDBinitialize();*/
 // # INITIALIZE ON PAGE RESTART
 
 // Create a key for the local storage
-const STORAGE_KEY = '__natalingo.43__';
+const STORAGE_KEY = '__natalingo.44__';
 
 // Import page elemetns
 const button = document.querySelector('button');
@@ -182,7 +182,7 @@ function respondToClickedTerms() {
       let checkmarkType = "images/check_maybe.svg";
       // If checkmark checked
       if (term.check_click) {
-        checkmarkType = "images/check.svg";
+        checkmarkType = "images/checkmark.png";
       } 
       // Checkmark unchecked
       checks[index].innerHTML = `<img src="${checkmarkType}" alt="Check Icon" height="20">`;
@@ -268,42 +268,50 @@ function createTermHTML(term) {
   // Choose checkmark icon iF clicked
   let checkmarkIcon = "images/check_maybe.svg";
   if (term.check_click) {
-    checkmarkIcon = "images/check.svg";
+    checkmarkIcon = "images/checkmark.png";
   }
 
   // HTML to append to the term if pencil icon is clicked: pencil and arrows icons
-  let editIcon = "images/pencil.png";
+  let editIconHTMLtoAppend = `
+  <div class="term-edit">
+    <img src="images/pencil.png" alt="Pencil Icon" height="20">
+  </div>
+  `;
   let arrowsHTMLtoAppend = ``;
   let textHTMLtoAppend = `<p class="term-text">${term.text}</p>`;
 
   if (term.edit_mode) {
-    editIcon = "images/icon.png";
-    arrowsHTMLtoAppend = `
-    <div class="term-arrow-up">
-      <img src="images/arrow_up.svg" alt="Arrow Up Icon" height="20">
-    </div>
-    <div class="term-arrow-down">
-      <img src="images/arrow_down.svg" alt="Arrow Down Icon" height="20">
+    editIconHTMLtoAppend = `
+    <div class="term-edit edit-mode">
+      <img src="images/label.png" alt="Save Edit" height="48">
     </div>
     `;
-    textHTMLtoAppend = `<input class="term-text-edit" type="text" placeholder="${term.text}">`;
+    arrowsHTMLtoAppend = `
+    <div class="term-arrows edit-mode">
+      <div class="term-arrow-up">
+        <img src="images/arrow_up.svg" alt="Arrow Up Icon" height="25">
+      </div>
+      <div class="term-arrow-down">
+        <img src="images/arrow_down.svg" alt="Arrow Down Icon" height="25">
+      </div>
+    </div>
+    `;
+    textHTMLtoAppend = `<input class="term-text-edit edit-mode" type="text" placeholder="${term.text}">`;
   }
 
   // Return the following HTML
   const fullHTML = `
   <li class="term-item">
     <div class="term-check">
-      <img src="${checkmarkIcon}" alt="Check Icon" height="20">
-    </div>
-    <div class="term-edit">
-      <img src="${editIcon}" alt="Pencil Icon" height="20">
+      <img src="${checkmarkIcon}" alt="Check Icon" height="25">
     </div>
     `
+    +`${editIconHTMLtoAppend}`
     +`${arrowsHTMLtoAppend}`
     +`${textHTMLtoAppend}`+
     `
     <div class="term-delete">
-      <img src="images/trash.png" alt="Delete Icon" height="20">
+      <img src="images/trash.png" alt="Delete Icon" height="25">
     </div>
   </li>
   `;

@@ -44,7 +44,7 @@ h1 {
 .panel {
 	padding: 0.5rem;
 	border-radius: 1rem;
-	background-color: rgb(255, 202, 210);
+	background-color: rgb(254, 211, 225);
 }
 
 /* "Add Term" module elements */
@@ -84,7 +84,7 @@ button {
 
 /*Terms list panel */
 
-.term-item, .term-text-edit {
+.term-item {
 	display:flex;
 	align-items: center;
 	list-style-type: none;
@@ -93,21 +93,14 @@ button {
 	border: none;
 }
 
-.term-check , .term-text, .term-text-edit, .term-delete {
+.term-check, .term-text, .term-edit, .term-delete {
 	line-height:  2rem;
 	padding: 0 0.5rem;
 }
 
-.term-text, .term-text-edit {
+.term-text {
 	width: 100%;
 	background-color: rgb(254, 251, 185);
-}
-
-.term-edit, .term-text-edit , .term-arrow-up, .term-arrow-down {
-	background-color: rgb(254, 251, 185);
-	line-height:  2rem;
-	padding-left: 0.1rem;
-	color:darkred;
 }
 
 .term-check:hover, .term-delete:hover, .term-edit:hover, .term-text-edit:hover, .term-arrow-up:hover, .term-arrow-down:hover {
@@ -115,13 +108,36 @@ button {
 	cursor: pointer;
 }
 
+.term-edit {
+	background-color: rgb(254, 251, 185);
+}
+
 .term-check {
 	border-radius: 0.5rem 0 0 0.5rem;
-	background-color: rgb(217, 255, 102);
+	background-color: rgba(55, 255, 0, 0.591);
 	width: 2rem;
 }
 
 .term-delete {
 	border-radius: 0 0.5rem 0.5rem 0;
-	background-color: rgb(255, 175, 175);
+	background-color: rgb(255, 136, 136);
+}
+
+.edit-mode {
+	display: block;
+	background-color: rgb(254, 251, 185);
+	padding-left: 0.1rem;
+	color:rgb(160, 9, 147);
+	font-size: 2.5rem;
+}
+
+.term-text-edit {
+	color:rgb(160, 9, 147);
+	width: 100%;
+	border: solid;
+}
+
+.term-arrow-up, .term-arrow-down {
+	margin: auto;
+	line-height: 1rem;
 }
