@@ -4,7 +4,7 @@ MongoDB.mongoDBinitialize();*/
 // # INITIALIZE ON PAGE RESTART
 
 // Create a key for the local storage
-const STORAGE_KEY = '__natalingo.41__';
+const STORAGE_KEY = '__natalingo.42__';
 
 // Import page elemetns
 const button = document.querySelector('button');
@@ -20,12 +20,15 @@ let trashBins = document.createElement(null);
 // Define empty node list for clickable items from the page's HTML code
 let pencils = document.createElement(null);
 
+// Define empty node list for term value from the page's temporary HTML code
+//let updatedTermText = document.querySelector(null);
+let updatedTermText = '';
+
 // Define a terms list array
 let terms = [];
 
 // Check for new user input
 respondToNewTermClick();
-//showContent();
 
 // # DYNAMIC PROCEDURES 
 
@@ -49,7 +52,7 @@ if (storage) {
 
 // Function that responds to uploaded term clicks in the viewport
 function respondToClickedTerms() {
-  console.log('start respondToClickedTerms');
+//  console.log('start respondToClickedTerms');
   
   // Retrieve clickable checkmarks from the page's HTML code
   checks = document.querySelectorAll('.term-check');
@@ -65,20 +68,30 @@ function respondToClickedTerms() {
   // Create an HTML template for each existing term
   terms.forEach(function(term, index) {
     pencils[index].addEventListener('click', function editTerm() {
-      // Function to edit a specific term in the viewport if pencil is clicked
-      console.log(`start term.edit_mode=${term.edit_mode}, `+`index=${index}`);
+      // Function to edit a specific term in the viewport when pencil is clicked
 
-      for (let editIndex = 0; editIndex < terms.length; editIndex++) {
-        if (editIndex === index) {
-          //Toggle editing/reading mode
-          terms[editIndex].edit_mode = !terms[editIndex].edit_mode;
-        }
-        else {
-          // Keep or switch back to reading mode
-          terms[editIndex].edit_mode = false;
+      if (term.edit_mode) {
+        // Retrieve updated term value from the page's temporary HTML code
+        updatedTermText = document.querySelector('.term-text-edit').value.trim();
+        // If term was edited...
+        if (updatedTermText.length > 0) {
+          // Update edited term
+          term.text = updatedTermText;
         }
       }
 
+      // Make sure that only one term at the time is being edited
+      for (let editIndex = 0; editIndex < terms.length; editIndex++) {
+        if (editIndex === index) {
+          // Toggle editing/reading mode
+          terms[editIndex].edit_mode = !terms[editIndex].edit_mode;
+        }
+        else {
+          // Keep or switch back to reading mode all other terms
+          terms[editIndex].edit_mode = false;
+        }
+      }
+      
       // Update the local storage and the viewport
       saveToLocalStorage();
       // Reload the terms list in the viewport
@@ -95,11 +108,14 @@ function respondToClickedTerms() {
         // Retrieve clickable items from the page's temporary HTML code
         const arrowUp = document.querySelector('.term-arrow-up');
         const arrowDown = document.querySelector('.term-arrow-down');
+        console.log(`index = ${index}`);
 
         // If the term is not at the top...
         if (index > 0) {
-          arrowUp.addEventListener('click', function arrowUpListener () {
+          console.log(`arrowUp = ${arrowUp.outerHTML}`);
+          arrowUp.addEventListener('click', function arrowUpListener() {
           // Function to move term one level up in the list
+            console.log('Execute arrowUp');
             // Save both terms
             index -= 1;
             const tempTerm0 = terms[index].valueOf();
@@ -115,13 +131,13 @@ function respondToClickedTerms() {
             terms[index].edit_mode = false;
             // Continue to edit term
             editTerm();
-          }, { once: false });
+          },{ once: false });
         }
             
         // If the term is not at the bottom...
         if (index < terms.length-1) {
-          arrowDown.addEventListener('click', function arrowDownListener () {
-          //Function to move term one level down in the list
+          arrowDown.addEventListener('click', function arrowDownListener() {
+          // Function to move term one level down in the list
             // Save both terms
             const tempTerm0 = terms[index].valueOf();
             const tempTerm1 = terms[index+1].valueOf();
@@ -137,22 +153,11 @@ function respondToClickedTerms() {
             terms[index].edit_mode = false;
             // Continue to edit term
             editTerm();
-            }, { once: false });
+            },{ once: false });
         }
-      }
-      else {
-      // if (term.edit_mode === false) switch back to reading mode
-        // Switch back to reading mode
-        term.edit_mode = false;
-        // Update the local storage and the view port
-        saveToLocalStorage();
-        // Reload the terms list in the viewport
-        loadTerms();
       }
       // React to term clicks
       respondToClickedTerms();
-
-      console.log(`finish term.edit_mode=${term.edit_mode}, `+`index=${index}`);
     });
     
     // Delete clicked trash bin sign term
@@ -184,7 +189,7 @@ function respondToClickedTerms() {
     });
 
   });
-  console.log('finish respondToClickedTerms');
+//  console.log('finish respondToClickedTerms');
 }
 
 // Function that adds a new term to the end of the terms array from a user input
@@ -205,7 +210,6 @@ function respondToNewTermClick() {
 
 // Function to add a term to the terms array
 function addTerm() {
-  console.log('start addTerm');
   // Retreive text from the input field
   const newTerm = inputField.value.trim();
   // If the field is not empty... 
@@ -223,12 +227,11 @@ function addTerm() {
     // React to term clicks
     respondToClickedTerms();
   }
-  console.log('finish addTerm');
 }
 
 // Function to change the HTML code of the terms list to show it
 function loadTerms() {
-  console.log('loadTerms');
+//  console.log('Execute loadTerms');
   // Clear list
   termsList.innerText = '';
   emptyListMessage.innerText = '';
@@ -239,18 +242,23 @@ function loadTerms() {
       term.htmlCode = createTermHTML(term);
       // Insert term into the page
       termsList.innerHTML += `${term.htmlCode}`;
+/*      if (term.edit_mode) {
+        // Retrieve updated term value from the page's temporary HTML code
+        const updatedTermText_Att = document.querySelector('.term-text-edit');
+        updatedTermText = updatedTermText_Att.value.trim();
+
+        console.log(`updatedTermText in loadTerms = ${updatedTermText}`);
+      }*/
     });
   }
   // Otherwise show an "empty list" message
   else {
     emptyListMessage.innerText = 'La tua lista è vuota';
   }
-//  console.log('finish loadTerms');
 }
 
 // Function to create an HTML template for a givven term
 function createTermHTML(term) {
-//  console.log('execute createTermHTML');
   // Choose checkmark icon iF clicked
   let checkmarkIcon = "images/check_maybe.svg";
   if (term.check_click) {
@@ -259,10 +267,12 @@ function createTermHTML(term) {
 
   // HTML to append to the term if pencil icon is clicked: pencil and arrows icons
   let editIcon = "images/pencil.png";
-  let htmlToAppend = "";
+  let arrowsHTMLtoAppend = ``;
+  let textHTMLtoAppend = `<p class="term-text">${term.text}</p>`;
+
   if (term.edit_mode) {
     editIcon = "images/icon.png";
-    htmlToAppend = `
+    arrowsHTMLtoAppend = `
     <div class="term-arrow-up">
       <img src="images/arrow_up.svg" alt="Arrow Up Icon" height="20">
     </div>
@@ -270,20 +280,7 @@ function createTermHTML(term) {
       <img src="images/arrow_down.svg" alt="Arrow Down Icon" height="20">
     </div>
     `;
-/*
-    const textnode = document.createElement("input");
-    // Create a class attribute:
-    const att = document.createAttribute("class");
-    // Set the value of the class attribute:
-    att.value = "term-text";
-    // Add the class attribute to the new element:
-    textnode.setAttributeNode(att); 
-
-    const node = document.createElement("li");
-    node.appendChild(textnode);
-    term.outerHTML.after(node); 
-    console.log(node.outerHTML);
-*/
+    textHTMLtoAppend = `<input class="term-text-edit" type="text" placeholder="${term.text}">`;
   }
 
   // Return the following HTML
@@ -296,14 +293,15 @@ function createTermHTML(term) {
       <img src="${editIcon}" alt="Pencil Icon" height="20">
     </div>
     `
-    +`${htmlToAppend}`+
-    `<p class="term-text">${term.text}</p>
+    +`${arrowsHTMLtoAppend}`
+    +`${textHTMLtoAppend}`+
+    `
     <div class="term-delete">
       <img src="images/trash.png" alt="Delete Icon" height="20">
     </div>
   </li>
   `;
-   
+  term.htmlCode = fullHTML;
   return fullHTML;
 }
 
@@ -311,5 +309,5 @@ function createTermHTML(term) {
 function saveToLocalStorage() {
   // Update the local storage
   localStorage.setItem(STORAGE_KEY, JSON.stringify(terms));
-  console.log('executed saveToLocalStorage');
+//  console.log('executed saveToLocalStorage');
 }
