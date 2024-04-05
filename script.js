@@ -51,9 +51,16 @@ respondToClickedTerms();
 // # FUNCTIONS
 
 // Function to read edited term input
-function listenToTermBox (index) {
-  console.log('listenToTermBox');
-  return updatedTermText;
+function updateTermFromInput(index) {
+  // Retrieve updated term value from the page's temporary HTML code
+  updatedTermBox = document.querySelector('.term-text-edit');
+  const updatedTermText = updatedTermBox.value.trim();
+  if (updatedTermText.length > 0) {
+  // If term was edited...
+    terms[index].text = updatedTermText;
+    // Update the local storage and the viewport
+    saveToLocalStorage();
+  }
 }
 
 // Function that responds to uploaded term clicks in the viewport
@@ -69,47 +76,11 @@ function respondToClickedTerms() {
   terms.forEach(function(term, index) {
     pencils[index].addEventListener('click', function editTerm() {
       // Function to edit a specific term in the viewport when pencil is clicked
-      console.log('editTerm');
 
       if (term.edit_mode === true) {
-        // Retrieve updated term value from the page's temporary HTML code
-        updatedTermBox = document.querySelector('.term-text-edit');
-        const updatedTermText = updatedTermBox.value.trim();
-        console.log(`exit editTerm, updatedTermText = ${updatedTermText}`);
-        if (updatedTermText.length > 0) {
-        // If term was edited...
-          terms[index].text = updatedTermText;
-          // Update the local storage and the viewport
-          saveToLocalStorage();
-        }
+        // Replace and save edited term with user input
+        updateTermFromInput(index);
       }
-
-      /*
-      if (term.edit_mode === true) { 
-        listenToTermBox (term, pencils[index]);
-        // React to "Enter" key pressing as a mouse click
-        console.log('pencil 2nd click');
-      }
-*/
-
-      /*      updatedTermBox.addEventListener('keypress',function onEvent(event) {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        pencils[index].click();
-        //editTerm()
-      }*/
-      
-      /*
-      updatedTermBox.addEventListener("keydown", function logKey(keyName) {
-        console.log(keyName.code);
-        if (`${keyName.code}` === 'Enter'){
-          keyName.preventDefault();
-          console.log('Enter pressed');
-          button.click();
-        }
-      });
-      */
-
       // Make sure that only one term at the time is being edited
       for (let editIndex = 0; editIndex < terms.length; editIndex++) {
         if (editIndex === index) {
@@ -143,8 +114,7 @@ function respondToClickedTerms() {
         // If the term is not at the top...
         if (index > 0) {
           arrowUp.addEventListener('click', function() {
-          // Function to move term one level up in the list
-            console.log('Execute arrowUp');
+          // Function to move term one level up in the list on arrow click
             // Save both terms
             index -= 1;
             const tempTerm0 = terms[index].valueOf();
@@ -166,7 +136,7 @@ function respondToClickedTerms() {
         // If the term is not at the bottom...
         if (index < terms.length-1) {
           arrowDown.addEventListener('click', function() {
-          // Function to move term one level down in the list
+          // Function to move term one level down in the list on arrow click
             // Save both terms
             const tempTerm0 = terms[index].valueOf();
             const tempTerm1 = terms[index+1].valueOf();
@@ -185,23 +155,11 @@ function respondToClickedTerms() {
           });
         }
 
-        // Retrieve updated term value from the page's temporary HTML code
-        updatedTermBox = document.querySelector('.term-text-edit');
-        const updatedTermText = updatedTermBox.value.trim();
-        console.log(`updatedTermText = ${updatedTermText}`);
-        if (updatedTermText.length > 0) {
-        // If term was edited...
-          terms[index].text = updatedTermText;
-          // Update the local storage and the viewport
-          saveToLocalStorage();
-        }
-//        const dummyText = listenToTermBox(index);
-        // React to "Enter" key pressing as a mouse click
-        console.log(`pencil 1st click, updatedTermText = ${updatedTermText}`);
+        // Replace and save edited term with user input
+        updateTermFromInput(index);
+        // React to "Enter" key (code=13) pressing as a mouse click
         updatedTermBox.addEventListener("keydown", (event) => {
-          console.log(event.keyCode);
           if (event.keyCode === 13) {
-            console.log('Enter pressed, event.keyCode === 13');
             event.preventDefault();
             pencils[index].click();
           }
@@ -242,7 +200,6 @@ function respondToClickedTerms() {
       saveToLocalStorage();
     });
   });
-//  console.log('finish respondToClickedTerms');
 }
 
 // Function that adds a new term to the end of the terms array from a user input
@@ -254,7 +211,7 @@ function respondToNewTermClick() {
       button.click();
     }
   });
-  // On a mouse click...
+  // On a mouse click on the + button...
   button.addEventListener('click', function () {
     // Add term to the list
     addTerm();
@@ -354,5 +311,4 @@ function createTermHTML(term) {
 function saveToLocalStorage() {
   // Update the local storage
   localStorage.setItem(STORAGE_KEY, JSON.stringify(terms));
-//  console.log('executed saveToLocalStorage');
 }
