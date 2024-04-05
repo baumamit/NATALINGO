@@ -4,7 +4,7 @@ MongoDB.mongoDBinitialize();*/
 // # INITIALIZE ON PAGE RESTART
 
 // Create a key for the local storage
-const STORAGE_KEY = '__natalingo.42__';
+const STORAGE_KEY = '__natalingo.43__';
 
 // Import page elemetns
 const button = document.querySelector('button');
@@ -21,8 +21,7 @@ let trashBins = document.createElement(null);
 let pencils = document.createElement(null);
 
 // Define empty node list for term value from the page's temporary HTML code
-//let updatedTermText = document.querySelector(null);
-let updatedTermText = '';
+let updatedTermBox = document.createElement(null);
 
 // Define a terms list array
 let terms = [];
@@ -42,18 +41,23 @@ if (storage) {
   for (let editIndex = 0; editIndex < terms.length; editIndex++) {
     terms[editIndex].edit_mode = false;
   }
-  // Load the terms list to the viewport
-  loadTerms();
-  // React to term clicks
-  respondToClickedTerms();
 }
+// Load the terms list to the viewport
+loadTerms();
+// React to term clicks
+respondToClickedTerms();
 
-// # FUNCTIONS 
+
+// # FUNCTIONS
+
+// Function to read edited term input
+function listenToTermBox (index) {
+  console.log('listenToTermBox');
+  return updatedTermText;
+}
 
 // Function that responds to uploaded term clicks in the viewport
 function respondToClickedTerms() {
-//  console.log('start respondToClickedTerms');
-  
   // Retrieve clickable checkmarks from the page's HTML code
   checks = document.querySelectorAll('.term-check');
   // Retrieve clickable trash bins from the page's HTML code
@@ -61,24 +65,50 @@ function respondToClickedTerms() {
   // Retrieve clickable edit icons from the page's HTML code
   pencils = document.querySelectorAll('.term-edit');
 
-  // Retrieve clickable text boxes from the page's HTML code
-//  termTexts = document.querySelectorAll('.term-text');
-//  termItems = document.querySelectorAll('.term-item');
-
   // Create an HTML template for each existing term
   terms.forEach(function(term, index) {
     pencils[index].addEventListener('click', function editTerm() {
       // Function to edit a specific term in the viewport when pencil is clicked
+      console.log('editTerm');
 
-      if (term.edit_mode) {
+      if (term.edit_mode === true) {
         // Retrieve updated term value from the page's temporary HTML code
-        updatedTermText = document.querySelector('.term-text-edit').value.trim();
-        // If term was edited...
+        updatedTermBox = document.querySelector('.term-text-edit');
+        const updatedTermText = updatedTermBox.value.trim();
+        console.log(`exit editTerm, updatedTermText = ${updatedTermText}`);
         if (updatedTermText.length > 0) {
-          // Update edited term
-          term.text = updatedTermText;
+        // If term was edited...
+          terms[index].text = updatedTermText;
+          // Update the local storage and the viewport
+          saveToLocalStorage();
         }
       }
+
+      /*
+      if (term.edit_mode === true) { 
+        listenToTermBox (term, pencils[index]);
+        // React to "Enter" key pressing as a mouse click
+        console.log('pencil 2nd click');
+      }
+*/
+
+      /*      updatedTermBox.addEventListener('keypress',function onEvent(event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        pencils[index].click();
+        //editTerm()
+      }*/
+      
+      /*
+      updatedTermBox.addEventListener("keydown", function logKey(keyName) {
+        console.log(keyName.code);
+        if (`${keyName.code}` === 'Enter'){
+          keyName.preventDefault();
+          console.log('Enter pressed');
+          button.click();
+        }
+      });
+      */
 
       // Make sure that only one term at the time is being edited
       for (let editIndex = 0; editIndex < terms.length; editIndex++) {
@@ -98,6 +128,7 @@ function respondToClickedTerms() {
       loadTerms();
 
       if (term.edit_mode === true) {
+      
         // Retrieve clickable checkmarks from the page's HTML code
         checks = document.querySelectorAll('.term-check');
         // Retrieve clickable trash bins from the page's HTML code
@@ -108,12 +139,10 @@ function respondToClickedTerms() {
         // Retrieve clickable items from the page's temporary HTML code
         const arrowUp = document.querySelector('.term-arrow-up');
         const arrowDown = document.querySelector('.term-arrow-down');
-        console.log(`index = ${index}`);
 
         // If the term is not at the top...
         if (index > 0) {
-          console.log(`arrowUp = ${arrowUp.outerHTML}`);
-          arrowUp.addEventListener('click', function arrowUpListener() {
+          arrowUp.addEventListener('click', function() {
           // Function to move term one level up in the list
             console.log('Execute arrowUp');
             // Save both terms
@@ -131,12 +160,12 @@ function respondToClickedTerms() {
             terms[index].edit_mode = false;
             // Continue to edit term
             editTerm();
-          },{ once: false });
+          });
         }
             
         // If the term is not at the bottom...
         if (index < terms.length-1) {
-          arrowDown.addEventListener('click', function arrowDownListener() {
+          arrowDown.addEventListener('click', function() {
           // Function to move term one level down in the list
             // Save both terms
             const tempTerm0 = terms[index].valueOf();
@@ -153,8 +182,33 @@ function respondToClickedTerms() {
             terms[index].edit_mode = false;
             // Continue to edit term
             editTerm();
-            },{ once: false });
+          });
         }
+
+        // Retrieve updated term value from the page's temporary HTML code
+        updatedTermBox = document.querySelector('.term-text-edit');
+        const updatedTermText = updatedTermBox.value.trim();
+        console.log(`updatedTermText = ${updatedTermText}`);
+        if (updatedTermText.length > 0) {
+        // If term was edited...
+          terms[index].text = updatedTermText;
+          // Update the local storage and the viewport
+          saveToLocalStorage();
+        }
+//        const dummyText = listenToTermBox(index);
+        // React to "Enter" key pressing as a mouse click
+        console.log(`pencil 1st click, updatedTermText = ${updatedTermText}`);
+        updatedTermBox.addEventListener("keydown", (event) => {
+          console.log(event.keyCode);
+          if (event.keyCode === 13) {
+            console.log('Enter pressed, event.keyCode === 13');
+            event.preventDefault();
+            pencils[index].click();
+          }
+        });
+
+      }
+      else { 
       }
       // React to term clicks
       respondToClickedTerms();
@@ -187,7 +241,6 @@ function respondToClickedTerms() {
       // Update the local storage and the viewport
       saveToLocalStorage();
     });
-
   });
 //  console.log('finish respondToClickedTerms');
 }
@@ -231,7 +284,6 @@ function addTerm() {
 
 // Function to change the HTML code of the terms list to show it
 function loadTerms() {
-//  console.log('Execute loadTerms');
   // Clear list
   termsList.innerText = '';
   emptyListMessage.innerText = '';
@@ -242,13 +294,6 @@ function loadTerms() {
       term.htmlCode = createTermHTML(term);
       // Insert term into the page
       termsList.innerHTML += `${term.htmlCode}`;
-/*      if (term.edit_mode) {
-        // Retrieve updated term value from the page's temporary HTML code
-        const updatedTermText_Att = document.querySelector('.term-text-edit');
-        updatedTermText = updatedTermText_Att.value.trim();
-
-        console.log(`updatedTermText in loadTerms = ${updatedTermText}`);
-      }*/
     });
   }
   // Otherwise show an "empty list" message

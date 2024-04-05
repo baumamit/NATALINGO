@@ -54,7 +54,7 @@ h1 {
 	/* override this inline for aspect ratio other than square */
 }
 
-input {
+.add-term-input {
 	font-size: 1.2rem;
 	padding: 0.3rem;
 	border-radius: 0.8rem;
@@ -77,38 +77,41 @@ button {
 	font-weight: bold;
 	font-size: 1.5rem;
 	background-color: rgb(254, 251, 185);
+	min-height: 500;
 }
 
 /*Terms list panel */
 
-.term-item {
+.term-item, .term-text-edit {
 	display:flex;
 	align-items: center;
 	list-style-type: none;
 	margin: 1rem 0;
 	font-size: 1.5rem;
+	border: none;
 }
 
-.term-check , .term-text , .term-delete {
+.term-check , .term-text, .term-text-edit, .term-delete {
 	line-height:  2rem;
 	padding: 0 0.5rem;
 }
 
-.term-text {
+.term-text, .term-text-edit {
 	width: 100%;
 	background-color: rgb(254, 251, 185);
 }
 
-.term-edit, .term-arrow-up, .term-arrow-down {
+.term-edit, .term-text-edit , .term-arrow-up, .term-arrow-down {
 	background-color: rgb(254, 251, 185);
 	line-height:  2rem;
 	padding-left: 0.1rem;
+	color:darkred;
 }
 
-.term-check:hover, .term-delete:hover, .term-edit:hover, .term-arrow-up:hover, .term-arrow-down:hover {
+.term-check:hover, .term-delete:hover, .term-edit:hover, .term-text-edit:hover, .term-arrow-up:hover, .term-arrow-down:hover {
 	background-color: rgb(250, 210, 28);
 	cursor: pointer;
-  }
+}
 
 .term-check {
 	border-radius: 0.5rem 0 0 0.5rem;
