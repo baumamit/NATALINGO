@@ -5,21 +5,24 @@ MongoDB.mongoDBinitialize();*/
 // # INITIALIZE ON PAGE RESTART _____________________________________
 
 // Create a key for the local storage
-const STORAGE_KEY = '__natalingo.47__';
+const STORAGE_KEY = '__natalingo.48__';
 
 // Import page elemetns
-const button = document.querySelector('button');
+const newTermButton = document.querySelector('.new-term-button');
 const inputField = document.querySelector('input');
 inputField.value = '';
 const termsList = document.querySelector('.terms-list');
 const emptyListMessage = document.querySelector('.empty-list-message');
 
-// Define empty node list for clickable checkmarks from the page's HTML code
-let checks = document.createElement(null);
-// Define empty node list for clickable trash bins from the page's HTML code
-let trashBins = document.createElement(null);
 // Define empty node list for clickable items from the page's HTML code
 let pencils = document.createElement(null);
+// Define empty node list for clickable trash bins from the page's HTML code
+let trashBins = document.createElement(null);
+// Define empty node list for clickable flags from the page's HTML code
+let flagIconsItalian = document.createElement(null);
+let flagIconsEnglish = document.createElement(null);
+// Define empty node list for clickable checkmarks from the page's HTML code
+let checks = document.createElement(null);
 
 // Define empty node list for term and translation values
 let updatedTermBox = document.createElement(null);
@@ -60,13 +63,16 @@ async function mymemoryTranslate(text) {
 
 // Function that responds to uploaded term clicks in the viewport
 function respondToClickedTerms() {
-  // Retrieve clickable checkmarks from the page's HTML code
-  checks = document.querySelectorAll('.term-check');
-  // Retrieve clickable trash bins from the page's HTML code
-  trashBins = document.querySelectorAll('.term-delete');
   // Retrieve clickable edit icons from the page's HTML code
   pencils = document.querySelectorAll('.term-edit');
-
+  // Retrieve clickable trash bins from the page's HTML code
+  trashBins = document.querySelectorAll('.term-delete');
+  // Retrieve clickable flags from the page's HTML code
+  flagIconsItalian = document.querySelectorAll('.flag-button-it');
+  flagIconsEnglish = document.querySelectorAll('.flag-button-en');
+  // Retrieve clickable checkmarks from the page's HTML code
+  checks = document.querySelectorAll('.term-check');
+  
   // Create an HTML template for each existing term
   terms.forEach(function(term, index) {
     pencils[index].addEventListener('click', function editTerm() {
@@ -95,12 +101,15 @@ function respondToClickedTerms() {
 
       if (term.edit_mode === true) {
       
-        // Retrieve clickable checkmarks from the page's HTML code
-        checks = document.querySelectorAll('.term-check');
-        // Retrieve clickable trash bins from the page's HTML code
-        trashBins = document.querySelectorAll('.term-delete');
         // Retrieve clickable edit icons from the page's HTML code
         pencils = document.querySelectorAll('.term-edit');
+        // Retrieve clickable trash bins from the page's HTML code
+        trashBins = document.querySelectorAll('.term-delete');
+        // Retrieve clickable flags from the page's HTML code
+        flagIconsItalian = document.querySelectorAll('.flag-button-it');
+        flagIconsEnglish = document.querySelectorAll('.flag-button-en');
+        // Retrieve clickable checkmarks from the page's HTML code
+        checks = document.querySelectorAll('.term-check');
 
         // Retrieve clickable items from the page's temporary HTML code
         const arrowUp = document.querySelector('.term-arrow-up');
@@ -178,7 +187,7 @@ function respondToClickedTerms() {
       respondToClickedTerms();
     });
     
-    // Delete clicked trash bin sign term
+    // Delete term for clicked trash bin icon
     trashBins[index].addEventListener('click', function () {
       // Remove term from the terms list
       terms.splice(index, 1);
@@ -189,7 +198,7 @@ function respondToClickedTerms() {
       // React to term clicks
       respondToClickedTerms();
     });
-    
+
     //Toggle clicked checkmark
     checks[index].addEventListener('click', function () {
       //Toggle checkmark click status
@@ -201,18 +210,61 @@ function respondToClickedTerms() {
       } 
       // Checkmark unchecked
       checks[index].innerHTML = `<img class="check-icon" src="${checkmarkType}" alt="Check Icon">`;
-      term.htmlCode = createTermHTML(term);
+      createTermHTML(term);
       // Update the local storage and the viewport
       saveToLocalStorage();
     });
+
+    if (term.edit_mode) {
+      // present term translation for clicked flag button
+      flagIconsItalian[index].addEventListener('click', function () {
+        //Toggle checkmark click status
+        term.flag_click_it = !term.flag_click_it;
+        // Create and update a new HTML template for the edited term
+        createTermHTML(term);
+        // Clear list
+        termsList.innerText = '';
+        // Create an HTML template for each existing term
+        terms.forEach(function(term) {
+          // Insert term into the page
+          termsList.innerHTML += `${term.htmlCode}`;
+        });
+
+        // Update the local storage and the viewport
+        saveToLocalStorage();
+        // React to term clicks
+        respondToClickedTerms();
+      });
+
+      // present term translation for clicked flag button
+      flagIconsEnglish[index].addEventListener('click', function () {
+        //Toggle checkmark click status
+        term.flag_click_en = !term.flag_click_en;
+        // Create and update a new HTML template for the edited term
+        createTermHTML(term);
+        // Clear list
+        termsList.innerText = '';
+        // Create an HTML template for each existing term
+        terms.forEach(function(term) {
+          // Insert term into the page
+          termsList.innerHTML += `${term.htmlCode}`;
+        });
+
+        // Update the local storage and the viewport
+        saveToLocalStorage();
+        // React to term clicks
+        respondToClickedTerms();
+      });
+    }
+
   });
 }
 
 // Function to read edited term input
 function updateTermFromInput(index) {
   // Retrieve updated term and translation values from the page's temporary HTML code
-  updatedTermBox = document.querySelector('.term-text-edit');
-  updatedTermBoxEnglish = document.querySelector('.term-text-english-edit');
+  updatedTermBox = document.querySelector('.term-text-it-edit');
+  updatedTermBoxEnglish = document.querySelector('.term-text-en-edit');
   const updatedTermText = updatedTermBox.value.trim();
   const updatedTermTextEnglish = updatedTermBoxEnglish.value.trim();
   if (updatedTermText.length > 0) {
@@ -231,11 +283,11 @@ function respondToNewTermClick() {
   inputField.addEventListener('keypress',function onEvent(event) {
     if (event.key === "Enter") {
       event.preventDefault();
-      button.click();
+      newTermButton.click();
     }
   });
-  // On a mouse click on the + button...
-  button.addEventListener('click', function () {
+  // On a mouse click on the + for a new term button...
+  newTermButton.addEventListener('click', function () {
     // Add term to the list
     addTerm();
   });
@@ -250,7 +302,8 @@ async function addTerm() {
   // If the field is not empty... 
   if (newTerm.length > 0) {
     // Add term to the end of the terms list
-    terms.push({text: newTerm, textEnglish: newEnglishTranslation, check_click: false, edit_mode: false, htmlCode: ''});
+    terms.push({textItalian: newTerm, textEnglish: newEnglishTranslation, check_click: false, 
+      flag_click_it: true, flag_click_en: true, edit_mode: false, htmlCode: ''});
     // Create HTML code for the last added term
     terms[terms.length-1].htmlCode = createTermHTML(terms[terms.length-1]);
     // Clear the input field
@@ -276,7 +329,7 @@ function loadTerms() {
     emptyListMessage.classList.remove("empty-list-message");
     // Create an HTML template for each existing term
     terms.forEach(function(term) {
-      term.htmlCode = createTermHTML(term);
+      createTermHTML(term);
       // Insert term into the page
       termsList.innerHTML += `${term.htmlCode}`;
     });
@@ -292,30 +345,49 @@ function loadTerms() {
 
 // Function to create an HTML template for a givven term
 function createTermHTML(term) {
-  // Choose checkmark icon iF clicked
+  // Toggle checkmark icon if clicked
   let checkmarkIcon = "images/check_maybe.svg";
+  
   if (term.check_click) {
     checkmarkIcon = "images/checkmark.png";
   }
+    
+  // Declare and initialize Italian flag with hidden text
+  let textHTMLit = `
+    <button class="flag-button-it flag-button-hide" data-lang="it">🇮🇹</button>
+  `;
+  if (term.flag_click_it) {
+    textHTMLit = `
+      <p class="term-text-it read-mode">${term.textItalian}</p>
+      <button class="flag-button-it flag-button-show" data-lang="it">🇮🇹</button>
+    `;
+  }
 
-  // HTML to append to the term if pencil icon is clicked: pencil and arrows icons
-  let editIconHTMLtoAppend = `
+  // Declare and initialize Italian flag with hidden text
+  let textHTMLen = `
+    <button class="flag-button-en flag-button-hide" data-lang="en">🇬🇧</button>
+  `;
+  if (term.flag_click_en) {
+    textHTMLen = `
+      <button class="flag-button-en flag-button-show" data-lang="en">🇬🇧</button>
+      <p class="term-text-en read-mode">${term.textEnglish}</p>
+  `;
+  }
+
+  let editIconHTML = `
     <div class="term-edit read-mode">
       <img class="pencil-icon" src="images/pencil.png" alt="Pencil Icon">
     </div>
   `;
-  let arrowsHTMLtoAppend = ``;
-  let textHTMLtoAppend = `
-    <p class="term-text read-mode">${term.text}</p>
-    <p class="term-text-english read-mode">${term.textEnglish}</p>
-  `;
+  let arrowsHTML = ``;
+  // HTML to append to the term if pencil icon is clicked: pencil and arrows icons
   if (term.edit_mode) {
-    editIconHTMLtoAppend = `
+    editIconHTML = `
       <div class="term-edit edit-mode">
         <img class="label-icon" src="images/label.png" alt="Save Edit">
       </div>
     `;
-    arrowsHTMLtoAppend = `
+    arrowsHTML = `
       <div class="term-arrows edit-mode">
         <div class="term-arrow-up">
           <img class="arrow-up-icon" src="images/arrow_up.svg" alt="Arrow Up Icon">
@@ -325,16 +397,17 @@ function createTermHTML(term) {
         </div>
       </div>
     `;
-    textHTMLtoAppend = `
+    textHTMLit = `
       <div>
         <div>
-          <input class="term-text-edit edit-mode" type="text" value="${term.text}">
+          <input class="term-text-it-edit edit-mode" type="text" value="${term.textItalian}">
         </div>
         <div>
-          <input class="term-text-english-edit edit-mode" type="text" value="${term.textEnglish}">
+          <input class="term-text-en-edit edit-mode" type="text" value="${term.textEnglish}">
         </div>
       </div>
     `;
+    textHTMLen = ``;
   }
 
   // Return the following HTML
@@ -344,10 +417,11 @@ function createTermHTML(term) {
         <img class="check-icon" src="${checkmarkIcon}" alt="Check Icon">
       </div>
       `
-      +`${editIconHTMLtoAppend}`
-      +`${arrowsHTMLtoAppend}`
-      +`${textHTMLtoAppend}`+
-      `
+      +`${editIconHTML}`
+      +`${arrowsHTML}`
+      +`${textHTMLit}`
+      +`${textHTMLen}`
+      +`
       <div class="term-delete">
         <img class="trash-bin-icon" src="images/trash.png" alt="Delete Icon">
       </div>

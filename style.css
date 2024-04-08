@@ -65,7 +65,7 @@ h1 {
 	background-color: rgb(254, 251, 185);
 }
 
-button {
+.new-term-button {
 	cursor: pointer;
 	padding: 0.5rem;
 	border: none;
@@ -94,7 +94,7 @@ button {
 	border: none;
 }
 
-.term-text, .term-text-english {
+.term-text-it, .term-text-en {
 	font-size: 1.5rem;
 	padding: 0.2rem 0.5rem;
 	width: 100%;
@@ -103,7 +103,22 @@ button {
 	margin: 0 0.1rem;
 }
 
-.term-check:hover, .term-delete:hover, .term-edit:hover, .term-arrow-up:hover, .term-arrow-down:hover, .term-text-edit:hover, .term-text-english-edit:hover {
+.flag-button-show {
+	font-size: 2rem;
+	background-color:transparent;
+	border:none;
+}
+
+.flag-button-hide {
+	font-size: 2.5rem;
+	width: 130%;
+	background-color:transparent;
+	border:none;
+}
+
+.term-check:hover, .term-delete:hover, .term-edit:hover, .term-arrow-up:hover, 
+.term-arrow-down:hover, .term-text-it-edit:hover, .term-text-en-edit:hover,
+.flag-button-it:hover, .flag-button-en:hover {
 	background-color: rgb(255, 183, 0);
 	cursor: pointer;
 }
@@ -159,7 +174,7 @@ button {
 	height: 1.25rem;
 }
 
-.term-text-edit, .term-text-english-edit {
+.term-text-it-edit, .term-text-en-edit {
 	padding: 0 0.2rem;
 	width: 100%;
 	border: solid;
