@@ -5,7 +5,7 @@ MongoDB.mongoDBinitialize();*/
 // # INITIALIZE ON PAGE RESTART _____________________________________
 
 // Create a key for the local storage
-const STORAGE_KEY = '__natalingo.45__';
+const STORAGE_KEY = '__natalingo.46__';
 
 // Import page elemetns
 const button = document.querySelector('button');
