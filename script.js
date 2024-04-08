@@ -1,10 +1,11 @@
 // # INITIALIZE MONGODB STORAGE SERVER ON PAGE RESTART
 /*import *as MongoDB from "./mongoDB.js";
 MongoDB.mongoDBinitialize();*/
-// # INITIALIZE ON PAGE RESTART
+
+// # INITIALIZE ON PAGE RESTART _____________________________________
 
 // Create a key for the local storage
-const STORAGE_KEY = '__natalingo.44__';
+const STORAGE_KEY = '__natalingo.45__';
 
 // Import page elemetns
 const button = document.querySelector('button');
@@ -20,16 +21,16 @@ let trashBins = document.createElement(null);
 // Define empty node list for clickable items from the page's HTML code
 let pencils = document.createElement(null);
 
-// Define empty node list for term value from the page's temporary HTML code
+// Define empty node list for term and translation values
 let updatedTermBox = document.createElement(null);
-
+let updatedTermBoxEnglish = document.createElement(null);
 // Define a terms list array
 let terms = [];
 
+// # DYNAMIC PROCEDURES _____________________________________
+
 // Check for new user input
 respondToNewTermClick();
-
-// # DYNAMIC PROCEDURES 
 
 // Retrieve local storage
 const storage = localStorage.getItem(STORAGE_KEY);
@@ -47,8 +48,15 @@ loadTerms();
 // React to term clicks
 respondToClickedTerms();
 
+// # FUNCTIONS _____________________________________
 
-// # FUNCTIONS
+async function mymemoryTranslate(text) {
+  const url = `https://api.mymemory.translated.net/get?q=${text}&langpair=it|en`;
+  const response = await fetch(url);
+  const jsonData = await response.json();
+  const result = jsonData.responseData.translatedText;
+  return result;
+}
 
 // Function that responds to uploaded term clicks in the viewport
 function respondToClickedTerms() {
@@ -148,8 +156,15 @@ function respondToClickedTerms() {
 
         // Replace and save edited term with user input
         updateTermFromInput(index);
-        // React to "Enter" key (code=13) pressing as a mouse click
+        // React to edited term "Enter" key (code=13) pressing as a mouse click
         updatedTermBox.addEventListener("keydown", (event) => {
+          if (event.keyCode === 13) {
+            event.preventDefault();
+            pencils[index].click();
+          }
+        });
+        // React to edited term translation "Enter" key (code=13) pressing as a mouse click
+        updatedTermBoxEnglish.addEventListener("keydown", (event) => {
           if (event.keyCode === 13) {
             event.preventDefault();
             pencils[index].click();
@@ -185,7 +200,7 @@ function respondToClickedTerms() {
         checkmarkType = "images/checkmark.png";
       } 
       // Checkmark unchecked
-      checks[index].innerHTML = `<img src="${checkmarkType}" alt="Check Icon" height="20">`;
+      checks[index].innerHTML = `<img class="check-icon" src="${checkmarkType}" alt="Check Icon">`;
       term.htmlCode = createTermHTML(term);
       // Update the local storage and the viewport
       saveToLocalStorage();
@@ -195,12 +210,16 @@ function respondToClickedTerms() {
 
 // Function to read edited term input
 function updateTermFromInput(index) {
-  // Retrieve updated term value from the page's temporary HTML code
+  // Retrieve updated term and translation values from the page's temporary HTML code
   updatedTermBox = document.querySelector('.term-text-edit');
+  updatedTermBoxEnglish = document.querySelector('.term-text-english-edit');
   const updatedTermText = updatedTermBox.value.trim();
+  const updatedTermTextEnglish = updatedTermBoxEnglish.value.trim();
   if (updatedTermText.length > 0) {
-  // If term was edited...
+  // If not empty...
+    // Update the terms array values
     terms[index].text = updatedTermText;
+    terms[index].textEnglish = updatedTermTextEnglish;
     // Update the local storage and the viewport
     saveToLocalStorage();
   }
@@ -223,13 +242,15 @@ function respondToNewTermClick() {
 }
 
 // Function to add a term to the terms array
-function addTerm() {
+async function addTerm() {
   // Retreive text from the input field
   const newTerm = inputField.value.trim();
+  let newEnglishTranslation = await mymemoryTranslate(newTerm);
+  newEnglishTranslation = newEnglishTranslation.toLowerCase();
   // If the field is not empty... 
   if (newTerm.length > 0) {
     // Add term to the end of the terms list
-    terms.push({text: newTerm, check_click: false, edit_mode: false, htmlCode: ''});
+    terms.push({text: newTerm, textEnglish: newEnglishTranslation, check_click: false, edit_mode: false, htmlCode: ''});
     // Create HTML code for the last added term
     terms[terms.length-1].htmlCode = createTermHTML(terms[terms.length-1]);
     // Clear the input field
@@ -247,9 +268,12 @@ function addTerm() {
 function loadTerms() {
   // Clear list
   termsList.innerText = '';
+  // Empty message unless there are no terms in the list
   emptyListMessage.innerText = '';
   // If a term exists ...
   if (terms.length > 0) {
+    // Remove "empty-list-message" class to hide the block style
+    emptyListMessage.classList.remove("empty-list-message");
     // Create an HTML template for each existing term
     terms.forEach(function(term) {
       term.htmlCode = createTermHTML(term);
@@ -259,6 +283,9 @@ function loadTerms() {
   }
   // Otherwise show an "empty list" message
   else {
+    // Add "empty-list-message" class to hide the block style
+    emptyListMessage.classList.add("empty-list-message");
+    // Message to show when there are no terms in the list
     emptyListMessage.innerText = 'La tua lista è vuota';
   }
 }
@@ -273,47 +300,58 @@ function createTermHTML(term) {
 
   // HTML to append to the term if pencil icon is clicked: pencil and arrows icons
   let editIconHTMLtoAppend = `
-  <div class="term-edit">
-    <img src="images/pencil.png" alt="Pencil Icon" height="20">
-  </div>
+    <div class="term-edit read-mode">
+      <img class="pencil-icon" src="images/pencil.png" alt="Pencil Icon">
+    </div>
   `;
   let arrowsHTMLtoAppend = ``;
-  let textHTMLtoAppend = `<p class="term-text">${term.text}</p>`;
-
+  let textHTMLtoAppend = `
+    <p class="term-text read-mode">${term.text}</p>
+    <p class="term-text-english read-mode">${term.textEnglish}</p>
+  `;
   if (term.edit_mode) {
     editIconHTMLtoAppend = `
-    <div class="term-edit edit-mode">
-      <img src="images/label.png" alt="Save Edit" height="48">
-    </div>
+      <div class="term-edit edit-mode">
+        <img class="label-icon" src="images/label.png" alt="Save Edit">
+      </div>
     `;
     arrowsHTMLtoAppend = `
-    <div class="term-arrows edit-mode">
-      <div class="term-arrow-up">
-        <img src="images/arrow_up.svg" alt="Arrow Up Icon" height="25">
+      <div class="term-arrows edit-mode">
+        <div class="term-arrow-up">
+          <img class="arrow-up-icon" src="images/arrow_up.svg" alt="Arrow Up Icon">
+        </div>
+        <div class="term-arrow-down">
+          <img class="arrow-down-icon" src="images/arrow_down.svg" alt="Arrow Down Icon">
+        </div>
       </div>
-      <div class="term-arrow-down">
-        <img src="images/arrow_down.svg" alt="Arrow Down Icon" height="25">
-      </div>
-    </div>
     `;
-    textHTMLtoAppend = `<input class="term-text-edit edit-mode" type="text" placeholder="${term.text}">`;
+    textHTMLtoAppend = `
+      <div>
+        <div>
+          <input class="term-text-edit edit-mode" type="text" value="${term.text}">
+        </div>
+        <div>
+          <input class="term-text-english-edit edit-mode" type="text" value="${term.textEnglish}">
+        </div>
+      </div>
+    `;
   }
 
   // Return the following HTML
   const fullHTML = `
-  <li class="term-item">
-    <div class="term-check">
-      <img src="${checkmarkIcon}" alt="Check Icon" height="25">
-    </div>
-    `
-    +`${editIconHTMLtoAppend}`
-    +`${arrowsHTMLtoAppend}`
-    +`${textHTMLtoAppend}`+
-    `
-    <div class="term-delete">
-      <img src="images/trash.png" alt="Delete Icon" height="25">
-    </div>
-  </li>
+    <li class="term-item">
+      <div class="term-check">
+        <img class="check-icon" src="${checkmarkIcon}" alt="Check Icon">
+      </div>
+      `
+      +`${editIconHTMLtoAppend}`
+      +`${arrowsHTMLtoAppend}`
+      +`${textHTMLtoAppend}`+
+      `
+      <div class="term-delete">
+        <img class="trash-bin-icon" src="images/trash.png" alt="Delete Icon">
+      </div>
+    </li>
   `;
   term.htmlCode = fullHTML;
   return fullHTML;

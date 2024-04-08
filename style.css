@@ -42,7 +42,7 @@ h1 {
 
 /* Panel */
 .panel {
-	padding: 0.5rem;
+	padding: 0.4rem;
 	border-radius: 1rem;
 	background-color: rgb(254, 211, 225);
 }
@@ -57,7 +57,7 @@ h1 {
 }
 
 .add-term-input {
-	font-size: 1.2rem;
+	font-size: 1.5rem;
 	padding: 0.3rem;
 	border-radius: 0.8rem;
 	border: none;
@@ -77,67 +77,92 @@ button {
 .empty-list-message {
 	text-align: center;
 	font-weight: bold;
-	font-size: 1.5rem;
+	font-size: 2rem;
 	background-color: rgb(254, 251, 185);
-	line-height: 5rem;
+	min-block-size: 10rem;
+	line-height: 10rem;
+	border-radius: 1rem;
 }
 
-/*Terms list panel */
+/* Terms list panel */
 
 .term-item {
 	display:flex;
 	align-items: center;
 	list-style-type: none;
 	margin: 1rem 0;
-	font-size: 1.5rem;
 	border: none;
 }
 
-.term-check, .term-text, .term-edit, .term-delete {
-	line-height:  2rem;
-	padding: 0 0.5rem;
-}
-
-.term-text {
+.term-text, .term-text-english {
+	font-size: 1.5rem;
+	padding: 0.2rem 0.5rem;
 	width: 100%;
 	background-color: rgb(254, 251, 185);
+	border-radius: 1rem;
+	margin: 0 0.1rem;
 }
 
-.term-check:hover, .term-delete:hover, .term-edit:hover, .term-text-edit:hover, .term-arrow-up:hover, .term-arrow-down:hover {
-	background-color: rgb(250, 210, 28);
+.term-check:hover, .term-delete:hover, .term-edit:hover, .term-arrow-up:hover, .term-arrow-down:hover, .term-text-edit:hover, .term-text-english-edit:hover {
+	background-color: rgb(255, 183, 0);
 	cursor: pointer;
 }
 
 .term-edit {
-	background-color: rgb(254, 251, 185);
+	border-radius: 0.5rem;
+	background-color: rgb(160, 9, 147);
+}
+.pencil-icon {
+	padding: 0.2rem 0 0 0.2rem;
+	height: 2rem;
 }
 
+
 .term-check {
-	border-radius: 0.5rem 0 0 0.5rem;
+	padding: 0 0.3rem;
+	border-radius: 0.5rem;
 	background-color: rgba(55, 255, 0, 0.591);
-	width: 2rem;
+}
+.check-icon {
+	padding: 0.2rem 0 0 0;
+	height: 2rem;
 }
 
 .term-delete {
-	border-radius: 0 0.5rem 0.5rem 0;
+	padding: 0 0.2rem;
+	border-radius: 0.5rem;
 	background-color: rgb(255, 136, 136);
 }
+.trash-bin-icon {
+	padding: 0.2rem 0 0 0;
+	height: 2rem;
+}
+
+/* Edit mode changes*/
 
 .edit-mode {
-	display: block;
 	background-color: rgb(254, 251, 185);
-	padding-left: 0.1rem;
-	color:rgb(160, 9, 147);
-	font-size: 2.5rem;
 }
 
-.term-text-edit {
-	color:rgb(160, 9, 147);
+.label-icon {
+	height: 3rem;
+}
+
+.arrow-up-icon {
+	margin: 0.25rem 0.2rem 0 0.1rem;
+	padding: 0 0.2rem;
+	height: 1.25rem;
+}
+.arrow-down-icon {
+	margin: 0 0.2rem 0 0.1rem;
+	padding: 0 0.2rem;
+	height: 1.25rem;
+}
+
+.term-text-edit, .term-text-english-edit {
+	padding: 0 0.2rem;
 	width: 100%;
 	border: solid;
-}
-
-.term-arrow-up, .term-arrow-down {
-	margin: auto;
-	line-height: 1rem;
+	font-size: 2.4rem;
+	color:rgb(160, 9, 147);
 }
