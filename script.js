@@ -1,11 +1,11 @@
-// # INITIALIZE MONGODB STORAGE SERVER ON PAGE RESTART
+// # _________ INITIALIZE MONGODB STORAGE SERVER ON PAGE RESTART _________
 /*import *as MongoDB from "./mongoDB.js";
 MongoDB.mongoDBinitialize();*/
 
-// # INITIALIZE ON PAGE RESTART _____________________________________
+// # _________ INITIALIZE ON PAGE RESTART _________
 
 // Create a key for the local storage
-const STORAGE_KEY = '__natalingo.48__';
+const STORAGE_KEY = '__natalingo.50__';
 
 // Import page elemetns
 const newTermButton = document.querySelector('.new-term-button');
@@ -25,13 +25,15 @@ let flagIconsEnglish = document.createElement(null);
 let checks = document.createElement(null);
 
 // Define empty node list for term and translation values
-let updatedTermBox = document.createElement(null);
+let updatedTermBoxItalian = document.createElement(null);
 let updatedTermBoxEnglish = document.createElement(null);
 // Define a terms list array
 let terms = [];
 
-// # DYNAMIC PROCEDURES _____________________________________
+// # _________ DYNAMIC PROCEDURES _________
 
+// Load the terms list to the viewport
+loadTerms();
 // Check for new user input
 respondToNewTermClick();
 
@@ -45,153 +47,34 @@ if (storage) {
   for (let editIndex = 0; editIndex < terms.length; editIndex++) {
     terms[editIndex].edit_mode = false;
   }
+  // Load the terms list to the viewport
+  loadTerms();
+  // React to term clicks
+  respondToClickedTerms();
 }
-// Load the terms list to the viewport
-loadTerms();
-// React to term clicks
-respondToClickedTerms();
 
-// # FUNCTIONS _____________________________________
-
-async function mymemoryTranslate(text) {
-  const url = `https://api.mymemory.translated.net/get?q=${text}&langpair=it|en`;
-  const response = await fetch(url);
-  const jsonData = await response.json();
-  const result = jsonData.responseData.translatedText;
-  return result;
-}
+// # _________ FUNCTIONS _________
 
 // Function that responds to uploaded term clicks in the viewport
 function respondToClickedTerms() {
-  // Retrieve clickable edit icons from the page's HTML code
-  pencils = document.querySelectorAll('.term-edit');
-  // Retrieve clickable trash bins from the page's HTML code
+
+  // Run procedure to retrieve edit icons and respond to their clicks
+  respondToEdit();
+
+  // Retrieve trash bin icons from the viewport HTML code
   trashBins = document.querySelectorAll('.term-delete');
-  // Retrieve clickable flags from the page's HTML code
+  // Retrieve checkmark icons from the viewport HTML code
+  checks = document.querySelectorAll('.term-check');
+  // Retrieve flags icons from the viewport HTML code
   flagIconsItalian = document.querySelectorAll('.flag-button-it');
   flagIconsEnglish = document.querySelectorAll('.flag-button-en');
-  // Retrieve clickable checkmarks from the page's HTML code
-  checks = document.querySelectorAll('.term-check');
-  
-  // Create an HTML template for each existing term
+
   terms.forEach(function(term, index) {
-    pencils[index].addEventListener('click', function editTerm() {
-      // Function to edit a specific term in the viewport when pencil is clicked
-
-      if (term.edit_mode === true) {
-        // Replace and save edited term with user input
-        updateTermFromInput(index);
-      }
-      // Make sure that only one term at the time is being edited
-      for (let editIndex = 0; editIndex < terms.length; editIndex++) {
-        if (editIndex === index) {
-          // Toggle editing/reading mode
-          terms[editIndex].edit_mode = !terms[editIndex].edit_mode;
-        }
-        else {
-          // Keep or switch back to reading mode all other terms
-          terms[editIndex].edit_mode = false;
-        }
-      }
-      
-      // Update the local storage and the viewport
-      saveToLocalStorage();
-      // Reload the terms list in the viewport
-      loadTerms();
-
-      if (term.edit_mode === true) {
-      
-        // Retrieve clickable edit icons from the page's HTML code
-        pencils = document.querySelectorAll('.term-edit');
-        // Retrieve clickable trash bins from the page's HTML code
-        trashBins = document.querySelectorAll('.term-delete');
-        // Retrieve clickable flags from the page's HTML code
-        flagIconsItalian = document.querySelectorAll('.flag-button-it');
-        flagIconsEnglish = document.querySelectorAll('.flag-button-en');
-        // Retrieve clickable checkmarks from the page's HTML code
-        checks = document.querySelectorAll('.term-check');
-
-        // Retrieve clickable items from the page's temporary HTML code
-        const arrowUp = document.querySelector('.term-arrow-up');
-        const arrowDown = document.querySelector('.term-arrow-down');
-
-        // If the term is not at the top...
-        if (index > 0) {
-          arrowUp.addEventListener('click', function() {
-          // Function to move term one level up in the list on arrow click
-            // Replace and save edited term with user input
-            updateTermFromInput(index);
-            // Save both terms
-            index -= 1;
-            const tempTerm0 = terms[index].valueOf();
-            const tempTerm1 = terms[index+1].valueOf();
-            // Swap terms in the array
-            terms.splice(index, 2, tempTerm1, tempTerm0);
-
-            // Update the local storage and the viewport
-            saveToLocalStorage();
-            // Reload the terms list in the viewport
-            loadTerms();
-            // Flip back to keep editing
-            terms[index].edit_mode = false;
-            // Continue to edit term
-            editTerm();
-          });
-        }
-            
-        // If the term is not at the bottom...
-        if (index < terms.length-1) {
-          arrowDown.addEventListener('click', function() {
-          // Function to move term one level down in the list on arrow click
-            // Replace and save edited term with user input
-            updateTermFromInput(index);
-            // Save both terms
-            const tempTerm0 = terms[index].valueOf();
-            const tempTerm1 = terms[index+1].valueOf();
-            // Swap terms in the array
-            terms.splice(index, 2, tempTerm1, tempTerm0);
-            index += 1;
-
-            // Update the local storage and the viewport
-            saveToLocalStorage();
-            // Reload the terms list in the viewport
-            loadTerms();
-            // Flip back to keep editing
-            terms[index].edit_mode = false;
-            // Continue to edit term
-            editTerm();
-          });
-        }
-
-        // Replace and save edited term with user input
-        updateTermFromInput(index);
-        // React to edited term "Enter" key (code=13) pressing as a mouse click
-        updatedTermBox.addEventListener("keydown", (event) => {
-          if (event.keyCode === 13) {
-            event.preventDefault();
-            pencils[index].click();
-          }
-        });
-        // React to edited term translation "Enter" key (code=13) pressing as a mouse click
-        updatedTermBoxEnglish.addEventListener("keydown", (event) => {
-          if (event.keyCode === 13) {
-            event.preventDefault();
-            pencils[index].click();
-          }
-        });
-
-      }
-      else { 
-      }
-      // React to term clicks
-      respondToClickedTerms();
-    });
-    
     // Delete term for clicked trash bin icon
     trashBins[index].addEventListener('click', function () {
       // Remove term from the terms list
       terms.splice(index, 1);
-      // Update the local storage and the viewport
+      // Update the local storage
       saveToLocalStorage();
       // Reload the terms list in the viewport
       loadTerms();
@@ -211,70 +94,223 @@ function respondToClickedTerms() {
       // Checkmark unchecked
       checks[index].innerHTML = `<img class="check-icon" src="${checkmarkType}" alt="Check Icon">`;
       createTermHTML(term);
-      // Update the local storage and the viewport
+      // Update the local storage
       saveToLocalStorage();
     });
 
-    if (term.edit_mode) {
+    if (!term.edit_mode) {
       // present term translation for clicked flag button
       flagIconsItalian[index].addEventListener('click', function () {
         //Toggle checkmark click status
         term.flag_click_it = !term.flag_click_it;
+        if (term.flag_click_it) {
+          // Declare and initialize Italian flag with hidden text
+          flagIconsItalian[index].previousElementSibling.remove();
+        }
+        else {
+          let htmlObject = document.createElement('span');
+          // Create a class attribute:
+          const att = document.createAttribute("class");
+          // Set the value of the class attribute:
+          att.value = "term-text-it read-mode";
+          // Add the class attribute to the first h1:
+          htmlObject.setAttributeNode(att); 
+          htmlObject.innerHTML = term.textItalian;
+          flagIconsItalian[index].insertAdjacentElement('beforebegin', htmlObject)        // Update the relevant vieport section
+        }
         // Create and update a new HTML template for the edited term
         createTermHTML(term);
-        // Clear list
-        termsList.innerText = '';
-        // Create an HTML template for each existing term
-        terms.forEach(function(term) {
-          // Insert term into the page
-          termsList.innerHTML += `${term.htmlCode}`;
-        });
-
-        // Update the local storage and the viewport
+        // Update the local storage
         saveToLocalStorage();
         // React to term clicks
-        respondToClickedTerms();
+//        respondToClickedTerms();
       });
 
       // present term translation for clicked flag button
       flagIconsEnglish[index].addEventListener('click', function () {
         //Toggle checkmark click status
         term.flag_click_en = !term.flag_click_en;
+        if (term.flag_click_en) {
+          console.log(flagIconsEnglish[index]);
+          // Declare and initialize Italian flag with hidden text
+          flagIconsEnglish[index].nextElementSibling.remove();
+        }
+        else {
+          let htmlObject = document.createElement('span');
+          // Create a class attribute:
+          const att = document.createAttribute("class");
+          // Set the value of the class attribute:
+          att.value = "term-text-en read-mode";
+          // Add the class attribute to the first h1:
+          htmlObject.setAttributeNode(att); 
+          htmlObject.innerHTML = term.textEnglish;
+          flagIconsEnglish[index].insertAdjacentElement('afterend', htmlObject)        // Update the relevant vieport section
+        }
         // Create and update a new HTML template for the edited term
         createTermHTML(term);
-        // Clear list
-        termsList.innerText = '';
-        // Create an HTML template for each existing term
-        terms.forEach(function(term) {
-          // Insert term into the page
-          termsList.innerHTML += `${term.htmlCode}`;
-        });
-
-        // Update the local storage and the viewport
+        // Update the local storage
         saveToLocalStorage();
-        // React to term clicks
-        respondToClickedTerms();
       });
     }
 
   });
 }
 
+function respondToEdit() {
+  // Retrieve clickable edit icons from the page's HTML code
+  pencils = document.querySelectorAll('.term-edit');
+  for (let pencilIndex = 0; pencilIndex < terms.length; pencilIndex++) {
+    pencils[pencilIndex].addEventListener('click', function editTerm() {
+    // Function to edit a specific term in the viewport when pencil is clicked
+
+      // Edit mode is still turned on - after 2nd click on the edit button...
+      if (terms[pencilIndex].edit_mode === true) {
+        // Replace and save edited term with user input
+        updateTermFromInput(pencilIndex);
+      }
+      // Toggle editting mode and make sure that only one term at the time is being edited
+      for (let editIndex = 0; editIndex < terms.length; editIndex++) {
+        if (editIndex === pencilIndex) {
+          // Toggle editing/reading mode for the current term
+          terms[editIndex].edit_mode = !terms[editIndex].edit_mode;
+        }
+        else {
+          // Keep or switch back to reading mode all other terms
+          terms[editIndex].edit_mode = false;
+        }
+      }
+      // Update the local storage
+      saveToLocalStorage();
+
+      if (terms[pencilIndex].edit_mode === true) {
+      // If edit mode was turned on - after 1st click on the edit button...
+
+        // Reload the terms list in the viewport
+        loadTerms();
+
+        // Retrieve clickable arrows from the page's temporary HTML code
+        const arrowUp = document.querySelector('.term-arrow-up');
+        // If the term is not at the top...
+        if (pencilIndex > 0) {
+          arrowUp.addEventListener('click', function() {
+          // Function to move term one level up in the list on arrow click
+            // Replace and save edited term with user input
+            updateTermFromInput(pencilIndex);
+            // Save both terms
+            pencilIndex -= 1;
+            const tempTerm0 = terms[pencilIndex].valueOf();
+            const tempTerm1 = terms[pencilIndex+1].valueOf();
+            // Swap terms in the array
+            terms.splice(pencilIndex, 2, tempTerm1, tempTerm0);
+
+            // Update the local storage
+            saveToLocalStorage();
+            // Reload the terms list in the viewport
+            loadTerms();
+            // Flip back to keep editing
+            terms[pencilIndex].edit_mode = false;
+            // Continue to edit term
+            editTerm();
+          });
+        }
+            
+        // Retrieve clickable arrows from the page's temporary HTML code
+        const arrowDown = document.querySelector('.term-arrow-down');
+        // If the term is not at the bottom...
+        if (pencilIndex < terms.length-1) {
+          arrowDown.addEventListener('click', function() {
+          // Function to move term one level down in the list on arrow click
+            // Replace and save edited term with user input
+            updateTermFromInput(pencilIndex);
+            // Save both terms
+            const tempTerm0 = terms[pencilIndex].valueOf();
+            const tempTerm1 = terms[pencilIndex+1].valueOf();
+            // Swap terms in the array
+            terms.splice(pencilIndex, 2, tempTerm1, tempTerm0);
+            pencilIndex += 1;
+
+            // Update the local storage
+            saveToLocalStorage();
+            // Reload the terms list in the viewport
+            loadTerms();
+            // Flip back to keep editing
+            terms[pencilIndex].edit_mode = false;
+            // Continue to edit term
+            editTerm();
+          });
+        }
+
+        // Replace and save edited term with user input
+        updateTermFromInput(pencilIndex);
+        // Rerun procedure to retrieve edit icons and listen to their clicks
+        respondToEdit();
+      }
+      else { 
+      // Edit mode was turned off - after 2nd click on the edit button...
+        // Update the local storage
+        saveToLocalStorage();
+        // Reload the terms list in the viewport
+        loadTerms();
+        // React to term clicks
+        respondToClickedTerms();
+      }
+    });
+
+  }
+/*  
+  // Update the local storage
+  saveToLocalStorage();
+  // Reload the terms list in the viewport
+  loadTerms();*/
+}
+
 // Function to read edited term input
-function updateTermFromInput(index) {
+function updateTermFromInput(indexUpdate) {
+
   // Retrieve updated term and translation values from the page's temporary HTML code
-  updatedTermBox = document.querySelector('.term-text-it-edit');
+  updatedTermBoxItalian = document.querySelector('.term-text-it-edit');
   updatedTermBoxEnglish = document.querySelector('.term-text-en-edit');
-  const updatedTermText = updatedTermBox.value.trim();
-  const updatedTermTextEnglish = updatedTermBoxEnglish.value.trim();
-  if (updatedTermText.length > 0) {
+
+  // React to edited term "Enter" key (code=13) pressing as a mouse click
+  const updatedTermTextItalian = updatedTermBoxItalian.value.trim();
+  if (updatedTermTextItalian.length > 0) {
   // If not empty...
     // Update the terms array values
-    terms[index].text = updatedTermText;
-    terms[index].textEnglish = updatedTermTextEnglish;
-    // Update the local storage and the viewport
-    saveToLocalStorage();
+    terms[indexUpdate].textItalian = updatedTermTextItalian;
   }
+  const updatedTermTextEnglish = updatedTermBoxEnglish.value.trim();
+  if (updatedTermTextEnglish.length > 0) {
+    // If not empty...
+      // Update the terms array values
+      terms[indexUpdate].textEnglish = updatedTermTextEnglish;
+  }
+  // Update the local storage
+  saveToLocalStorage();
+
+  updatedTermBoxItalian.addEventListener("keydown", (event) => {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      updateTermFromInput(indexUpdate);
+      pencils[indexUpdate].click();
+    }
+  });
+
+  // React to edited term translation "Enter" key (code=13) pressing as a mouse click
+  updatedTermBoxEnglish.addEventListener("keydown", (event) => {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      updateTermFromInput(indexUpdate);
+      pencils[indexUpdate].click();
+    }
+  });
+}
+
+async function mymemoryTranslate(text) {
+  const url = `https://api.mymemory.translated.net/get?q=${text}&langpair=it|en`;
+  const response = await fetch(url);
+  const jsonData = await response.json();
+  const result = jsonData.responseData.translatedText;
+  return result;
 }
 
 // Function that adds a new term to the end of the terms array from a user input
@@ -303,7 +339,7 @@ async function addTerm() {
   if (newTerm.length > 0) {
     // Add term to the end of the terms list
     terms.push({textItalian: newTerm, textEnglish: newEnglishTranslation, check_click: false, 
-      flag_click_it: true, flag_click_en: true, edit_mode: false, htmlCode: ''});
+      flag_click_it: false, flag_click_en: false, edit_mode: false, htmlCode: ''});
     // Create HTML code for the last added term
     terms[terms.length-1].htmlCode = createTermHTML(terms[terms.length-1]);
     // Clear the input field
@@ -317,7 +353,7 @@ async function addTerm() {
   }
 }
 
-// Function to change the HTML code of the terms list to show it
+// Function to change the HTML code of the terms list to show it or an empty message
 function loadTerms() {
   // Clear list
   termsList.innerText = '';
@@ -354,24 +390,32 @@ function createTermHTML(term) {
     
   // Declare and initialize Italian flag with hidden text
   let textHTMLit = `
-    <button class="flag-button-it flag-button-hide" data-lang="it">🇮🇹</button>
+    <p class="term-italian">
+      <span class="term-text-it read-mode">${term.textItalian}</span>
+      <button class="flag-button-it term-show" data-lang="it">🇮🇹</button>
+    </p>
   `;
   if (term.flag_click_it) {
     textHTMLit = `
-      <p class="term-text-it read-mode">${term.textItalian}</p>
-      <button class="flag-button-it flag-button-show" data-lang="it">🇮🇹</button>
+      <p class="term-italian">
+        <button class="flag-button-it term-hide" data-lang="it">🇮🇹</button>
+      </p>
     `;
   }
 
-  // Declare and initialize Italian flag with hidden text
+  // Declare and initialize English flag with hidden text
   let textHTMLen = `
-    <button class="flag-button-en flag-button-hide" data-lang="en">🇬🇧</button>
+    <p class="term-english">
+      <button class="flag-button-en term-show" data-lang="en">🇬🇧</button>
+      <span class="term-text-en read-mode">${term.textEnglish}</span>
+    </p>
   `;
   if (term.flag_click_en) {
     textHTMLen = `
-      <button class="flag-button-en flag-button-show" data-lang="en">🇬🇧</button>
-      <p class="term-text-en read-mode">${term.textEnglish}</p>
-  `;
+      <p class="term-english">
+        <button class="flag-button-en term-hide" data-lang="en">🇬🇧</button>
+      </p>
+    `;
   }
 
   let editIconHTML = `

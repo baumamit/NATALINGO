@@ -94,27 +94,43 @@ h1 {
 	border: none;
 }
 
-.term-text-it, .term-text-en {
-	font-size: 1.5rem;
-	padding: 0.2rem 0.5rem;
+.term-italian, .term-english {
 	width: 100%;
 	background-color: rgb(254, 251, 185);
 	border-radius: 1rem;
+/*	padding: 0.2rem 0.5rem;*/
 	margin: 0 0.1rem;
 }
 
-.flag-button-show {
+.term-text-it, .term-text-en {
+	font-size: 1.5rem;
+/*	padding: 0.2rem 0.5rem;*/
+	width: 100%;
+/*	background-color: rgb(254, 251, 185);*/
+/*	border-radius: 1rem;*/
+	margin: 0 0.1rem;
+}
+
+.flag-button-it, .flag-button-en {
 	font-size: 2rem;
 	background-color:transparent;
 	border:none;
 }
 
-.flag-button-hide {
-	font-size: 2.5rem;
-	width: 130%;
+/*
+.term-show {
+	font-size: 2rem;
 	background-color:transparent;
 	border:none;
 }
+
+.term-hide {
+	font-size: 2.5rem;
+	width: 100%;
+	background-color:transparent;
+	border:none;
+}
+*/
 
 .term-check:hover, .term-delete:hover, .term-edit:hover, .term-arrow-up:hover, 
 .term-arrow-down:hover, .term-text-it-edit:hover, .term-text-en-edit:hover,
