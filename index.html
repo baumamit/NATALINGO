@@ -45,8 +45,17 @@
       </div>
 
       <!-- Adding panel -->
-      <div class="panel add-term" >
-        <input class="add-term-input" type="text" placeholder="Aggiungi un termine in Italiano">
+      <div class="panel add-term" id="menu-terms">
+        <select class="grammatic-type">
+          <option value="">Termini</option>
+          <option value="type-nouns">Nomi</option>
+          <option value="type-verbs">Verbi</option>
+          <option value="type-adjectives">Aggettivi</option>
+          <option value="type-adverbs">Avverbi</option>
+          <option value="type-expressions">Espressioni</option>
+          <option value="type-others">Altri</option>
+        </select>
+        <input class="add-term-input" type="text" placeholder="Nuovo termine Italiano">
         <button class="new-term-button">
           <img class="scaling-svg" src="images/add.svg" alt="plus icon" >
         </button>

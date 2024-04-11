@@ -7,12 +7,14 @@ MongoDB.mongoDBinitialize();*/
 // Create a key for the local storage
 const STORAGE_KEY = '__natalingo.50__';
 
-// Import page elemetns
-const newTermButton = document.querySelector('.new-term-button');
+// Import terms list elemetns from page
+const emptyListMessage = document.querySelector('.empty-list-message');
+const termsList = document.querySelector('.terms-list');
+// Import new term panel elemetns from page
+const grammaticType = document.querySelector('grammatic-type');
 const inputField = document.querySelector('input');
 inputField.value = '';
-const termsList = document.querySelector('.terms-list');
-const emptyListMessage = document.querySelector('.empty-list-message');
+const newTermButton = document.querySelector('.new-term-button');
 
 // Define empty node list for clickable items from the page's HTML code
 let pencils = document.createElement(null);
@@ -31,6 +33,8 @@ let updatedTermBoxEnglish = document.createElement(null);
 let terms = [];
 
 // # _________ DYNAMIC PROCEDURES _________
+
+//console.log(grammaticType.valueOf);
 
 // Load the terms list to the viewport
 loadTerms();
@@ -117,7 +121,7 @@ function respondToClickedTerms() {
           att.value = "term-text-it read-mode";
           // Add the class attribute to the first h1:
           htmlObject.setAttributeNode(att); 
-          htmlObject.innerHTML = term.textItalian;
+          htmlObject.innerHTML = term.text_italian;
           flagIconsItalian[index].insertAdjacentElement('beforebegin', htmlObject)        // Update the relevant vieport section
         }
         // Create and update a new HTML template for the edited term
@@ -144,7 +148,7 @@ function respondToClickedTerms() {
           att.value = "term-text-en read-mode";
           // Add the class attribute to the first h1:
           htmlObject.setAttributeNode(att); 
-          htmlObject.innerHTML = term.textEnglish;
+          htmlObject.innerHTML = term.text_english;
           flagIconsEnglish[index].insertAdjacentElement('afterend', htmlObject)        // Update the relevant vieport section
         }
         // Create and update a new HTML template for the edited term
@@ -273,13 +277,13 @@ function updateTermFromInput(indexUpdate) {
   if (updatedTermTextItalian.length > 0) {
   // If not empty...
     // Update the terms array values
-    terms[indexUpdate].textItalian = updatedTermTextItalian;
+    terms[indexUpdate].text_italian = updatedTermTextItalian;
   }
   const updatedTermTextEnglish = updatedTermBoxEnglish.value.trim();
   if (updatedTermTextEnglish.length > 0) {
     // If not empty...
       // Update the terms array values
-      terms[indexUpdate].textEnglish = updatedTermTextEnglish;
+      terms[indexUpdate].text_english = updatedTermTextEnglish;
   }
   // Update the local storage
   saveToLocalStorage();
@@ -329,7 +333,7 @@ async function addTerm() {
   // If the field is not empty... 
   if (newTerm.length > 0) {
     // Add term to the end of the terms list
-    terms.push({textItalian: newTerm, textEnglish: newEnglishTranslation, check_click: false, 
+    terms.push({grammatic_type: "type-others", text_italian: newTerm, text_english: newEnglishTranslation, check_click: false, 
       flag_click_it: false, flag_click_en: false, edit_mode: false, htmlCode: ''});
     // Create HTML code for the last added term
     terms[terms.length-1].htmlCode = createTermHTML(terms[terms.length-1]);
@@ -382,7 +386,7 @@ function createTermHTML(term) {
   // Declare and initialize Italian flag with hidden text
   let textHTMLit = `
     <p class="term-italian">
-      <span class="term-text-it read-mode">${term.textItalian}</span>
+      <span class="term-text-it read-mode">${term.text_italian}</span>
       <button class="flag-button-it" data-lang="it">🇮🇹</button>
     </p>
   `;
@@ -398,7 +402,7 @@ function createTermHTML(term) {
   let textHTMLen = `
     <p class="term-english">
       <button class="flag-button-en" data-lang="en">🇬🇧</button>
-      <span class="term-text-en read-mode">${term.textEnglish}</span>
+      <span class="term-text-en read-mode">${term.text_english}</span>
     </p>
   `;
   if (term.flag_click_en) {
@@ -435,10 +439,10 @@ function createTermHTML(term) {
     textHTMLit = `
       <div>
         <div>
-          <input class="term-text-it-edit edit-mode" type="text" value="${term.textItalian}">
+          <input class="term-text-it-edit edit-mode" type="text" value="${term.text_italian}">
         </div>
         <div>
-          <input class="term-text-en-edit edit-mode" type="text" value="${term.textEnglish}">
+          <input class="term-text-en-edit edit-mode" type="text" value="${term.text_english}">
         </div>
       </div>
     `;
