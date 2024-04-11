@@ -5,13 +5,15 @@ MongoDB.mongoDBinitialize();*/
 // # _________ INITIALIZE ON PAGE RESTART _________
 
 // Create a key for the local storage
-const STORAGE_KEY = '__natalingo.50__';
+const STORAGE_KEY = '__natalingo.51__';
 
 // Import terms list elemetns from page
 const emptyListMessage = document.querySelector('.empty-list-message');
 const termsList = document.querySelector('.terms-list');
-// Import new term panel elemetns from page
-const grammaticType = document.querySelector('grammatic-type');
+// Import 'new term' panel elemetns from page
+const newTermForm = document.forms['add-new-term'];
+const termType = newTermForm['menu-terms'];
+//const grammaticType = document.querySelector('grammatic-type');
 const inputField = document.querySelector('input');
 inputField.value = '';
 const newTermButton = document.querySelector('.new-term-button');
@@ -35,6 +37,14 @@ let terms = [];
 // # _________ DYNAMIC PROCEDURES _________
 
 //console.log(grammaticType.valueOf);
+/*console.log(termType);
+termType.addEventListener('change', function () {
+  console.log(termType.value);
+});
+*/
+
+
+
 
 // Load the terms list to the viewport
 loadTerms();
@@ -298,7 +308,7 @@ function updateTermFromInput(indexUpdate) {
 
   // React to edited term translation "Enter" key (code=13) pressing as a mouse click
   updatedTermBoxEnglish.addEventListener("keydown", (event) => {
-    if (event.keyCode === 13) {
+    if (event.key === "Enter") {
       event.preventDefault();
       updateTermFromInput(indexUpdate);
       pencils[indexUpdate].click();
@@ -309,43 +319,52 @@ function updateTermFromInput(indexUpdate) {
 // Function that adds a new term to the end of the terms array from a user input
 function respondToNewTermClick() {
   // React to "Enter" key pressing as a mouse click
-  inputField.addEventListener('keypress',function onEvent(event) {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      newTermButton.click();
+  inputField.addEventListener('keydown', (event) => {
+//    event.preventDefault();
+    switch(event.key) {
+      case "Enter":
+        event.preventDefault();
+        newTermButton.click();
+        break; 
+      default:
+        break;
     }
   });
+
   // On a mouse click on the + for a new term button...
-  newTermButton.addEventListener('click', function () {
-    // Add term to the list
-    addTerm();
+  newTermButton.addEventListener('click', function onClickEvent(event) {
+  // Add term to the list
+    event.preventDefault();
+    // Retreive text from the input field
+    const newTerm = inputField.value.trim();
+    // If the field is not empty...
+    if (newTerm.length > 0) {
+      // Add the new term to the list of terms
+      addNewTerm(newTerm);
+    }
   });
 }
 
 // Function to add a term to the terms array
-async function addTerm() {
-  // Retreive text from the input field
-  const newTerm = inputField.value.trim();
+async function addNewTerm(newTerm) {
   // Translate text and insert into a new variable
   let newEnglishTranslation = await mymemoryTranslate(newTerm);
   // Change text to lower case
   newEnglishTranslation = newEnglishTranslation.toLowerCase();
-  // If the field is not empty... 
-  if (newTerm.length > 0) {
-    // Add term to the end of the terms list
-    terms.push({grammatic_type: "type-others", text_italian: newTerm, text_english: newEnglishTranslation, check_click: false, 
-      flag_click_it: false, flag_click_en: false, edit_mode: false, htmlCode: ''});
-    // Create HTML code for the last added term
-    terms[terms.length-1].htmlCode = createTermHTML(terms[terms.length-1]);
-    // Clear the input field
-    inputField.value = '';
-    // Update the local storage and the view port
-    saveToLocalStorage();
-    // Reload the terms list in the viewport
-    loadTerms();
-    // React to term clicks
-    respondToClickedTerms();
-  }
+  // Add term to the end of the terms list
+  terms.push({grammatic_type: termType.value, text_italian: newTerm, 
+    text_english: newEnglishTranslation, check_click: false, flag_click_it: false, 
+    flag_click_en: false, edit_mode: false, htmlCode: ``});
+  // Create HTML code for the last added term
+  terms[terms.length-1].htmlCode = createTermHTML(terms[terms.length-1]);
+  // Clear the input field
+  inputField.value = '';
+  // Update the local storage and the view port
+  saveToLocalStorage();
+  // Reload the terms list in the viewport
+  loadTerms();
+  // React to term clicks
+  respondToClickedTerms();
 }
 
 // Function to change the HTML code of the terms list to show it or an empty message
