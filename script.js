@@ -55,7 +55,7 @@ if (storage) {
 
 // # _________ FUNCTIONS _________
 
-// Function that responds to uploaded term clicks in the viewport
+// Main function that responds to uploaded term clicks in the viewport
 function respondToClickedTerms() {
 
   // Run procedure to retrieve edit icons and respond to their clicks
@@ -101,8 +101,10 @@ function respondToClickedTerms() {
     if (!term.edit_mode) {
       // present term translation for clicked flag button
       flagIconsItalian[index].addEventListener('click', function () {
-        //Toggle checkmark click status
+        //Toggle flag icon click status
         term.flag_click_it = !term.flag_click_it;
+        // Toggle show/hide class for CSS code
+        flagIconsItalian[index].classList.toggle("term-hide");
         if (term.flag_click_it) {
           // Declare and initialize Italian flag with hidden text
           flagIconsItalian[index].previousElementSibling.remove();
@@ -122,16 +124,15 @@ function respondToClickedTerms() {
         createTermHTML(term);
         // Update the local storage
         saveToLocalStorage();
-        // React to term clicks
-//        respondToClickedTerms();
       });
 
       // present term translation for clicked flag button
       flagIconsEnglish[index].addEventListener('click', function () {
         //Toggle checkmark click status
         term.flag_click_en = !term.flag_click_en;
+        // Toggle show/hide class for CSS code
+        flagIconsEnglish[index].classList.toggle("term-hide");
         if (term.flag_click_en) {
-          console.log(flagIconsEnglish[index]);
           // Declare and initialize Italian flag with hidden text
           flagIconsEnglish[index].nextElementSibling.remove();
         }
@@ -156,6 +157,7 @@ function respondToClickedTerms() {
   });
 }
 
+// Run procedure to retrieve edit icons and respond to their clicks
 function respondToEdit() {
   // Retrieve clickable edit icons from the page's HTML code
   pencils = document.querySelectorAll('.term-edit');
@@ -257,11 +259,6 @@ function respondToEdit() {
     });
 
   }
-/*  
-  // Update the local storage
-  saveToLocalStorage();
-  // Reload the terms list in the viewport
-  loadTerms();*/
 }
 
 // Function to read edited term input
@@ -305,14 +302,6 @@ function updateTermFromInput(indexUpdate) {
   });
 }
 
-async function mymemoryTranslate(text) {
-  const url = `https://api.mymemory.translated.net/get?q=${text}&langpair=it|en`;
-  const response = await fetch(url);
-  const jsonData = await response.json();
-  const result = jsonData.responseData.translatedText;
-  return result;
-}
-
 // Function that adds a new term to the end of the terms array from a user input
 function respondToNewTermClick() {
   // React to "Enter" key pressing as a mouse click
@@ -333,7 +322,9 @@ function respondToNewTermClick() {
 async function addTerm() {
   // Retreive text from the input field
   const newTerm = inputField.value.trim();
+  // Translate text and insert into a new variable
   let newEnglishTranslation = await mymemoryTranslate(newTerm);
+  // Change text to lower case
   newEnglishTranslation = newEnglishTranslation.toLowerCase();
   // If the field is not empty... 
   if (newTerm.length > 0) {
@@ -392,7 +383,7 @@ function createTermHTML(term) {
   let textHTMLit = `
     <p class="term-italian">
       <span class="term-text-it read-mode">${term.textItalian}</span>
-      <button class="flag-button-it term-show" data-lang="it">🇮🇹</button>
+      <button class="flag-button-it" data-lang="it">🇮🇹</button>
     </p>
   `;
   if (term.flag_click_it) {
@@ -406,7 +397,7 @@ function createTermHTML(term) {
   // Declare and initialize English flag with hidden text
   let textHTMLen = `
     <p class="term-english">
-      <button class="flag-button-en term-show" data-lang="en">🇬🇧</button>
+      <button class="flag-button-en" data-lang="en">🇬🇧</button>
       <span class="term-text-en read-mode">${term.textEnglish}</span>
     </p>
   `;
@@ -473,6 +464,15 @@ function createTermHTML(term) {
   `;
   term.htmlCode = fullHTML;
   return fullHTML;
+}
+
+// Function for translation of text from Italian to English
+async function mymemoryTranslate(text) {
+  const url = `https://api.mymemory.translated.net/get?q=${text}&langpair=it|en`;
+  const response = await fetch(url);
+  const jsonData = await response.json();
+  const result = jsonData.responseData.translatedText;
+  return result;
 }
 
 // Function to update the local storage
