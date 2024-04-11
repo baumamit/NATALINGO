@@ -121,6 +121,10 @@ h1 {
 	width: 100%;
 	text-align: right;
 }
+.term-english>.term-hide {
+	width: 100%;
+	text-align: left;
+}
 
 .term-check:hover, .term-delete:hover, .term-edit:hover, .term-arrow-up:hover, 
 .term-arrow-down:hover, .term-text-it-edit:hover, .term-text-en-edit:hover,
