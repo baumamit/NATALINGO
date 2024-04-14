@@ -588,7 +588,7 @@ function saveToLocalStorage() {
 
 // Function to load the terms array stored as a string from each user's file in the local server
 function loadFromUserFile(username) {
-  const pathName = `${username}.txt`;
+  const pathName = `./${username}.txt`;
   //let file = fs.createWriteStream(pathName);
 
   fs.readFile(pathName, function(err, data) {
@@ -622,7 +622,7 @@ function loadFromUserFile(username) {
 
 // Function to save the terms array stored as a string to each user's file in the local server
 function saveToUserFile(username) {
-  const pathName = `${username}.txt`;
+  const pathName = `./${username}.txt`;
   let file = fs.createWriteStream(pathName);
   // the finish event is emitted when all data has been flushed from the stream
   file.on('finish', () => {
