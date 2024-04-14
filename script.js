@@ -5,15 +5,16 @@ MongoDB.mongoDBinitialize();*/
 // # _________ INITIALIZE ON PAGE RESTART _________
 
 // Create a key for the local storage
-const STORAGE_KEY = '__natalingo.12__';
-//////////////const STORAGE_TEST = '__test.01__';
+const STORAGE_KEY = '__natalingo.14__';
 
 // Import terms list elemetns from page
 const emptyListMessage = document.querySelector('.empty-list-message');
 const termsList = document.querySelector('.terms-list');
+
 // Import 'new term' panel elemetns from page
 const newTermForm = document.forms['add-new-term'];
 const termType = newTermForm['menu-terms'];
+
 const inputField = document.querySelector('input');
 inputField.value = '';
 const newTermButton = document.querySelector('.new-term-button');
@@ -24,9 +25,9 @@ let items = document.createElement(null);
 let pencils = document.createElement(null);
 // Define empty node list for clickable trash bins from the page's HTML code
 let trashBins = document.createElement(null);
-// Define empty node list for clickable flags from the page's HTML code
 // Define empty node list for clickable checkmarks from the page's HTML code
 let checks = document.createElement(null);
+// Define empty node list for clickable flags from the page's HTML code
 let flagIconsItalian = document.createElement(null);
 let flagIconsEnglish = document.createElement(null);
 
@@ -38,8 +39,6 @@ let terms = [];
 
 // # _________ DYNAMIC PROCEDURES _________
 
-// Load the terms list to the viewport
-//////////////////loadTerms();
 // Message to show when there are no terms in the list
 emptyListMessage.innerText = 'La tua lista è vuota';
 
@@ -72,31 +71,19 @@ if (storage) {
   }
 }
 
-/*
-//console.log(grammaticType.valueOf);
-termType.addEventListener('change', function () {
-  // Load the terms list to the viewport
-  console.log(`Run loadTerms for termType.value = ${termType.value}`);
-  // Load the terms list to the viewport
-  loadTerms();
-  // Check for new user input
-  respondToClickedTerms();
-});
-*/
-/*
-const xxx=['a','b','c','d','e'];
-xxx.forEach( function(x,ind) {
-  switch (x) {
-    case 'a':
-//      console.log(xxx[ind]);
-      break;
-      
-    default:
-      break;
-  }
-});*/
+respondToCategoryChange();
+
 
 // # _________ FUNCTIONS _________
+
+function respondToCategoryChange() {
+  termType.addEventListener('change', function () {
+    // Load the terms list to the viewport
+    loadTerms();
+    // Check for new user input
+    respondToClickedTerms();
+  });
+}
 
 // Main function that responds to uploaded term clicks in the viewport
 function respondToClickedTerms() {
@@ -114,7 +101,7 @@ function respondToClickedTerms() {
   // Declaration of index to follow the vieport position
   let viewportIndex = 0;
   terms.forEach(function(term, index) {
-    if (terms[index].grammatic_type == termType.value || termType.value == 'type-all') {
+    if (terms[index].grammatic_type == termType.value || termType.value == 'termini') {
 
       // Delete term for clicked trash bin icon
       trashBins[viewportIndex].addEventListener('click', function () {
@@ -394,8 +381,7 @@ function respondToNewTermClick() {
 
   // On a mouse click on the + for a new term button...
   newTermButton.addEventListener('click', (event) => {
-    console.log(event);
-  // Add term to the list
+    // Add term to the list
     event.preventDefault();
     // Define position of the new term as last in the vieport 
     let newViewportIndex = 0;
@@ -420,8 +406,14 @@ async function addNewTerm(newTerm, newViewportIndex) {
   let newEnglishTranslation = await mymemoryTranslate(newTerm);
   // Change text to lower case
   newEnglishTranslation = newEnglishTranslation.toLowerCase();
+  // Retrieve the chosen grammatic type of the new term from the dropdown menu
+  let grammaticType = termType.value;
+  // Reclassify unclassified as "others" ("altri")
+  if (grammaticType == 'termini') {
+    grammaticType = 'altri';
+  }
   // Add term to the end of the terms list
-  terms.push({grammatic_type: termType.value, text_italian: newTerm, 
+  terms.push({grammatic_type: grammaticType, text_italian: newTerm, 
     text_english: newEnglishTranslation, htmlCode: ``, check_click: false, flag_click_it: false, 
     flag_click_en: false, edit_mode: false});
   // Create HTML code for the last added term
@@ -446,7 +438,7 @@ function loadTerms() {
     let viewportPositionIndex = 0;
     // Create an HTML template for each existing term
     terms.forEach(function(term) {
-      if (term.grammatic_type == termType.value || termType.value == 'type-all') {
+      if (term.grammatic_type == termType.value || termType.value == 'termini') {
         // Remove "empty-list-message" class to hide the block style
         emptyListMessage.classList.remove("empty-list-message");
         createTermHTML(term,viewportPositionIndex);
@@ -455,6 +447,13 @@ function loadTerms() {
         viewportPositionIndex++;
       }
     });
+    items = document.querySelectorAll('.list-item');
+    if (items.length === 0) {
+      // Add "empty-list-message" class to hide the block style
+      emptyListMessage.classList.add("empty-list-message");
+      // Message to show when there are no terms in the list
+      emptyListMessage.innerText = `Non ci sono ${termType.value} salvati`;
+    }
   }
   // Otherwise show an "empty list" message
   else {
@@ -464,7 +463,6 @@ function loadTerms() {
     emptyListMessage.innerText = 'La tua lista è vuota';
   }
   // Define empty node list for list items from the current viewport HTML code
-  items = document.querySelectorAll('.list-item');
 }
 
 // Function to create an HTML template for a givven term
