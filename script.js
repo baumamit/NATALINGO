@@ -25,10 +25,10 @@ let pencils = document.createElement(null);
 // Define empty node list for clickable trash bins from the page's HTML code
 let trashBins = document.createElement(null);
 // Define empty node list for clickable flags from the page's HTML code
-let flagIconsItalian = document.createElement(null);
-let flagIconsEnglish = document.createElement(null);
 // Define empty node list for clickable checkmarks from the page's HTML code
 let checks = document.createElement(null);
+let flagIconsItalian = document.createElement(null);
+let flagIconsEnglish = document.createElement(null);
 
 // Define empty node list for term and translation values
 let updatedTermBoxItalian = document.createElement(null);
@@ -63,24 +63,6 @@ if (storage) {
     saveToLocalStorage();
     // Load the terms list to the viewport
     loadTerms();
-/*
-    // Remove "empty-list-message" class to hide the block style
-    emptyListMessage.classList.remove("empty-list-message");
-
-    // Declaration of index to follow the vieport position
-    let viewportPositionIndex = 0;
-    // Create an HTML template for each existing term
-    terms.forEach(function(term) {
-      if (term.grammatic_type == termType.value || termType.value == 'type-all') {
-        createTermHTML(term,viewportPositionIndex);
-        // Insert term into the page
-        termsList.innerHTML += `${term.htmlCode}`;
-        viewportPositionIndex++;
-      }
-    });
-    // Define empty node list for list items from the current viewport HTML code
-    items = document.querySelectorAll('.list-item');
-*/    
 
     // If there are list items shown in the viewport..
     if (items.length > 0) {
@@ -118,7 +100,6 @@ xxx.forEach( function(x,ind) {
 
 // Main function that responds to uploaded term clicks in the viewport
 function respondToClickedTerms() {
-  console.log('entered respondToClickedTerms');
   // Run procedure to retrieve edit icons and respond to their clicks
   respondToEdit();
 
@@ -242,8 +223,6 @@ function respondToEdit() {
   pencils.forEach(function(pencil, pencilIndex) {
     pencil.addEventListener('click', function editTerm() {
     // Function to edit a specific term in the viewport when pencil is clicked
-      console.log('editTerm() pencilIndex =');
-      console.log(pencilIndex);
       const termIndex = Number(items[pencilIndex].id);
       // Edit mode is still turned on - after 2nd click on the edit button...
       if (terms[termIndex].edit_mode === true) {
@@ -261,10 +240,6 @@ function respondToEdit() {
           terms[editIndex].edit_mode = false;
         }
       }
-      console.log('termIndex =');
-      console.log(termIndex);
-      console.log('terms[termIndex].edit_mode after =');
-      console.log(terms[termIndex].edit_mode);
       // Update the local storage
       saveToLocalStorage();
       if (terms[termIndex].edit_mode === true) {
@@ -316,7 +291,7 @@ function respondToEdit() {
               // Extract the terms list position of the term ***bellow*** the clicked term item
               const termIndexBellow = Number(items[pencilIndex].nextElementSibling.id);
               // Replace and save edited term with user input
-              updateTermFromInput(termIndexBellow);
+              updateTermFromInput(termIndexAbove);
               // Save the clicked term item
               const tempTermAbove = terms[termIndexAbove].valueOf();
               // Save the term above the clicked term item
@@ -365,6 +340,9 @@ function updateTermFromInput(termIndextoUpdate) {
   updatedTermBoxItalian = document.querySelector('.term-text-it-edit');
   updatedTermBoxEnglish = document.querySelector('.term-text-en-edit');
 
+  // Refer to the terms list position of the clicked term item
+  const pencil = updatedTermBoxItalian.parentElement.parentElement.previousElementSibling.previousElementSibling;
+
   // React to edited term "Enter" key (code=13) pressing as a mouse click
   const updatedTermTextItalian = updatedTermBoxItalian.value.trim();
   if (updatedTermTextItalian.length > 0) {
@@ -385,11 +363,7 @@ function updateTermFromInput(termIndextoUpdate) {
     if (event.key === "Enter") {
       event.preventDefault();
       updateTermFromInput(termIndextoUpdate);
-
-
-
-
-      pencils[termIndextoUpdate].click();
+      pencil.click();
     }
   });
 
@@ -398,12 +372,7 @@ function updateTermFromInput(termIndextoUpdate) {
     if (event.key === "Enter") {
       event.preventDefault();
       updateTermFromInput(termIndextoUpdate);
-
-
-
-
-
-      pencils[indexUpdate].click();
+      pencil.click();
     }
   });
 }
@@ -443,7 +412,7 @@ function respondToNewTermClick() {
   });
 }
 
-// Function to add a term to the terms array
+// Asynchronous function to add a term to the terms array
 async function addNewTerm(newTerm, newViewportIndex) {
   // Clear the input field
   inputField.value = '';
@@ -455,7 +424,7 @@ async function addNewTerm(newTerm, newViewportIndex) {
   terms.push({grammatic_type: termType.value, text_italian: newTerm, 
     text_english: newEnglishTranslation, htmlCode: ``, check_click: false, flag_click_it: false, 
     flag_click_en: false, edit_mode: false});
-    // Create HTML code for the last added term
+  // Create HTML code for the last added term
   terms[terms.length-1].htmlCode = createTermHTML(terms[terms.length-1], newViewportIndex);
   // Update the local storage and the view port
   saveToLocalStorage();
