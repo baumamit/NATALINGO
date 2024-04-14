@@ -4,6 +4,13 @@ MongoDB.mongoDBinitialize();*/
 
 // # _________ INITIALIZE ON PAGE RESTART _________
 
+// 
+// Include fs module for storage in the local server
+// Explaination: https://www.w3schools.com/nodejs/nodejs_filesystem.asp
+// Explaination: https://www.geeksforgeeks.org/node-js-fs-createwritestream-method/
+let fs = require('fs');
+const user = 'natalie';
+
 // Create a key for the local storage
 const STORAGE_KEY = '__natalingo.14__';
 
@@ -71,6 +78,8 @@ if (storage) {
   }
 }
 
+loadFromUserFile(user);
+saveToUserFile(user);
 respondToCategoryChange();
 
 
@@ -575,4 +584,59 @@ async function mymemoryTranslate(text) {
 function saveToLocalStorage() {
   // Update the local storage
   localStorage.setItem(STORAGE_KEY, JSON.stringify(terms));
+}
+
+// Function to load the terms array stored as a string from each user's file in the local server
+function loadFromUserFile(username) {
+  const pathName = `${username}.txt`;
+  //let file = fs.createWriteStream(pathName);
+
+  fs.readFile(pathName, function(err, data) {
+    if(err) throw err;
+    let termsOfUser = data.toString().split("\n");
+    console.log(termsOfUser);
+  });
+/*
+  //create an empty file named mynewfile2.txt:
+  fs.open(username,, function (err, file) {
+    if (err) throw err;
+    console.log('Saved!');
+  });
+
+  // the finish event is emitted when all data has been flushed from the stream
+  file.on('finish', () => {
+    console.log(`wrote all the array data to file ${pathName}`);
+  });
+  // handle the errors on the write process
+  file.on('error', (err) => {
+    console.error(`There was an error writing the file ${pathName} => ${err}`)
+  });
+  // write each value of the array on the file breaking line
+  terms.forEach(term => file.write(`${term}\n`));
+*/
+  /*terms.forEach(function(term) {
+    file.write(term.join(', ') + '\n');
+  });*/
+//  file.end();
+}
+
+// Function to save the terms array stored as a string to each user's file in the local server
+function saveToUserFile(username) {
+  const pathName = `${username}.txt`;
+  let file = fs.createWriteStream(pathName);
+  // the finish event is emitted when all data has been flushed from the stream
+  file.on('finish', () => {
+    console.log(`wrote all the array data to file ${pathName}`);
+  });
+  // handle the errors on the write process
+  file.on('error', (err) => {
+    console.error(`There was an error writing the file ${pathName} => ${err}`)
+  });
+  // write each value of the array on the file breaking line
+  terms.forEach(term => file.write(`${term}\n`));
+
+  /*terms.forEach(function(term) {
+    file.write(term.join(', ') + '\n');
+  });*/
+  file.end();
 }
