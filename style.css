@@ -96,7 +96,7 @@ h1 {
 
 /* Terms list panel */
 
-.term-item {
+.list-item {
 	display:flex;
 	align-items: center;
 	list-style-type: none;
