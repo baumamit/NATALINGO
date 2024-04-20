@@ -1,6 +1,6 @@
 // # _________ INITIALIZE MONGODB STORAGE SERVER ON PAGE RESTART _________
-/*import *as MongoDB from "./mongoDB.js";
-MongoDB.mongoDBinitialize();*/
+//import *as MongoDB from "./mongoDB.js";
+//MongoDB.mongoDBinitialize();
 
 // # _________ INITIALIZE ON PAGE RESTART _________
 
@@ -8,9 +8,14 @@ MongoDB.mongoDBinitialize();*/
 // Include fs module for storage in the local server
 // Explaination: https://www.w3schools.com/nodejs/nodejs_filesystem.asp
 // Explaination: https://www.geeksforgeeks.org/node-js-fs-createwritestream-method/
-let fs = require('fs');
-const user = 'natalie';
 
+/*
+const express = require('express');
+const script = express();
+//script.listen(5500);
+var fs = require('fs');
+const user = 'natalie';
+*/
 // Create a key for the local storage
 const STORAGE_KEY = '__natalingo.14__';
 
@@ -78,10 +83,10 @@ if (storage) {
   }
 }
 
-loadFromUserFile(user);
+/*
 saveToUserFile(user);
+loadFromUserFile(user);*/
 respondToCategoryChange();
-
 
 // # _________ FUNCTIONS _________
 
@@ -585,10 +590,10 @@ function saveToLocalStorage() {
   // Update the local storage
   localStorage.setItem(STORAGE_KEY, JSON.stringify(terms));
 }
-
+/*
 // Function to load the terms array stored as a string from each user's file in the local server
 function loadFromUserFile(username) {
-  const pathName = `./${username}.txt`;
+  const pathName = `${username}.txt`;
   //let file = fs.createWriteStream(pathName);
 
   fs.readFile(pathName, function(err, data) {
@@ -616,13 +621,14 @@ function loadFromUserFile(username) {
 */
   /*terms.forEach(function(term) {
     file.write(term.join(', ') + '\n');
-  });*/
+  });
 //  file.end();
-}
+}*/
 
+/*
 // Function to save the terms array stored as a string to each user's file in the local server
 function saveToUserFile(username) {
-  const pathName = `./${username}.txt`;
+  const pathName = `${username}.txt`;
   let file = fs.createWriteStream(pathName);
   // the finish event is emitted when all data has been flushed from the stream
   file.on('finish', () => {
@@ -635,8 +641,8 @@ function saveToUserFile(username) {
   // write each value of the array on the file breaking line
   terms.forEach(term => file.write(`${term}\n`));
 
-  /*terms.forEach(function(term) {
-    file.write(term.join(', ') + '\n');
-  });*/
+  //terms.forEach(function(term) {
+  //  file.write(term.join(', ') + '\n');
+  //});
   file.end();
-}
+}*/
