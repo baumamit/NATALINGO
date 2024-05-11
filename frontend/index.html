@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- According to https://stackoverflow.com/questions/58313803/require-is-not-defined-vs-code
+  the following libraries are necessary for "require" calls in JavaScript-->
+  <script type="text/javascript" src="https://unpkg.com/jquery@3.3.1/dist/jquery.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/web3@0.20.5/dist/web3.min.js"></script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+  <!-- Browser icon -->
+  <link rel="icon" href="images/delikaktus_logo.png">
+
+  <!-- Font  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+
+  <!-- Style -->
+  <link rel="stylesheet" href="style.css">
+
+  <title>NATALINGO</title>
+</head>
+
+<body>
+  <!-- ------------ INVISIBLE CHECKBOXES ------------ -->
+  <!-- Invisible responsive checkbox to toggle dropdown content visibility -->
+  <input id="user-panel-toggle-checkbox" class="user-panel-toggle-checkbox undisplayed" type="checkbox" checked >
+  <!-- Invisible responsive checkbox to toggle dropdown content visibility -->
+  <input id="user-login-status-checkbox" class="user-login-status-checkbox undisplayed" type="checkbox">
+  <input id="show-terms-checkbox" class="show-terms-checkbox undisplayed" type="checkbox">
+  <input id="user-edit-checkbox" class="user-edit-checkbox undisplayed" type="checkbox">
+
+  <div class="container">
+
+    <!-- Intestazione -->
+    <header class="top">
+
+      <img src="images/delikaktus_logo.png" alt="Logo" width="30" >
+      <h1>NATALINGO</h1>
+
+      <div class="user-panel">
+
+        <!-- Respond to user-dropdown-button by toggling the user-panel-toggle-checkbox -->
+        <label for="user-panel-toggle-checkbox" class="user-dropdown-button" ><img src= "./images/login_user_icon.png" width="30" ></label>
+
+        <div class="user-panel-content panel">
+
+          <form id="user-login-form" class="user-login-form">
+            <table class="credentials-input-table">
+              <tr>
+                <td>E-mail:</td>
+                <td><input class="email-input" type="text" placeholder="" ></td>
+              </tr>
+              <tr>
+                <td>Password:</td>
+                <td><input class="password-input" type="text" placeholder="" ></td>
+              </tr>
+            </table>
+
+            <div class="login-buttons">
+              <!-- Respond to click by toggling checkbox -->
+              <label class="user-login-button user-login-panel-button" ><img class="user-icon" src="./images/logged-user.svg" >Accedi</label>
+              <!-- <button class="user-login-button">
+                <img class="user-icon" src="./images/logged-user.svg" >Accedi
+              </button> -->
+              <label class="user-register-button user-login-panel-button" ><img class="user-icon" src="./images/register_user.svg" >Registrati</label>
+              <!-- <button class="user-register-button">
+                <img class="user-icon" src="./images/register_user.svg" >Registrati
+              </button> -->
+            </div>
+          </form> <!-- user-login-form -->
+
+          <form id="user-logged-form" class="user-logged-form" >
+            <table class="logged-user-table">
+              <tr>
+                <td>Utente:</td>
+                <td><label class="logged-user-id" >ID</label></td>
+              </tr>
+              <tr>
+                <td>E-mail:</td>
+                <td><label class="logged-user-email" >email</label></td>
+              </tr>
+            </table>
+
+            <div class="user-actions">
+ 
+              <!-- Respond to click by toggling checkbox -->
+              <label for="user-edit-checkbox" class="user-edit-button user-action-button" ><img class="user-icon" src= "./images/edit-user.svg" >Modifica</label>
+              <div>
+              </div>
+              <!-- Respond to click by toggling checkbox -->
+              <label for="user-login-status-checkbox" class="user-logout-button user-action-button" ><img class="user-icon" src= "./images/logout_user_icon.png" >Sconnettiti</label>
+
+              <!-- <button class="user-edit-button user-action-button">
+                <img class="user-icon" src= "./images/edit-user.svg" >Modifica
+              </button> -->
+              <!-- <button class="user-logout-button user-action-button">
+                <img class="user-icon" src= "./images/logout_user_icon.png" >Sconnettiti
+              </button> --> 
+            </div> <!-- user-actions -->
+          </form> <!-- user-logged-form -->
+
+          <div class="user-edit-panel">
+            <form id="user-edit-form" class="user-edit-form">
+              <!-- Respond to click by toggling checkbox -->
+              <label for="user-edit-checkbox" class="back-to-user-logged-panel" ><img class="arrow-back" src="./images/arrow-back.svg" alt="Indietro" ></label>
+              
+              <table class="edit-user-table">
+                <tr>
+                  <td>Utente:</td>
+                  <td><label class="logged-user-id" >ID</label></td>
+                  <td><img class="user-edit-email-icon" src="./images/pencil.png" alt="Cambia il nome dell'utente"></td>
+                </tr>
+                <tr>
+                  <td>E-mail:</td>
+                  <td><label class="logged-user-email" >email</label></td>
+                  <td><img class="user-edit-email-icon" src="./images/pencil.png" alt="Cambia la tua e-mail"></td>
+                </tr>
+                <tr>
+                  <td>Password:</td>
+                  <td><label class="logged-user-password" >***</label></td>
+                  <td><img class="user-edit-password-icon" src="./images/pencil.png" alt="Cambia la tua password"></td>
+                </tr>
+              </table>
+                  
+              <button class="user-delete-button user-action-button" form="user-delete-form">
+                <img class="user-icon" src= "./images/delete-user.svg" >Cancella<br>utente
+              </button>
+            </form> <!-- user-edit-form -->
+            
+            <form id="user-change-image-form" class="user-change-image-form">
+              <button class="change-user-image-button user-action-button">
+                <img class="user-icon" src= "./images/change_user_image.svg" >Cambia<br>foto
+              </button>
+            </form>
+
+            <form method="GET" id="user-delete-form" class="user-delete-form">
+              <label>Ridigita la tua password per eliminare l'utente
+                <input type="text" class="retype-password-to-delete-user" id="retype-password-to-delete-user"
+                  placeholder="">
+              </label>
+            </form> <!-- user-delete-form -->
+            <form method="GET" id="user-delete-confirmation-form" class="user-delete-confirmation-form">
+              <p>L'eliminazione di un utente è irreversibile.<br>
+                Sei sicuro di voler eliminare l'utente?</p>
+              <button>YES</button>
+              <button>NO</button>
+            </form> <!-- user-delete-confirmation-form -->
+
+            <form method="GET" id="user-change-username-form" class="user-change-username-form" >
+            </form> <!-- user-change-username-form -->
+
+            <form id="user-change-password-form" class="user-change-password-form">
+              <table class="confirmation-change-password">
+                <tr>
+                  <td>Password attuale:</td>
+                  <td><input class="confirmation-change-password-old" type="text" placeholder="***" ></td>
+                </tr>
+                <tr>
+                  <td>Nuova password:</td>
+                  <td><input class="confirmation-change-password-new" type="text" placeholder="" ></td>
+                </tr>
+                <tr>
+                  <td>Ridigita la nuova password:</td>
+                  <td><input class="confirmation-change-password-retype" type="text" placeholder="" ></td>
+                </tr>
+              </table>
+              <button class="user-edit-email-icon user-action-button">Conferma il cambio 
+                <img class="user-icon" src="./images/checkmark.png" alt="Conferma cambio password">
+              </button>
+            </form> <!-- user-change-password-form -->
+          </div>
+        </div> <!-- user-panel-content -->
+      </div> <!-- user-panel -->
+    
+    </header>
+
+    <main>
+
+      <div class="terms-panel panel">
+        <!-- Message to show before login -->
+        <p class="unlogged-user-message">Accedi per caricare la tua lista</p>
+        <!-- Message to show when the list is empty -->
+        <p class="empty-list-message empty">La tua lista è vuota</p>
+        <!-- List of therms -->
+        <ul class="terms-list">
+          
+        </ul>
+      </div> <!-- terms-panel -->
+
+      <!-- Adding panel -->
+      <form id="add-new-term-form" class="add-new-term-form">
+        <div class="panel add-term">
+          <select id="menu-terms" class="grammatic-type">
+            <option value="termini" selected>Termini</option>
+            <option value="nomi">Nomi</option>
+            <option value="verbi">Verbi</option>
+            <option value="aggettivi">Aggettivi</option>
+            <option value="avverbi">Avverbi</option>
+            <option value="espressioni">Espressioni</option>
+            <option value="altri">Altri</option>
+          </select>
+          <input class="add-term-input" type="text" placeholder="Nuovo termine Italiano">
+          <button class="new-term-button">
+            <img class="scaling-svg" src="images/add.svg" alt="plus icon" >
+          </button>
+        </div>
+      </form>
+
+    </main>
+  </div>
+
+  <!-- Javascript -->
+  <script type="module" src="./script.js"></script>
+
+</body>
+
+</html>
