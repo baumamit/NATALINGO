@@ -13,33 +13,31 @@
 const STORAGE_KEY_TERMS = '__natalingo.14__';
 const STORAGE_KEY_LOGIN = '__natalingo.user.01__';
 
-// Import terms list elemetns from page
-const emptyListMessage = document.querySelector('.empty-list-message');
-const unloggedUserMessage = document.querySelector('.unlogged-user-message');
-const termsList = document.querySelector('.terms-list');
+// ----- Import user panel elements from page -----
+// Import general user-panel elemetns
+const userPanelToggleCheckbox = document.querySelector('.user-panel-toggle-checkbox');
+const userLoginStatusCheckbox = document.querySelector('.user-login-status-checkbox');
 
-// Import 'user' panel elemetns from page
-// Import user-login-form elemetns from page
+// Import user-login-form elemetns
 const userLoginForm = document.forms['user-login-form'];
 const emailInput = document.querySelector('.email-input');
 const passwordInput = document.querySelector('.password-input');
 const userLoginButton = document.querySelector('.user-login-button');
 const userRegisterButton = document.querySelector('.user-register-button');
 
-// Import user-logged-form elemetns from page
+// Import user-logged-form elemetns
 const userLoggedForm = document.forms['user-logged-form'];
 const userLogoutButton = document.querySelector('.user-logout-button');
-/* const userEditButton = document.querySelector('.user-edit-button'); */
-const userPanelToggleCheckbox = document.querySelector('.user-panel-toggle-checkbox');
-const userLoginStatusCheckbox = document.querySelector('.user-login-status-checkbox');
 const showTermsCheckbox = document.querySelector('.show-terms-checkbox');
 
+// Import user-edit-panel elemetns
 
-// Import user-edit-form elemetns from page
-const userEditPanel = document.querySelector('.user-edit-panel');
-/* const backToUserLoggedButton = document.querySelector('.back-to-user-logged-button'); */
+// ----- Import terms list elemetns from page -----
+const emptyListMessage = document.querySelector('.empty-list-message');
+const unloggedUserMessage = document.querySelector('.unlogged-user-message');
+const termsList = document.querySelector('.terms-list');
 
-// Import 'new term' panel elemetns from page
+// ----- Import 'new term' panel elemetns from page -----
 const addTermPanel = document.querySelector('.add-term')
 const newTermForm = document.forms['add-new-term-form'];
 const termType = newTermForm['menu-terms'];
@@ -47,6 +45,7 @@ const newTermInput = document.querySelector('.add-term-input');
 newTermInput.value = '';
 const newTermButton = document.querySelector('.new-term-button');
 
+// ----- Global variables declaration -----
 // Define empty node list for list items from the current viewport HTML code
 let items = document.createElement(null);
 // Define empty node list for clickable edit icons from the page's HTML code
@@ -68,9 +67,6 @@ let userCredentials = {};
 let terms = [];
 
 // # _________ DYNAMIC PROCEDURES _________
-
-// Message to show when there are no terms in the list
-//emptyListMessage.innerText = 'Accedi per caricare la tua lista';
 
 // Check for user panel clicks
 respondToUserPanelClicks();
@@ -173,23 +169,6 @@ function respondToUserPanelClicks() {
     saveToLocalStorage(STORAGE_KEY_LOGIN,{});
     emptyListMessage.style.display = "none";
   });
-
-/*   // On a mouse click on the edit button...
-  userEditButton.addEventListener('click', (event) =>  {
-    // Skip default form functions
-    event.preventDefault();
-    // Switch user panel mode from login to logged
-    userEditPanel.style.display = "block";
-    userLoggedForm.style.display = "none";
-  }); */
-
-/*   // On a mouse click on the back-from-edit-panel button...
-  backToUserLoggedButton.addEventListener('click', (event) =>  {
-    // Switch user panel mode from edit to logged
-    userEditPanel.style.display = "none";
-    userLoggedForm.style.display = "block";
-  }); */
-
 }
 
 // Asynchronous function to load logged user terms
@@ -309,7 +288,8 @@ async function login_user(email, password) {
       );
       // Switch user panel mode from login to logged
       userLoginStatusCheckbox.checked = true;
-      userPanelToggleCheckbox.checked = false;
+      ////////////////////////////////////// RESTORE NEXT LINE
+      //userPanelToggleCheckbox.checked = false;
       // Save the user login credentials the local storage
       saveToLocalStorage(STORAGE_KEY_LOGIN,userCredentials);
       // Load logged user terms */
@@ -762,7 +742,7 @@ async function addNewTerm(newTerm, newViewportIndex) {
 function loadTerms() {
   // Clear list in the viewport
   termsList.innerText = '';
-  // If list items exists ...
+  // If TERMS exist...
   if (terms.length > 0) {
     // Hide empty list message in case there are terms to show
     emptyListMessage.style.display = "none";
@@ -771,8 +751,6 @@ function loadTerms() {
     // Create an HTML template for each existing term
     terms.forEach(function(term) {
       if (term.grammatic_type == termType.value || termType.value == 'termini') {
-        // Remove "empty-list-message" class to hide the block style
-        //emptyListMessage.classList.remove("empty-list-message");
         // Hide empty list message
         emptyListMessage.style.display = "none";
         createTermHTML(term,viewportPositionIndex);
@@ -782,17 +760,18 @@ function loadTerms() {
       }
     });
     items = document.querySelectorAll('.list-item');
+    // If list ITEMS of the chosen type exist...
     if (items.length === 0) {
       showTermsCheckbox.checked = false;
       // Display empty list message
       emptyListMessage.style.display = "block";
-      // Message to show when there are no terms in the list
+      // Message to show when there are no terms in the list of the chosen type
       emptyListMessage.innerText = `Non ci sono ${termType.value} salvati`;
     } else {
       showTermsCheckbox.checked = true;
     }
   }
-  // Otherwise show an "empty list" message
+  // Otherwise show a general "empty list" message
   else {
     showTermsCheckbox.checked = false;
     // Message to show when there are no terms in the list
@@ -800,7 +779,6 @@ function loadTerms() {
     // Display empty list message
     emptyListMessage.style.display = "block";
   }
-  // Define empty node list for list items from the current viewport HTML code
 }
 
 // Function to create an HTML template for a givven term

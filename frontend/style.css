@@ -239,12 +239,24 @@ by switching the user's login status 'checked' for LOGGED mode*/
 
 /* Clicks on user-edit and arrow-back 
 switch between user LOGGED and EDIT panels via undisplayed checkbox */
-/* .user-edit-checkbox:checked ~ .container .user-logged-form * {
+
+/* EDIT user button clicked */
+.user-edit-checkbox:checked ~ .container .user-logged-form :is(.user-action-button) {
 	display: none;
-} */
-/* .user-edit-checkbox:checked ~ .container .user-edit-form {
+}
+.back-to-user-logged-panel, .user-logged-table img {
+	display: none;
+}
+.user-edit-checkbox:checked ~ .container .user-logged-form :is(.back-to-user-logged-panel, .user-logged-table img) {
 	display: block;
-} */
+}
+/* USER EDIT USERNAME button clicked */
+.user-edit-username-checkbox:checked ~ .container .user-logged-form {
+	display: none;
+}
+.user-edit-username-checkbox:checked ~ .container .user-change-username-form {
+	display: block;
+}
 
 
 /* *************************************************************** */
@@ -252,12 +264,12 @@ switch between user LOGGED and EDIT panels via undisplayed checkbox */
 	display: block;
 } */
 
-.edit-user-table img {
+.user-logged-table img, .edit-user-table img {
 	width: 1.5rem;
 	padding: 0.1rem;
 }
 
-.edit-user-table img:hover, .edit-user-table img:active {
+.user-logged-table img:hover, .user-logged-table img:active, .edit-user-table img:hover, .edit-user-table img:active {
 	transform: scale(1.5);
 	transition: 0.2s;
 	cursor: pointer; 
