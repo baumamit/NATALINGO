@@ -1,0 +1,453 @@
+/*
+COLOR PALETTE
+  lightgreen: rgb(210, 239, 232); 
+  green: rgb(95, 198, 173); 
+  yellow: rgb(217, 255, 102);
+  blue: rgb(52, 75, 201);
+*/
+
+/* CSS Reset */
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+/* Selected text throughout the documents */
+/* -moz is the same code for Firefox */
+::-moz-selection, ::selection {
+	color: black;
+	background: rgb(255, 136, 136);
+}
+/* Selected input text throughout the documents */
+/* -moz is the same code for Firefox */
+input::-moz-selection, input::selection {
+	color: rgb(254, 251, 185);
+	background: rgb(160, 9, 147);
+}
+
+/* Undisplay permanently pre-defined elements */
+.undisplayed {
+	display: none;
+}
+
+/* Utilities */
+.container {
+	margin: 0 auto;
+	max-width: 540px;
+}
+
+/* Generic */
+body {
+	padding: 0rem;
+	font-family: Inter, sans-serif;
+	background-color: rgba(52, 16, 57, 0.927);
+}
+
+header {
+	display: flex;
+	align-items: center;
+	justify-content:space-around;
+	margin-bottom: 1rem;
+	background-color: rgb(160, 9, 147);
+}
+
+h1 {
+	color: rgb(254, 251, 185);
+	font-size: 1.5rem;
+	/* text-align: right; */
+}
+
+/* Panel */
+.panel {
+	padding: 0.3rem;
+	border-radius: 1rem;
+	background-color: rgb(254, 211, 225);
+}
+
+/* ------------ Dropdown User Menu ------------ */
+.user-panel {
+	position: relative;
+	display: inline-block;
+/* 	align-items:flex-end; */
+}
+
+/* Style user panel dropdown button (user image) */
+.user-dropdown-button { 
+	display: inline-block;
+	cursor: pointer;
+	padding: 0.3rem;
+	border-radius: 1.5rem;
+	border-style:groove;
+	background-color: rgb(254, 211, 225);
+	color: rgba(52, 16, 57, 0.927);
+	cursor: pointer; 
+}
+.user-dropdown-button:hover, .user-dropdown-button:active {
+	color: black;
+	background-color: rgb(255, 183, 0);
+}
+  
+.user-panel-content {
+	/* display: block; */
+	position: absolute;
+	right: 0;
+	flex-grow: 1;
+	z-index: 1;
+	min-width: 16rem;
+	font-size: 1.1rem;
+	font-weight: 600;
+	color: rgb(160, 9, 147);
+}
+
+.user-panel-content table {
+	font-size: 1.2rem;
+}
+.user-panel-content td {
+	padding: 0.1rem;
+}
+.user-panel-content input {
+	max-width: 12rem;
+	padding: 0.3rem;
+	border-radius: 0.8rem;
+	border: none;
+	font-size: inherit;
+	font-weight: inherit;
+	color: inherit;
+	background-color: rgb(254, 251, 185);
+}
+
+.user-panel-content input:hover, .user-panel-content input:focus {
+	background-color: rgb(255, 183, 0);
+	color: black;
+	font-weight: inherit;
+	transition: 0.2s;
+}
+
+/* ----------------------------------------- */
+
+.user-panel-content button, .arrow-back, .user-action-button, .user-login-panel-button {
+	cursor: pointer;
+	color: rgb(254, 251, 185);
+	background-color: rgb(160, 9, 147);
+	border: none;
+}
+
+.user-panel-content button:hover, .arrow-back:hover, .user-action-button:hover, .user-login-panel-button:hover {
+	color: rgb(160, 9, 147);
+	background-color: rgb(254, 251, 185);
+	transition: 0.2s;
+}
+.user-panel-content button:active, .arrow-back:active, .user-action-button:active, .user-login-panel-button:active {
+	color: black;
+	background-color: rgb(255, 183, 0);
+	transition: 0.2s;
+}
+
+.login-buttons {
+	display:flex;
+	justify-content: space-around;
+	padding: 0.5rem;
+}
+
+.user-login-panel-button {
+	font-size: 1rem;
+	font-weight: inherit;
+	width: 6rem;
+	height: 6rem;
+	border-radius: 1rem;
+	text-align: center;
+	align-content:flex-start;
+	line-height: 0;
+}
+
+.user-login-panel-button img {
+	width: 5rem;
+}
+
+.user-action-button {
+/* 	display: inline-flex; */
+	font-size: inherit;
+	font-weight: inherit;
+	text-align: left;
+	width: 12rem;
+	height: 3rem;
+	border-radius: 0.8rem;
+	margin: 0.2rem 0;
+	display: flex;
+}
+
+.user-action-button img {
+	width: 4rem;
+	padding: 0 0.5rem;
+}
+
+.arrow-back {
+	float: right;
+	width: 3rem;
+	border-radius: 10rem;
+}
+
+/* Display the sibling element after ~ of the class 'user-panel-content' when user-panel-toggle-checkbox is checked. See general sibling selector (~) */
+/* https://www.w3schools.com/css/css_combinators.asp */
+.user-panel-toggle-checkbox:checked ~ .container .user-panel-content {
+	display: block;
+}
+.user-panel-toggle-checkbox:not(:checked) ~ .container .user-panel-content {
+	display: none;
+}
+
+/* Initially hide all internal user panels except for the LOGIN panel*/
+.user-panel-content > *:not(.user-login-form) {
+	display: none;
+}
+
+/* Initially display user LOGIN panel */
+.user-login-form {
+	display: block;
+}
+
+/* Respond to LOGIN (via javascript) or LOGOUT button click 
+by switching the user's login status 'checked' for LOGGED mode*/
+
+/* LOGGED: Hide LOGIN user panel and 'unlogged user' message */
+.user-login-status-checkbox:checked ~ .container :is(.user-login-form, .unlogged-user-message) {
+	display: none;
+}
+/* LOGGED: Show LOGGED user panel */
+.user-login-status-checkbox:checked ~ .container :is(.user-logged-form) {
+	display: block;
+}
+/* LOGGED: Show 'ADD TERM' panel */
+.user-login-status-checkbox:checked ~ .container :is(.add-term) {
+	display: flex;
+}
+/* LOGGED and there are terms to show in the TERMS list (dependent status) */
+.user-login-status-checkbox:checked ~ .show-terms-checkbox:checked ~ .container .terms-list {
+	display: block;
+}
+
+/* LOGOUT: Hide TERMS list and empty list message*/
+.user-login-status-checkbox:not(:checked) ~ .container :is(.terms-list, .empty-list-message) {
+	display: none;
+}
+
+/* Clicks on user-edit and arrow-back 
+switch between user LOGGED and EDIT panels via undisplayed checkbox */
+
+/* EDIT user button clicked */
+.user-edit-checkbox:checked ~ .container .user-logged-form :is(.user-action-button) {
+	display: none;
+}
+.back-to-user-logged-panel, .user-logged-table img {
+	display: none;
+}
+.user-edit-checkbox:checked ~ .container .user-logged-form :is(.back-to-user-logged-panel, .user-logged-table img) {
+	display: block;
+}
+/* USER EDIT USERNAME button clicked */
+.user-edit-username-checkbox:checked ~ .container .user-logged-form {
+	display: none;
+}
+.user-edit-username-checkbox:checked ~ .container .user-change-username-form {
+	display: block;
+}
+
+
+/* *************************************************************** */
+/* .user-delete-confirmation, .retype-password-to-delete-user {
+	display: block;
+} */
+
+.user-logged-table img, .edit-user-table img {
+	width: 1.5rem;
+	padding: 0.1rem;
+}
+
+.user-logged-table img:hover, .user-logged-table img:active, .edit-user-table img:hover, .edit-user-table img:active {
+	transform: scale(1.5);
+	transition: 0.2s;
+	cursor: pointer; 
+}
+
+/* .retype-password-to-delete-user {
+	max-width: 12rem;
+	padding: 0.3rem;
+	border-radius: 0.8rem;
+	border: none;
+	font-size: inherit;
+	font-weight: inherit;
+	color: inherit;
+	background-color: rgb(254, 251, 185);
+} */
+
+/* .retype-password-to-delete-user:hover, .retype-password-to-delete-user:focus {
+	background-color: rgb(255, 183, 0);
+	color: black;
+	transition: 0.2s;
+} */
+
+/* ------------ "Add Term" module elements ------------ */
+
+.add-term {
+	font-size: 1.1rem;
+	display: none;
+	gap: 0.5rem;
+	margin-top: 2rem;
+	position: relative;
+	/* override this inline for aspect ratio other than square */
+}
+
+.grammatic-type {
+	font-size: inherit;
+	font-weight: 600;
+	padding: 0.3rem;
+	border-radius: 0.8rem;
+	border: none;
+	background-color: rgb(254, 251, 185);
+}
+
+.add-term-input {
+	font-size: inherit;
+	padding: 0.3rem;
+	border-radius: 0.8rem;
+	border: none;
+	flex-grow: 1;
+	width: 100%;
+	background-color: rgb(254, 251, 185);
+}
+
+.add-term-input:hover, .add-term-input:focus {
+	background-color: rgb(255, 183, 0);
+	color: black;
+	font-size: inherit;
+	font-weight: inherit;
+}
+
+.new-term-button {
+	cursor: pointer;
+	padding: 0.5rem;
+	/* border: none; */
+	border-radius: 1rem;
+	background-color: rgb(160, 9, 147);
+	border-style:groove;
+}
+
+.unlogged-user-message, .empty-list-message {
+	text-align: center;
+	font-weight: bold;
+	font-size: 2rem;
+	background-color: rgb(254, 251, 185);
+	min-block-size: 10rem;
+	padding: 4rem 2rem;
+	line-height: 3.5rem;
+	border-radius: 1rem;
+}
+
+/* ------------ Terms list panel ------------ */
+
+.list-item {
+	display:flex;
+	align-items: center;
+	list-style-type: none;
+	gap: 0.05rem;
+	margin: 0.3rem 0;
+	border: none;
+}
+
+.term-italian, .term-english {
+	display: flex;
+	width: 100%;
+	margin: 0 0.2rem;
+}
+
+.term-text-it,.term-text-en {
+	background-color: rgb(254, 251, 185);
+	border-radius: 0.5rem;
+	line-height: 1.2rem;
+	font-size: 1.2rem;
+	width: 100%;
+	padding: 0.5rem 0.2rem;
+}
+.flag-button-it, .flag-button-en {
+	font-size: 1.5rem;
+	background-color:transparent;
+	border:none;
+	margin: 0 0.1rem;
+}
+
+.term-italian>.term-hide {
+	width: 100%;
+	text-align: right;
+}
+.term-english>.term-hide {
+	width: 100%;
+	text-align: left;
+}
+
+.term-check:hover, .term-delete:hover, .term-edit:hover, .term-arrow-up:hover, 
+.term-arrow-down:hover, .term-text-it-edit:hover, .term-text-en-edit:hover,
+.flag-button-it:hover, .flag-button-en:hover {
+	background-color: rgb(255, 183, 0);
+	cursor: pointer;
+}
+
+.term-edit {
+	border-radius: 0.5rem;
+	background-color: rgb(160, 9, 147);
+}
+.pencil-icon {
+	padding: 0.2rem 0 0 0.2rem;
+	height: 2rem;
+}
+
+
+.term-check {
+	padding: 0 0.3rem;
+	border-radius: 0.5rem;
+	background-color: rgba(55, 255, 0, 0.591);
+}
+.check-icon {
+	padding: 0.2rem 0 0 0;
+	height: 2rem;
+}
+
+.term-delete {
+	padding: 0 0.2rem;
+	border-radius: 0.5rem;
+	background-color: rgb(255, 136, 136);
+}
+.trash-bin-icon {
+	padding: 0.2rem 0 0 0;
+	height: 2rem;
+}
+
+/* Term edit mode changes */
+
+.edit-mode {
+	background-color: rgb(254, 251, 185);
+}
+
+.label-icon {
+	height: 3rem;
+}
+
+.arrow-up-icon {
+	margin: 0.25rem 0.2rem 0 0.1rem;
+	padding: 0 0.2rem;
+	height: 1.25rem;
+}
+.arrow-down-icon {
+	margin: 0 0.2rem 0 0.1rem;
+	padding: 0 0.2rem;
+	height: 1.25rem;
+}
+
+.term-text-it-edit, .term-text-en-edit {
+	padding: 0 0.2rem;
+	width: 100%;
+	border: solid;
+	font-size: 2.4rem;
+	color:rgb(160, 9, 147);
+}
