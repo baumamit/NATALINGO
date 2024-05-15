@@ -6,36 +6,69 @@
 // Explaination: https://www.geeksforgeeks.org/node-js-fs-createwritestream-method/
 
 // Create a key for the local storage
-const STORAGE_KEY_TERMS = '__natalingo.14__';
-const STORAGE_KEY_LOGIN = '__natalingo.user.01__';
+const STORAGE_KEY_TERMS = '__natalingo.15__';
+const STORAGE_KEY_LOGIN = '__natalingo.user.02__';
 
 // ----- Import user panel elements from page -----
 // Import general user-panel elemetns
 const userPanel = document.querySelector('.user-panel');
 const userPanelToggleCheckbox = document.querySelector('.user-panel-toggle-checkbox');
-const userLoginStatusCheckbox = document.querySelector('.user-login-status-checkbox');
+const userLoginStatusCheckbox = document.querySelector('.user-log-status-checkbox');
+//const userDropdownButton = document.querySelector('.user-dropdown-button');
 
+// Import user-register-form elemetns
+/* const registerUser = {
+  first_name: document.querySelector('.user-register-name-first-input'),
+  surname: document.querySelector('.user-register-name-surname-input'),
+  email: document.querySelector('.user-register-email-input'),
+  password: document.querySelector('.user-register-password-input')
+}; */
 // Import user-login-form elemetns
-const userLoginForm = document.forms['user-login-form'];
+//const userLoginForm = document.forms['user-login-form'];
+
 const emailInput = document.querySelector('.email-input');
 const passwordInput = document.querySelector('.password-input');
 const userLoginButton = document.querySelector('.user-login-button');
 const userRegisterButton = document.querySelector('.user-register-button');
 
 // Import user-logged-form elemetns
-const userLoggedForm = document.forms['user-logged-form'];
+//const userLoggedForm = document.forms['user-logged-form'];
+const loggedUser = {
+  first_name: document.querySelector('.logged-user-name-first'),
+  surname: document.querySelector('.logged-user-name-surname'),
+  email: document.querySelector('.logged-user-email'),
+  password: document.querySelector('.logged-user-password')
+};
 const userLogoutButton = document.querySelector('.user-logout-button');
 const showTermsCheckbox = document.querySelector('.show-terms-checkbox');
 
 // Import user-edit-panel elemetns
+//const userChangeNameForm = document.forms['user-change-name-form'];
+const userEditNameButton = document.querySelector('.user-edit-name-button');
+const userEditName = {
+  first_name: document.querySelector('.user-new-name-first-input'),
+  surname: document.querySelector('.user-new-name-surname-input'),
+  passwordRetype: document.querySelector('.user-change-name-retype-password')
+};
+const userEditCheckbox = document.querySelector('.user-edit-checkbox');
+
+
+
+//const userChangePasswordForm = document.forms['user-change-password-form'];
+
+// Import user-delete-panel elemetns
+//const userDeleteForm = document.forms['user-delete-form'];
+const retypePasswordToDeleteUserInput = document.querySelector('.retype-password-to-delete-user-input');
+const userDeleteConfirmButton = document.querySelector('.user-delete-confirm-button');
+const userDeleteCheckbox = document.querySelector('.user-delete-checkbox');
 
 // ----- Import terms list elemetns from page -----
-const emptyListMessage = document.querySelector('.empty-list-message');
-const unloggedUserMessage = document.querySelector('.unlogged-user-message');
+const emptyListMessage = document.querySelector('.empty-list-message').innerText;
+//const unloggedUserMessage = document.querySelector('.unlogged-user-message');
 const termsList = document.querySelector('.terms-list');
 
 // ----- Import 'new term' panel elemetns from page -----
-const addTermPanel = document.querySelector('.add-term')
+//const addTermPanel = document.querySelector('.add-term')
 const newTermForm = document.forms['add-new-term-form'];
 const termType = newTermForm['menu-terms'];
 const newTermInput = document.querySelector('.add-term-input');
@@ -111,17 +144,15 @@ const userLoginCredentials = await delete_user(userIdToDelete, userTokenToDelete
 // Function to respond to user panel button clicks
 function respondToUserPanelClicks() {
 
-  // Hide user panel if any object exept it is clicked
+  // Hide user panel if any object exept it's elements is clicked
   document.onclick = (event) => {
-    // If the clicked element is not part of the user panel nor a corrisponding undisplayed checkbox
-    if (!userPanel.contains(event.target) 
-      && !event.target.matches('.undisplayed')
-    ) {
+    // If the clicked element is not part of the user panel nor an checkbox, such as the user dropdown menu button...
+    if (!userPanel.contains(event.target) && !event.target.matches('[type="checkbox"]')) {
       userPanelToggleCheckbox.checked = false;
     }
   }
   
-  // On a mouse click on the login button...
+  // On a mouse click on the user register button...
   userRegisterButton.addEventListener('click', async (event) =>  {
     // Skip default form functions
     event.preventDefault();
@@ -143,10 +174,11 @@ function respondToUserPanelClicks() {
     }
   });
 
-  // On a mouse click on the login button...
+  // On a mouse click on the user login button...
   userLoginButton.addEventListener('click', async (event) =>  {
     // Skip default form functions
     event.preventDefault();
+
     // Retreive login credentials from the input fields
     const email = emailInput.value.trim();
     // If the email input field is empty...
@@ -158,6 +190,7 @@ function respondToUserPanelClicks() {
     if ( password.length === 0 ) {
       console.log('Enter a valid password');
     }
+
     // If the field is not empty...
     if ( email.length > 0 && password.length ) {
       // Attempt to login
@@ -165,17 +198,49 @@ function respondToUserPanelClicks() {
     }
   });
 
-  // On a mouse click on the logout button...
+  // On a mouse click on the user logout button...
   userLogoutButton.addEventListener('click', (event) =>  {
-    console.log('userLogoutButton clicked!')
-    showTermsCheckbox.checked = false;
+    // Uncheck show terms list flag on logout
+    //showTermsCheckbox.checked = false;
     // Hide empty list message on logout - Overkill due to some CSS functionality overlap
-    emptyListMessage.style.display = "none";
+    //emptyListMessage.style.display = "none";
     // Initialize user login form with the current user credentials
     emailInput.value = userCredentials.email;
     passwordInput.value = userCredentials.password;
     // Save empty user login credentials in the local storage for security
     saveToLocalStorage(STORAGE_KEY_LOGIN,{});
+    // Load logged user terms */
+    load_user_terms();
+  });
+
+  // On a mouse click on the user edit name button...
+  userEditNameButton.addEventListener('click', async (event) =>  {
+    console.log('user-edit-name-button clicked!')
+    // Initialize user change name form with the current user credentials
+    userEditName.first_name.value = userCredentials.id;
+    userEditName.surname.value = '';
+    if (userEditName.first_name.value.length > 0) {
+      userEditName.first_name.placeholder = userEditName.first_name.value;
+    }
+
+    // Save empty user login credentials in the local storage for security
+    saveToLocalStorage(STORAGE_KEY_LOGIN,{});
+  });
+
+  // On a mouse click on the user edit name button...
+  userDeleteConfirmButton.addEventListener('click', async (event) =>  {
+    console.log('user-delete-confirm-button clicked!')
+    // Retreive password retype from the input field
+
+    if ( retypePasswordToDeleteUserInput.value.trim() === userCredentials.password ) {
+      delete_user( userCredentials.id, userCredentials.token );
+    } else {
+      console.log('Delete failed!\nTry to retype your passord or to login again.');
+    }
+/*     userDeleteButton.addEventListener('click', (event) =>  {
+      console.log('user-delete-form clicked!')
+    }); */
+
   });
 }
 
@@ -187,7 +252,7 @@ async function register_new_user(email, password) {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
     },
-    body: `{ "email": "${email}", "password": "${password}" }`
+    body: `{ "first_name": "Nome", "surname": "Cognome", "email": "${email}", "password": "${password}" }`
   }).catch(err => {
     console.log(`Critical error 666: Failed to register user with the email ${email} due to an unknown reason.\n\n`,err);
     // https://www.mongodb.com/docs/manual/reference/bson-types/#objectid
@@ -257,15 +322,18 @@ async function login_user(email, password) {
     case 200: {
       userCredentials = json_response.login_request.body;
       console.log(`${json_response.message}\n`,
-        `User ID: ${userCredentials.id}`,
         `\nLogin credentials:\n`,
+        `User ID: ${userCredentials.id}`,
         `Email: ${userCredentials.email}\n`,
         `Password: ${userCredentials.password}`
       );
-      // Switch user panel mode from login to logged
+      // Switch user panel mode from LOGIN to LOGGED
+      loggedUser.first_name.innerText = userCredentials.first_name;
+      loggedUser.surname.innerText = userCredentials.surname;
+      loggedUser.email.innerText = userCredentials.email;
+      loggedUser.password.innerText = userCredentials.password;
       userLoginStatusCheckbox.checked = true;
-      ////////////////////////////////////// RESTORE NEXT LINE
-      //userPanelToggleCheckbox.checked = false;
+      userPanelToggleCheckbox.checked = false;
       // Save the user login credentials the local storage
       saveToLocalStorage(STORAGE_KEY_LOGIN,userCredentials);
       // Load logged user terms */
@@ -288,6 +356,7 @@ async function login_user(email, password) {
 
 // Asynchronous function to delete a logged user
 async function delete_user(id,token) {
+  console.log('Attempting to delete user...\n');
   const fetchResponse = await fetch('http://localhost:3000/user/'+id, {
     method: 'DELETE',
     headers: {
@@ -308,10 +377,19 @@ async function delete_user(id,token) {
     case 200: {
       const registerCredentials = json_response.register_request.body;
       console.log(`${json_response.message}`,
-      `\nTo register again use your credentials:\n`,
-      `Email: ${registerCredentials.email}\n`,
-      `Password: ${registerCredentials.password}`
-      ,);
+        `\nTo register again use your credentials:\n`,
+        `Email: ${registerCredentials.email}\n`,
+        `Password: ${registerCredentials.password}`
+      );
+      // Clear the input field of the user delete confirmation password
+      retypePasswordToDeleteUserInput.value = '';
+      // Switch user panel mode from EDIT to LOGGED and then logout
+      userDeleteCheckbox.checked = false;
+      userEditCheckbox.checked = false;
+      userLogoutButton.click();
+      // Uncheck user login status checkbox before logout
+      //userLoginStatusCheckbox.checked = false;
+
       // Returns registration credentials to undo user delete
       return registerCredentials;
     }
@@ -400,7 +478,7 @@ async function load_user_terms() {
       }
     // If there are no terms in the local storage...
     } else {
-      emptyListMessage.style.display = "block";
+      //emptyListMessage.style.display = "block";
       showTermsCheckbox.checked = false;
     }
   }
@@ -755,14 +833,14 @@ function reloadViewport() {
   // If TERMS exist...
   if (terms.length > 0) {
     // Hide empty list message in case there are terms to show
-    emptyListMessage.style.display = "none";
+    ///////////emptyListMessage.style.display = "none";
     // Declaration of index to follow the vieport position
     let viewportPositionIndex = 0;
     // Create an HTML template for each existing term
     terms.forEach(function(term) {
       if (term.grammatic_type == termType.value || termType.value == 'termini') {
         // Hide empty list message
-        emptyListMessage.style.display = "none";
+        ////////emptyListMessage.style.display = "none";
         createTermHTML(term,viewportPositionIndex);
         // Insert term into the page
         termsList.innerHTML += `${term.htmlCode}`;
@@ -774,20 +852,20 @@ function reloadViewport() {
     if (items.length === 0) {
       showTermsCheckbox.checked = false;
       // Display empty list message
-      emptyListMessage.style.display = "block";
+      /////////////emptyListMessage.style.display = "block";
       // Message to show when there are no terms in the list of the chosen type
-      emptyListMessage.innerText = `Non ci sono ${termType.value} salvati`;
+      emptyListMessage = `Non ci sono ${termType.value} salvati`;
     } else {
       showTermsCheckbox.checked = true;
     }
   }
   // Otherwise show a general "empty list" message
   else {
-    showTermsCheckbox.checked = false;
     // Message to show when there are no terms in the list
-    emptyListMessage.innerText = 'La tua lista è vuota';
+    emptyListMessage = 'La tua lista è vuota';
+    showTermsCheckbox.checked = false;
     // Display empty list message
-    emptyListMessage.style.display = "block";
+    //////////emptyListMessage.style.display = "block";
   }
 }
 
@@ -832,7 +910,7 @@ function createTermHTML(term, viewportIndex) {
 
   let editIconHTML = `
     <div class="term-edit read-mode">
-      <img class="pencil-icon" src="images/pencil.png" alt="Pencil Icon">
+      <img class="edit-icon" src="images/carrot.svg" alt="Carrot icon">
     </div>
   `;
   let arrowsHTML = ``;

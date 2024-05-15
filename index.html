@@ -1,4 +1,9 @@
 <!DOCTYPE html>
+<!-- ---------- CREDITS ----------
+  Fonts of Google Fonts: https://fonts.googleapis.com
+  Stylesheet of Font Awesome: https://use.fontawesome.com
+  Icons of: https://www.visualpharm.com/
+ -->
 <html lang="en">
 <head>
   <!-- According to https://stackoverflow.com/questions/58313803/require-is-not-defined-vs-code
@@ -9,7 +14,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  
   <!-- Browser icon -->
   <link rel="icon" href="images/delikaktus_logo.png">
 
@@ -17,6 +21,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+
+  <!-- Add icon library -->
+  <link rel="stylesheet" 
+    href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" 
+    integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" 
+    crossorigin="anonymous" 
+    referrerpolicy="no-referrer" 
+  />
 
   <!-- Style -->
   <link rel="stylesheet" href="style.css">
@@ -29,10 +41,12 @@
   <!-- Invisible responsive checkbox to toggle dropdown content visibility -->
   <input id="user-panel-toggle-checkbox" class="user-panel-toggle-checkbox undisplayed" type="checkbox" checked >
   <!-- Invisible responsive checkbox to toggle dropdown content visibility -->
-  <input id="user-login-status-checkbox" class="user-login-status-checkbox undisplayed" type="checkbox">
+  <input id="user-log-status-checkbox" class="user-log-status-checkbox undisplayed" type="checkbox">
   <input id="show-terms-checkbox" class="show-terms-checkbox undisplayed" type="checkbox">
-  <input id="user-edit-checkbox" class="user-edit-checkbox undisplayed" type="checkbox">
-  <input id="user-edit-username-checkbox" class="user-edit-username-checkbox undisplayed" type="checkbox">
+  <input id="user-edit-checkbox" class="user-edit-checkbox " type="checkbox">
+  <input id="user-edit-image-checkbox" class="user-edit-image-checkbox undisplayed" type="checkbox">
+  <input id="user-edit-name-checkbox" class="user-edit-name-checkbox undisplayed" type="checkbox">
+  <input id="user-delete-checkbox" class="user-delete-checkbox " type="checkbox">
   
   <div class="container">
 
@@ -46,9 +60,14 @@
       <div class="user-panel">
 
         <!-- Respond to user-dropdown-button by toggling the user-panel-toggle-checkbox -->
-        <label for="user-panel-toggle-checkbox" class="user-dropdown-button" alt="User panel button">
+        <label for="user-panel-toggle-checkbox" class="user-dropdown-button" alt="User panel button" >
           <!-- User image -->
-          <img src= "./images/login_user_icon.png" width="30" alt="User image">
+          <img src= "./images/login_user_icon.png" alt="User image">
+          <span class="user-dropdown-button-login">Accedi</span>
+        </label>
+        <!-- User edit image button for checkbox -->
+        <label id="user-edit-image-button" for="user-edit-image-checkbox" class="user-edit-image-button" alt="Cambia la foto dell'utente">
+          <img class="user-edit-image-icon" src="./images/pencil.png" alt="Pencil icon">
         </label>
 
         <div class="user-panel-content panel">
@@ -88,11 +107,15 @@
             <table class="user-logged-table">
               <tr>
                 <td>Utente:</td>
-                <td><label class="logged-user-username" alt="Logged user username">Nome Cognome</label></td>
                 <td>
-                  <!-- User edit username button for checkbox -->
-                  <label id="user-edit-username-button" for="user-edit-username-checkbox" class="user-edit-username-button" alt="Cambia il nome dell'utente">
-                    <img class="user-edit-username-icon" src="./images/pencil.png" alt="Pencil icon">
+                  <label class="logged-user-name-first" alt="Logged user first name">Nome</label>
+                  <span> </span>
+                  <label class="logged-user-name-surname" alt="Logged user surname">Cognome</label>
+                </td>
+                <td>
+                  <!-- User edit name button for checkbox -->
+                  <label id="user-edit-name-button" for="user-edit-name-checkbox" class="user-edit-name-button" alt="Cambia il nome dell'utente">
+                    <img class="user-edit-name-icon" src="./images/pencil.png" alt="Pencil icon">
                   </label>
                 </td>
               </tr>
@@ -120,26 +143,26 @@
 
             <!-- Action buttons in the user LOGGED panel -->
             <div class="user-logged-panel-actions">
-              <!-- User logout button for checkbox -->
-              <label id="user-logout-button" for="user-login-status-checkbox" class="user-logout-button user-action-button" alt="User logout button">
-                <img class="user-icon" src= "./images/logout_user_icon.png" alt="User logout icon">
-                Sconnettiti
-              </label>
               <!-- User edit button for checkbox -->
               <label id="user-edit-button" for="user-edit-checkbox" class="user-edit-button user-action-button" alt="User edit button">
                 <img class="user-icon" src= "./images/edit-user.svg" alt="User edit icon">
                 Modifica
               </label>
+              <!-- User logout button for checkbox -->
+              <label id="user-logout-button" for="user-log-status-checkbox" class="user-logout-button user-action-button" alt="User logout button">
+                <img class="user-icon" src= "./images/logout_user_icon.png" alt="User logout icon">
+                Sconnettiti
+              </label>
               <div></div> <!-- Empty div just for aligning buttons vertically in flex display -->
             </div> <!-- user-logged-panel-actions -->
 
             <div class="user-edit-actions">
-              <!-- User change image button for checkbox -->
+              <!-- User change image button for checkbox
               <label id="user-change-image-button" for="user-change-image-checkbox" class="user-change-image-button user-action-button" alt="User change image button">
                 <img class="user-icon" src= "./images/change_user_image.svg" alt="User change image icon">
                 Cambia<br>
                 foto
-              </label>
+              </label> -->
               <!-- User delete button for checkbox -->
               <label id="user-delete-button" for="user-delete-checkbox" class="user-delete-button user-action-button" alt="User delete user button">
                 <img class="user-icon" src= "./images/delete-user.svg" alt="User delete user icon">
@@ -151,18 +174,20 @@
 
           </form> <!-- user-logged-form -->
 
-          <form id="user-change-username-form" class="user-change-username-form" >
+          <form id="user-change-name-form" class="user-change-name-form" >
             <!-- Arrow back button for checkbox - Return to user EDIT panel -->
-            <label for="user-edit-username-checkbox" class="back-to-user-edit-panel" alt="Go back to user-edit-panel"><img class="arrow-back" src="./images/arrow-back.svg" alt="Arrow back icon" ></label>
+            <label for="user-edit-name-checkbox" class="back-to-user-edit-panel" alt="Go back to user-edit-panel">
+              <img class="arrow-back" src="./images/arrow-back.svg" alt="Arrow back icon" >
+            </label>
 
-            <table class="user-change-username-table">
+            <table class="user-change-name-table">
               <tr>
                 <td>Nome:</td>
-                <td><input class="user-new-name" type="text" placeholder="New Name" ></td>
+                <td><input class="user-new-name-first-input" type="text" placeholder="New first name"></td>
               </tr>
               <tr>
                 <td>Cognome:</td>
-                <td><input class="user-new-surname" type="text" placeholder="New Surname" ></td>
+                <td><input class="user-new-name-surname-input" type="text" placeholder="New surname" ></td>
               </tr>
             </table>
 
@@ -170,18 +195,18 @@
             <label>
               Digita la tua password per confermare il cambio:
               <br>
-              <input class="confirmation-change-username-retype" type="text" placeholder="********" alt="Retype password to confirm change">
+              <input class="user-change-name-retype-password" type="text" placeholder="********" alt="Retype password to confirm change">
             </label>
 
-            <label class="user-edit-username-confirmation user-action-button" alt="Confirm user username change button">
+            <label id="user-edit-name-confirmation-button" class="user-edit-name-confirmation-button user-action-button" alt="Confirm user name change button">
               <img class="user-icon" src="./images/checkmark.png" alt="Checkmark icon">
               Conferma il cambio
             </label>
-          </form> <!-- user-change-username-form -->
+          </form> <!-- user-change-name-form -->
 
           <form id="user-change-password-form" class="user-change-password-form">
             <!-- Arrow back button for checkbox - Return to user EDIT panel -->
-            <label for="user-edit-username-checkbox" class="back-to-user-edit-panel" alt="Torna indietro">
+            <label for="user-edit-password-checkbox" class="back-to-user-edit-panel" alt="Torna indietro">
               <img class="arrow-back" src="./images/arrow-back.svg" alt="Arrow back icon" >
             </label>
 
@@ -207,12 +232,23 @@
 
           <form id="user-delete-form" class="user-delete-form">
             <label alt="Confirm user delete button">Ridigita la tua password per eliminare l'utente
-              <input type="text" class="retype-password-to-delete-user" id="retype-password-to-delete-user"
-                placeholder="">
+              <input type="text" class="retype-password-to-delete-user-input" id="retype-password-to-delete-user-input"
+                placeholder="********">
             </label>
+            <p>L'eliminazione di un utente è irreversibile.
+              <br>
+              Sei sicuro di voler eliminare l'utente?
+            </p>
+            <label id="user-delete-cancel-button" for="user-delete-checkbox" class="user-delete-cancel-button user-action-button" alt="User delete cancel button">
+              <img class="user-icon" src="./images/arrow-back.svg" alt="Cancel user DELETE / arrow-back icon">
+              NO<br>Torna indietro
+            </label>
+            <label id="user-delete-confirm-button" class="user-delete-confirm-button user-action-button" alt="User delete confirm button">
+              <img class="user-icon" src="./images/trash.png" alt="Confirm user DELETE / trash icon">
+              SÌ<br>Elimina utente!</label>
           </form> <!-- user-delete-form -->
 
-          <form id="user-delete-confirmation-form" class="user-delete-confirmation-form">
+          <!-- <form id="user-delete-confirmation-form" class="user-delete-confirmation-form">
             <p>L'eliminazione di un utente è irreversibile.
               <br>
               Sei sicuro di voler eliminare l'utente?
@@ -221,7 +257,7 @@
             <button>YES</button>
 
             <button>NO</button>
-          </form> <!-- user-delete-confirmation-form -->
+          </form> user-delete-confirmation-form -->
 
         </div> <!-- user-panel-content -->
       </div> <!-- user-panel -->
@@ -229,7 +265,7 @@
     </header>
 
     <main>
-
+      <img class="fas fa-spin panel" src="images/rabbit.svg" alt="Logo of DELIKAKTUS" width="50px" >
       <div class="terms-panel panel">
         <!-- Message to show before login -->
         <p class="unlogged-user-message">Accedi per caricare la tua lista</p>

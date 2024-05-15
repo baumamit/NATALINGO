@@ -1,12 +1,16 @@
 /*
 COLOR PALETTE
-  lightgreen: rgb(210, 239, 232); 
-  green: rgb(95, 198, 173); 
-  yellow: rgb(217, 255, 102);
-  blue: rgb(52, 75, 201);
+  light-pink: rgb(254, 211, 225);
+  pink-red: rgb(255, 140, 140);
+  purple: rgb(160, 9, 147);
+  violet: rgb(52, 16, 57);
+  light-yellow: rgb(254, 251, 185);
+  dark-yellow: rgb(255, 183, 0);
+  green: rgb(40, 150, 10);
+  black;
 */
 
-/* CSS Reset */
+/* ------------ CSS Reset ------------ */
 
 * {
 	margin: 0;
@@ -18,7 +22,7 @@ COLOR PALETTE
 /* -moz is the same code for Firefox */
 ::-moz-selection, ::selection {
 	color: black;
-	background: rgb(255, 136, 136);
+	background: rgb(255, 140, 140);
 }
 /* Selected input text throughout the documents */
 /* -moz is the same code for Firefox */
@@ -26,6 +30,10 @@ input::-moz-selection, input::selection {
 	color: rgb(254, 251, 185);
 	background: rgb(160, 9, 147);
 }
+
+input:not(.edit-mode):focus::placeholder {
+	color: transparent;
+  }
 
 /* Undisplay permanently pre-defined elements */
 .undisplayed {
@@ -38,11 +46,11 @@ input::-moz-selection, input::selection {
 	max-width: 540px;
 }
 
-/* Generic */
+/* ------------ Generic ------------ */
 body {
 	padding: 0rem;
 	font-family: Inter, sans-serif;
-	background-color: rgba(52, 16, 57, 0.927);
+	background-color: rgba(52, 16, 57);
 }
 
 header {
@@ -66,10 +74,12 @@ h1 {
 	background-color: rgb(254, 211, 225);
 }
 
-/* ------------ Dropdown User Menu ------------ */
+/* ------------ Dropdown user menu ------------ */
 .user-panel {
 	position: relative;
 	display: inline-block;
+	font-size: 1.1rem;
+	font-weight: 600;
 /* 	align-items:flex-end; */
 }
 
@@ -77,18 +87,30 @@ h1 {
 .user-dropdown-button { 
 	display: inline-block;
 	cursor: pointer;
-	padding: 0.3rem;
-	border-radius: 1.5rem;
+	border-radius: 40%;
 	border-style:groove;
 	background-color: rgb(254, 211, 225);
-	color: rgba(52, 16, 57, 0.927);
+	color: rgba(52, 16, 57);
 	cursor: pointer; 
+	min-height: 3rem;
 }
 .user-dropdown-button:hover, .user-dropdown-button:active {
 	color: black;
 	background-color: rgb(255, 183, 0);
 }
-  
+/* User avatar image in the user dropdown menu button */
+.user-dropdown-button img{
+	display: none;
+	width: 2.5rem;
+	padding: 0.2rem;
+}
+/* Text of user dropdown menu button for an unlogged user instead of avatar image */
+.user-dropdown-button-login {
+	display: block;
+	padding: 0 0.3rem;
+	line-height: 220%;
+}
+
 .user-panel-content {
 	/* display: block; */
 	position: absolute;
@@ -96,8 +118,6 @@ h1 {
 	flex-grow: 1;
 	z-index: 1;
 	min-width: 16rem;
-	font-size: 1.1rem;
-	font-weight: 600;
 	color: rgb(160, 9, 147);
 }
 
@@ -118,14 +138,12 @@ h1 {
 	background-color: rgb(254, 251, 185);
 }
 
-.user-panel-content input:hover, .user-panel-content input:focus {
+.user-panel-content :is(input:hover, input:focus) {
 	background-color: rgb(255, 183, 0);
 	color: black;
 	font-weight: inherit;
 	transition: 0.2s;
 }
-
-/* ----------------------------------------- */
 
 .user-panel-content button, .arrow-back, .user-action-button, .user-login-panel-button {
 	cursor: pointer;
@@ -146,7 +164,7 @@ h1 {
 }
 
 .login-buttons {
-	display:flex;
+	display: flex;
 	justify-content: space-around;
 	padding: 0.5rem;
 }
@@ -168,6 +186,7 @@ h1 {
 
 .user-action-button {
 /* 	display: inline-flex; */
+	display: flex;
 	font-size: inherit;
 	font-weight: inherit;
 	text-align: left;
@@ -175,7 +194,6 @@ h1 {
 	height: 3rem;
 	border-radius: 0.8rem;
 	margin: 0.2rem 0;
-	display: flex;
 }
 
 .user-action-button img {
@@ -189,88 +207,41 @@ h1 {
 	border-radius: 10rem;
 }
 
-/* Display the sibling element after ~ of the class 'user-panel-content' when user-panel-toggle-checkbox is checked. See general sibling selector (~) */
-/* https://www.w3schools.com/css/css_combinators.asp */
-.user-panel-toggle-checkbox:checked ~ .container .user-panel-content {
-	display: block;
-}
-.user-panel-toggle-checkbox:not(:checked) ~ .container .user-panel-content {
-	display: none;
+.user-edit-image-button {
+	position: absolute;
+	top: 0.8rem; left: 3rem;
 }
 
-/* Initially hide all internal user panels except for the LOGIN panel*/
-.user-panel-content > *:not(.user-login-form) {
-	display: none;
-}
-
-/* Initially display user LOGIN panel */
-.user-login-form {
-	display: block;
-}
-
-/* Respond to LOGIN (via javascript) or LOGOUT button click 
-by switching the user's login status 'checked' for LOGGED mode*/
-
-/* LOGGED: Hide LOGIN user panel and 'unlogged user' message */
-.user-login-status-checkbox:checked ~ .container :is(.user-login-form, .unlogged-user-message) {
-	display: none;
-}
-/* LOGGED: Show LOGGED user panel */
-.user-login-status-checkbox:checked ~ .container :is(.user-logged-form) {
-	display: block;
-}
-/* LOGGED: Show 'ADD TERM' panel */
-.user-login-status-checkbox:checked ~ .container :is(.add-term) {
-	display: flex;
-}
-/* LOGGED and there are terms to show in the TERMS list (dependent status) */
-.user-login-status-checkbox:checked ~ .show-terms-checkbox:checked ~ .container .terms-list {
-	display: block;
-}
-
-/* LOGOUT: Hide TERMS list and empty list message*/
-.user-login-status-checkbox:not(:checked) ~ .container :is(.terms-list, .empty-list-message) {
-	display: none;
-}
-
-/* Clicks on user-edit and arrow-back 
-switch between user LOGGED and EDIT panels via undisplayed checkbox */
-
-/* EDIT user button clicked */
-.user-edit-checkbox:checked ~ .container .user-logged-form :is(.user-action-button) {
-	display: none;
-}
-.back-to-user-logged-panel, .user-logged-table img {
-	display: none;
-}
-.user-edit-checkbox:checked ~ .container .user-logged-form :is(.back-to-user-logged-panel, .user-logged-table img) {
-	display: block;
-}
-/* USER EDIT USERNAME button clicked */
-.user-edit-username-checkbox:checked ~ .container .user-logged-form {
-	display: none;
-}
-.user-edit-username-checkbox:checked ~ .container .user-change-username-form {
-	display: block;
-}
-
-
-/* *************************************************************** */
-/* .user-delete-confirmation, .retype-password-to-delete-user {
-	display: block;
-} */
-
-.user-logged-table img, .edit-user-table img {
+.user-edit-image-button img, .user-logged-table img, .edit-user-table img {
 	width: 1.5rem;
 	padding: 0.1rem;
 }
-
-.user-logged-table img:hover, .user-logged-table img:active, .edit-user-table img:hover, .edit-user-table img:active {
+.user-edit-image-button img:hover, .user-edit-image-button img:active, .user-logged-table img:hover, .user-logged-table img:active, .edit-user-table img:hover, .edit-user-table img:active {
 	transform: scale(1.5);
 	transition: 0.2s;
 	cursor: pointer; 
 }
 
+/* USER EDIT NAME button clicked */
+.user-edit-name-checkbox:checked ~ .container .user-logged-form {
+	display: none;
+}
+.user-edit-name-checkbox:checked ~ .container .user-change-name-form {
+	display: block;
+}
+
+/* USER DELETE button clicked */
+.user-delete-checkbox:checked ~ .container .user-logged-form {
+	display: none;
+}
+.user-delete-checkbox:checked ~ .container .user-delete-form {
+	display: block;
+}
+
+/* *************************************************************** */
+/* .user-delete-confirmation, .retype-password-to-delete-user {
+	display: block;
+} */
 /* .retype-password-to-delete-user {
 	max-width: 12rem;
 	padding: 0.3rem;
@@ -292,7 +263,7 @@ switch between user LOGGED and EDIT panels via undisplayed checkbox */
 
 .add-term {
 	font-size: 1.1rem;
-	display: none;
+	display: flex;
 	gap: 0.5rem;
 	margin-top: 2rem;
 	position: relative;
@@ -335,12 +306,13 @@ switch between user LOGGED and EDIT panels via undisplayed checkbox */
 }
 
 .unlogged-user-message, .empty-list-message {
+	/* display: none; */
 	text-align: center;
 	font-weight: bold;
 	font-size: 2rem;
 	background-color: rgb(254, 251, 185);
-	min-block-size: 10rem;
-	padding: 4rem 2rem;
+	min-block-size: 4rem;
+	padding: 1rem;
 	line-height: 3.5rem;
 	border-radius: 1rem;
 }
@@ -387,26 +359,29 @@ switch between user LOGGED and EDIT panels via undisplayed checkbox */
 }
 
 .term-check:hover, .term-delete:hover, .term-edit:hover, .term-arrow-up:hover, 
-.term-arrow-down:hover, .term-text-it-edit:hover, .term-text-en-edit:hover,
-.flag-button-it:hover, .flag-button-en:hover {
+.term-arrow-down:hover, .flag-button-it:hover, .flag-button-en:hover {
 	background-color: rgb(255, 183, 0);
 	cursor: pointer;
+	scale: 1.3;
+	transition: 0.2s;
 }
 
 .term-edit {
 	border-radius: 0.5rem;
 	background-color: rgb(160, 9, 147);
 }
-.pencil-icon {
-	padding: 0.2rem 0 0 0.2rem;
+.edit-icon {
 	height: 2rem;
+}
+.term-text-it-edit:hover, .term-text-en-edit:hover {
+	background-color: rgb(255, 183, 0);
 }
 
 
 .term-check {
 	padding: 0 0.3rem;
 	border-radius: 0.5rem;
-	background-color: rgba(55, 255, 0, 0.591);
+	background-color: rgb(40, 150, 10);
 }
 .check-icon {
 	padding: 0.2rem 0 0 0;
@@ -416,7 +391,7 @@ switch between user LOGGED and EDIT panels via undisplayed checkbox */
 .term-delete {
 	padding: 0 0.2rem;
 	border-radius: 0.5rem;
-	background-color: rgb(255, 136, 136);
+	background-color: rgb(255, 140, 140);
 }
 .trash-bin-icon {
 	padding: 0.2rem 0 0 0;
@@ -450,4 +425,89 @@ switch between user LOGGED and EDIT panels via undisplayed checkbox */
 	border: solid;
 	font-size: 2.4rem;
 	color:rgb(160, 9, 147);
+}
+/* ______________________________________________________________________ */
+/* ------------ Elelments display based on status checkboxes ------------ */
+/* General sibling selector (~): https://www.w3schools.com/css/css_combinators.asp */
+/* ______________________________________________________________________ */
+
+/* Display dropdown user menu when user-panel-toggle-checkbox is checked */
+
+.user-panel-toggle-checkbox:checked ~ .container .user-panel-content {
+	display: block;
+}
+.user-panel-toggle-checkbox:not(:checked) ~ .container .user-panel-content {
+	display: none;
+}
+
+/* Apply display of LOGGED status (checked via javascript) */
+
+/* LOGGED: Hide user avatar label, all elements under user panel content except for user-logged-form, 'unlogged user' message */
+.user-log-status-checkbox:checked ~ .container :is(.user-dropdown-button-login, .user-panel-content > *:not(.user-logged-form), .unlogged-user-message) {
+	display: none;
+}
+/* LOGGED: Show user avatar image, LOGGED user panel */
+.user-log-status-checkbox:checked ~ .container :is(.user-dropdown-button img, .user-logged-form) {
+	display: block;
+}
+
+/* LOGGED and there are terms to show in the TERMS list (dependent status) */
+.user-log-status-checkbox:checked ~ .show-terms-checkbox:checked ~ .container .terms-list {
+	display: block;
+}
+/* LOGGED and there is a TERMS list to show (checked via javascript) */
+.user-log-status-checkbox:checked ~ .show-terms-checkbox:checked ~ .container .empty-list-message {
+	display: none;
+}
+/* LOGGED and there is no TERMS list to show (unchecked via javascript) */
+.user-log-status-checkbox:checked ~ .show-terms-checkbox:not(:checked) ~ .container .empty-list-message {
+	display: block;
+}
+/* LOGGED and there is no TERMS list to show (unchecked via javascript) */
+.user-log-status-checkbox:checked ~ .show-terms-checkbox:not(:checked) ~ .container .terms-list {
+	display: none;
+}
+
+/* Apply display for LOGOUT status (default) */
+
+/* LOGOUT: Hide all elements under user panel content except for user login form, empty list message, TERMS list*/
+.user-log-status-checkbox:not(:checked) ~ .container :is(.user-panel-content > :not(.user-login-form), .terms-list, .empty-list-message, .add-term) {
+	display: none;
+}
+/* LOGOUT: Show user login form, unlogged-user message*/
+.user-log-status-checkbox:not(:checked) ~ .container :is(.user-login-form, .unlogged-user-message) {
+	display: block;
+}
+
+/* Clicks on user-edit and arrow-back 
+switch between user LOGGED and EDIT panels via undisplayed checkbox */
+
+/* user EDIT arrow-back button clicked */
+.user-edit-checkbox:not(:checked) ~ .container
+	:is(.user-edit-image-button, .back-to-user-logged-panel, .user-logged-table img, .user-edit-actions) {
+	display: none;
+}
+/* user EDIT button clicked */
+.user-edit-checkbox:checked ~ .container .user-logged-panel-actions {
+	display: none;
+}
+.user-edit-checkbox:checked ~ .container
+	:is(.user-edit-image-button, .back-to-user-logged-panel, .user-logged-table img, .user-edit-actions) {
+	display: block;
+}
+
+/* user EDIT NAME button clicked */
+.user-edit-name-checkbox:checked ~  .container .user-panel-content > :not(.user-change-name-form) {
+	display: none;
+}
+.user-edit-name-checkbox:checked ~  .container .user-panel-content .user-change-name-form {
+	display: block;
+}
+
+/* user DELETE button clicked */
+.user-delete-checkbox:checked ~  .container .user-panel-content > :not(.user-delete-form) {
+	display: none;
+}
+.user-delete-checkbox:checked ~  .container .user-panel-content .user-delete-form {
+	display: block;
 }
