@@ -65,7 +65,7 @@ const userDeleteConfirmButton = document.querySelector('.user-delete-confirm-but
 const userDeleteCheckbox = document.querySelector('.user-delete-checkbox');
 
 // ----- Import terms list elemetns from page -----
-const emptyListMessage = document.querySelector('.empty-list-message').innerText;
+const emptyListMessage = document.querySelector('.empty-list-message');
 //const unloggedUserMessage = document.querySelector('.unlogged-user-message');
 const termsList = document.querySelector('.terms-list');
 
@@ -567,7 +567,6 @@ async function load_user_terms() {
       }
     // If there are no terms in the local storage...
     } else {
-      //emptyListMessage.style.display = "block";
       showTermsCheckbox.checked = false;
     }
   }
@@ -925,15 +924,11 @@ function reloadViewport() {
   termsList.innerText = '';
   // If TERMS exist...
   if (terms.length > 0) {
-    // Hide empty list message in case there are terms to show
-    ///////////emptyListMessage.style.display = "none";
     // Declaration of index to follow the vieport position
     let viewportPositionIndex = 0;
     // Create an HTML template for each existing term
     terms.forEach(function(term) {
       if (term.grammatic_type == termType.value || termType.value == 'termini') {
-        // Hide empty list message
-        ////////emptyListMessage.style.display = "none";
         createTermHTML(term,viewportPositionIndex);
         // Insert term into the page
         termsList.innerHTML += `${term.htmlCode}`;
@@ -944,10 +939,8 @@ function reloadViewport() {
     // If list ITEMS of the chosen type exist...
     if (items.length === 0) {
       showTermsCheckbox.checked = false;
-      // Display empty list message
-      /////////////emptyListMessage.style.display = "block";
       // Message to show when there are no terms in the list of the chosen type
-      emptyListMessage = `Non ci sono ${termType.value} salvati`;
+      emptyListMessage.innerText = `Non ci sono ${termType.value} salvati`;
     } else {
       showTermsCheckbox.checked = true;
     }
@@ -955,10 +948,8 @@ function reloadViewport() {
   // Otherwise show a general "empty list" message
   else {
     // Message to show when there are no terms in the list
-    emptyListMessage = 'La tua lista è vuota';
+    emptyListMessage.innerText = 'La tua lista è vuota';
     showTermsCheckbox.checked = false;
-    // Display empty list message
-    //////////emptyListMessage.style.display = "block";
   }
 }
 
