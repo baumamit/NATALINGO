@@ -14,6 +14,8 @@ const STORAGE_KEY_LOGIN = '__natalingo.user.02__';
 const userPanel = document.querySelector('.user-panel');
 const userPanelToggleCheckbox = document.querySelector('.user-panel-toggle-checkbox');
 const userLoginStatusCheckbox = document.querySelector('.user-log-status-checkbox');
+const loadingWindow = document.querySelector('.loading-window');
+
 //const userDropdownButton = document.querySelector('.user-dropdown-button');
 
 // Import user-register-form elemetns
@@ -48,11 +50,11 @@ const userEditNameButton = document.querySelector('.user-edit-name-button');
 const userEditName = {
   first_name: document.querySelector('.user-new-name-first-input'),
   surname: document.querySelector('.user-new-name-surname-input'),
-  passwordRetype: document.querySelector('.user-change-name-retype-password')
+  passwordRetype: document.querySelector('.retype-password-to-edit-user-name-input')
 };
 const userEditCheckbox = document.querySelector('.user-edit-checkbox');
-
-
+const retypePasswordToEditUserNameInput = document.querySelector('.retype-password-to-edit-user-name-input');
+const userEditNameConfirmButton = document.querySelector('.user-edit-name-confirm-button');
 
 //const userChangePasswordForm = document.forms['user-change-password-form'];
 
@@ -200,39 +202,57 @@ function respondToUserPanelClicks() {
 
   // On a mouse click on the user logout button...
   userLogoutButton.addEventListener('click', (event) =>  {
-    // Uncheck show terms list flag on logout
-    //showTermsCheckbox.checked = false;
-    // Hide empty list message on logout - Overkill due to some CSS functionality overlap
-    //emptyListMessage.style.display = "none";
+    // Show loading window while the async function is running
+    loadingWindow.style.display = "block";
     // Initialize user login form with the current user credentials
     emailInput.value = userCredentials.email;
     passwordInput.value = userCredentials.password;
-    // Save empty user login credentials in the local storage for security
-    saveToLocalStorage(STORAGE_KEY_LOGIN,{});
     // Load logged user terms */
     load_user_terms();
+    // Save user login credentials in the local storage without password for security
+    userCredentials.password = '';
+    saveToLocalStorage(STORAGE_KEY_LOGIN,userCredentials);
+    loadingWindow.style.display = "none";
   });
 
   // On a mouse click on the user edit name button...
   userEditNameButton.addEventListener('click', async (event) =>  {
     console.log('user-edit-name-button clicked!')
-    // Initialize user change name form with the current user credentials
-    userEditName.first_name.value = userCredentials.id;
-    userEditName.surname.value = '';
-    if (userEditName.first_name.value.length > 0) {
+    // Initialize user change name form with the current user credentials and empty password field
+    userEditName.first_name.value = userCredentials.first_name;
+    userEditName.surname.value = userCredentials.surname;
+    // Clear the input field of the user edit confirmation password
+    userEditName.passwordRetype.innerText = '';
+    userEditName.passwordRetype.value = '';
+    /* if (userEditName.first_name.value.length > 0) {
       userEditName.first_name.placeholder = userEditName.first_name.value;
-    }
-
-    // Save empty user login credentials in the local storage for security
-    saveToLocalStorage(STORAGE_KEY_LOGIN,{});
+    } */
   });
 
   // On a mouse click on the user edit name button...
+  userEditNameConfirmButton.addEventListener('click', async (event) =>  {
+    console.log('user-edit-name-confirm-button clicked!')
+    // Retreive password retype from the input field
+
+    if ( userEditName.passwordRetype.value === userCredentials.password ) {
+      console.log('\n\n\n\n\n\n\nuserCredentials before = ',userCredentials.first_name, userCredentials.surname);
+      edit_user(userCredentials.id, userCredentials.token);
+      // Save user login credentials in the local storage
+      saveToLocalStorage(STORAGE_KEY_LOGIN,userCredentials);
+      // Clear the input field of the user edit confirmation password
+      userEditName.passwordRetype.innerText = '';
+      userEditName.passwordRetype.value = '';
+    } else {
+      console.log('Edit failed!\nTry to retype your password or to login again.');
+    }
+  });
+
+  // On a mouse click on the user delete button...
   userDeleteConfirmButton.addEventListener('click', async (event) =>  {
     console.log('user-delete-confirm-button clicked!')
     // Retreive password retype from the input field
 
-    if ( retypePasswordToDeleteUserInput.value.trim() === userCredentials.password ) {
+    if ( retypePasswordToDeleteUserInput.value === userCredentials.password ) {
       delete_user( userCredentials.id, userCredentials.token );
     } else {
       console.log('Delete failed!\nTry to retype your passord or to login again.');
@@ -246,6 +266,8 @@ function respondToUserPanelClicks() {
 
 // Asynchronous function to register a new user
 async function register_new_user(email, password) {
+  // Show loading window while the async function is running
+  loadingWindow.style.display = "block";
   const fetchResponse = await fetch('http://localhost:3000/user/register', {
     method: 'POST',
     headers: {
@@ -261,6 +283,7 @@ async function register_new_user(email, password) {
 
   const status = await fetchResponse.status;
   const json_response = await fetchResponse.json();
+  loadingWindow.style.display = "none";
   switch (status) {
     // Success: User was created
     case 201: {
@@ -303,6 +326,8 @@ async function register_new_user(email, password) {
 
 // Asynchronous function to login a registered user
 async function login_user(email, password) {
+  // Show loading window while the async function is running
+  loadingWindow.style.display = "block";
   const fetchResponse = await fetch('http://localhost:3000/user/login', {
     method: 'POST',
     headers: {
@@ -317,13 +342,16 @@ async function login_user(email, password) {
 
   const status = await fetchResponse.status;
   const json_response = await fetchResponse.json();
+  loadingWindow.style.display = "none";
   switch (status) {
     // Success: User was created
     case 200: {
       userCredentials = json_response.login_request.body;
       console.log(`${json_response.message}\n`,
-        `\nLogin credentials:\n`,
+        `\nUser credentials:\n`,
         `User ID: ${userCredentials.id}`,
+        `Name: ${userCredentials.first_name}`,
+        `Surname: ${userCredentials.surname}`,
         `Email: ${userCredentials.email}\n`,
         `Password: ${userCredentials.password}`
       );
@@ -331,7 +359,7 @@ async function login_user(email, password) {
       loggedUser.first_name.innerText = userCredentials.first_name;
       loggedUser.surname.innerText = userCredentials.surname;
       loggedUser.email.innerText = userCredentials.email;
-      loggedUser.password.innerText = userCredentials.password;
+      //loggedUser.password.innerText = userCredentials.password;
       userLoginStatusCheckbox.checked = true;
       userPanelToggleCheckbox.checked = false;
       // Save the user login credentials the local storage
@@ -355,7 +383,65 @@ async function login_user(email, password) {
 }
 
 // Asynchronous function to delete a logged user
+async function edit_user(idToEdit,token) {
+  // Show loading window while the async function is running
+  loadingWindow.style.display = "block";
+  console.log('Attempting to edit user...\n');
+  const fetchResponse = await fetch('http://localhost:3000/user/edit', {
+    method: 'PATCH',
+    headers: {
+        //'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+    },
+    body: `{ "id": "${idToEdit}", "first_name": "${userEditName.first_name.value.trim()}", "surname": "${userEditName.surname.value.trim()}", "password": "${userEditName.passwordRetype.value.trim()}" }`
+
+  }).catch(err => {
+    console.log(`Critical error 666: Failed to delete user ID ${id} due to an unknown reason.\n\n`,err);
+    // https://www.mongodb.com/docs/manual/reference/bson-types/#objectid
+    return '';
+  });
+
+  const status = await fetchResponse.status;
+  const json_response = await fetchResponse.json();
+  loadingWindow.style.display = "none";
+  switch (status) {
+    // Success: User was deleted
+    case 200: {
+      const updatedCredentials = json_response.register_request.body;
+      // Apply the new user credentials
+      Object.keys(updatedCredentials).forEach(key => {
+        userCredentials[key] = updatedCredentials[key];
+      });
+      console.log('User name after = ',userCredentials.first_name, userCredentials.surname);
+
+      // Clear the input field of the user edit confirmation password
+      userEditName.passwordRetype.innerText = '';
+      userEditName.passwordRetype.value = '';
+      // Switch user panel mode from EDIT to LOGGED and then logout
+      userDeleteCheckbox.checked = false;
+      userEditCheckbox.checked = false;
+      userLogoutButton.click();
+      // Uncheck user login status checkbox before logout
+      //userLoginStatusCheckbox.checked = false;
+
+      // Returns registration credentials to undo user delete
+      return userCredentials;
+    }
+    // Error status: 404 / 409 / 500
+    default: {
+      console.log(`Error ${status}:\n`,
+        `${json_response.message}\n`
+      );
+      return '';
+    }
+  }
+}
+
+// Asynchronous function to delete a logged user
 async function delete_user(id,token) {
+  // Show loading window while the async function is running
+  loadingWindow.style.display = "block";
   console.log('Attempting to delete user...\n');
   const fetchResponse = await fetch('http://localhost:3000/user/'+id, {
     method: 'DELETE',
@@ -372,6 +458,7 @@ async function delete_user(id,token) {
 
   const status = await fetchResponse.status;
   const json_response = await fetchResponse.json();
+  loadingWindow.style.display = "none";
   switch (status) {
     // Success: User was deleted
     case 200: {
@@ -453,6 +540,8 @@ function respondToCategoryChange() {
 
 // Asynchronous function to load logged user terms
 async function load_user_terms() {
+  // Show loading window while the async function is running
+  loadingWindow.style.display = "block";
   // Load terms from local storage
   const storageTerms = localStorage.getItem(STORAGE_KEY_TERMS);
   // If there are terms in the local storage...
@@ -483,6 +572,7 @@ async function load_user_terms() {
     }
   }
   respondToCategoryChange();
+  loadingWindow.style.display = "none";
 }
 
 // Main function that responds to uploaded term clicks in the viewport
@@ -780,7 +870,9 @@ function respondToNewTermClick() {
   });
 
   // On a mouse click on the + for a new term button...
-  newTermButton.addEventListener('click', (event) => {
+  newTermButton.addEventListener('click', async (event) => {
+    // Show loading window while the async function is running
+    loadingWindow.style.display = "block";
     // Skip default form functions
     event.preventDefault();
     // Define position of the new term as last in the vieport 
@@ -793,8 +885,9 @@ function respondToNewTermClick() {
     // If the field is not empty...
     if (newTerm.length > 0) {
       // Add the new term to the list of terms
-      addNewTerm(newTerm, newViewportIndex);
+      await addNewTerm(newTerm, newViewportIndex);
     }
+    loadingWindow.style.display = "none";
   });
 }
 

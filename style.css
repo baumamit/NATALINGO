@@ -33,7 +33,34 @@ input::-moz-selection, input::selection {
 
 input:not(.edit-mode):focus::placeholder {
 	color: transparent;
-  }
+}
+
+/* Animation for spinner loaders */
+.fa-spin {
+	animation-direction: reverse;
+	animation-duration: 10000s;
+}
+.loading-window {
+	display: none;
+	z-index: 100;
+	position: absolute;
+	top: 20%; left: 35%;
+	animation-duration: 2.5s;
+	width: 12rem;
+	height: 12rem;
+	border-radius: 50%;
+	border: solid;
+	color: rgb(160, 9, 147);
+	background-color: rgb(255, 183, 0, 0.8);
+}
+.load-spinner {
+	position: relative;
+	top: 8.3rem; left: 5rem;
+	width: 3.5rem;
+	color: rgb(160, 9, 147);
+	border: none;
+	border-radius: 50%;
+}
 
 /* Undisplay permanently pre-defined elements */
 .undisplayed {
@@ -222,43 +249,6 @@ h1 {
 	cursor: pointer; 
 }
 
-/* USER EDIT NAME button clicked */
-.user-edit-name-checkbox:checked ~ .container .user-logged-form {
-	display: none;
-}
-.user-edit-name-checkbox:checked ~ .container .user-change-name-form {
-	display: block;
-}
-
-/* USER DELETE button clicked */
-.user-delete-checkbox:checked ~ .container .user-logged-form {
-	display: none;
-}
-.user-delete-checkbox:checked ~ .container .user-delete-form {
-	display: block;
-}
-
-/* *************************************************************** */
-/* .user-delete-confirmation, .retype-password-to-delete-user {
-	display: block;
-} */
-/* .retype-password-to-delete-user {
-	max-width: 12rem;
-	padding: 0.3rem;
-	border-radius: 0.8rem;
-	border: none;
-	font-size: inherit;
-	font-weight: inherit;
-	color: inherit;
-	background-color: rgb(254, 251, 185);
-} */
-
-/* .retype-password-to-delete-user:hover, .retype-password-to-delete-user:focus {
-	background-color: rgb(255, 183, 0);
-	color: black;
-	transition: 0.2s;
-} */
-
 /* ------------ "Add Term" module elements ------------ */
 
 .add-term {
@@ -433,81 +423,210 @@ h1 {
 
 /* Display dropdown user menu when user-panel-toggle-checkbox is checked */
 
-.user-panel-toggle-checkbox:checked ~ .container .user-panel-content {
-	display: block;
-}
 .user-panel-toggle-checkbox:not(:checked) ~ .container .user-panel-content {
 	display: none;
 }
 
+.user-panel-toggle-checkbox:checked ~ .container .user-panel-content {
+	display: block;
+}
+/* Apply display for LOGOUT status (default) */
+
+/* LOGOUT: Hide all elements under user panel content except for user login form, empty list message, TERMS list*/
+.user-log-status-checkbox:not(:checked) ~ .container 
+:is(.user-panel-content > :not(.user-login-form), .terms-list, .empty-list-message, .add-term) {
+	display: none;
+}
+/* LOGOUT: Show user login form, unlogged-user message*/
+.user-log-status-checkbox:not(:checked) ~ .container 
+:is(.user-login-form, .unlogged-user-message) {
+	display: block;
+}
+
 /* Apply display of LOGGED status (checked via javascript) */
 
-/* LOGGED: Hide user avatar label, all elements under user panel content except for user-logged-form, 'unlogged user' message */
-.user-log-status-checkbox:checked ~ .container :is(.user-dropdown-button-login, .user-panel-content > *:not(.user-logged-form), .unlogged-user-message) {
+/* LOGGED: Hide user avatar label, 'unlogged user' message */
+.user-log-status-checkbox:checked ~ .container :is(.user-dropdown-button-login, .user-login-form, .unlogged-user-message) {
 	display: none;
 }
-/* LOGGED: Show user avatar image, LOGGED user panel */
-.user-log-status-checkbox:checked ~ .container :is(.user-dropdown-button img, .user-logged-form) {
+/* LOGGED: Show user avatar image */
+.user-log-status-checkbox:checked ~ .container .user-dropdown-button img {
 	display: block;
 }
 
-/* LOGGED and there are terms to show in the TERMS list (dependent status) */
-.user-log-status-checkbox:checked ~ .show-terms-checkbox:checked ~ .container .terms-list {
+/*******************************************************************/
+/* LOGGED & TERMS (checked via javascript): Show */
+/* .user-log-status-checkbox:checked ~  */.show-terms-checkbox:checked ~ .container .terms-list {
 	display: block;
 }
-/* LOGGED and there is a TERMS list to show (checked via javascript) */
-.user-log-status-checkbox:checked ~ .show-terms-checkbox:checked ~ .container .empty-list-message {
+/* LOGGED & TERMS (checked via javascript): Hide */
+/* .user-log-status-checkbox:checked ~  */.show-terms-checkbox:checked ~ .container .empty-list-message {
 	display: none;
 }
-/* LOGGED and there is no TERMS list to show (unchecked via javascript) */
+/* LOGGED & no TERMS (unchecked via javascript): Show */
 .user-log-status-checkbox:checked ~ .show-terms-checkbox:not(:checked) ~ .container .empty-list-message {
 	display: block;
 }
-/* LOGGED and there is no TERMS list to show (unchecked via javascript) */
+/* LOGGED & no TERMS (unchecked via javascript): Hide */
 .user-log-status-checkbox:checked ~ .show-terms-checkbox:not(:checked) ~ .container .terms-list {
 	display: none;
 }
 
-/* Apply display for LOGOUT status (default) */
-
-/* LOGOUT: Hide all elements under user panel content except for user login form, empty list message, TERMS list*/
-.user-log-status-checkbox:not(:checked) ~ .container :is(.user-panel-content > :not(.user-login-form), .terms-list, .empty-list-message, .add-term) {
-	display: none;
-}
-/* LOGOUT: Show user login form, unlogged-user message*/
-.user-log-status-checkbox:not(:checked) ~ .container :is(.user-login-form, .unlogged-user-message) {
-	display: block;
-}
-
+/*******************************************************************/
 /* Clicks on user-edit and arrow-back 
 switch between user LOGGED and EDIT panels via undisplayed checkbox */
 
-/* user EDIT arrow-back button clicked */
-.user-edit-checkbox:not(:checked) ~ .container
-	:is(.user-edit-image-button, .back-to-user-logged-panel, .user-logged-table img, .user-edit-actions) {
+/* LOGGED & not user EDIT (default and after arrow-back button clicked): Hide user-edit-panel, user-edit-form  */
+.user-log-status-checkbox:checked ~ .user-edit-checkbox:not(:checked) ~ .container 
+:is(.user-edit-panel, .user-edit-form)
+/* :is(.user-edit-image-button, .back-to-user-logged-panel, .user-logged-table img, .user-edit-actions, .user-edit-form)
+ *//* .user-panel-content > *:not(.user-logged-form) */ {
 	display: none;
 }
-/* user EDIT button clicked */
+/* LOGGED mode & not EDIT mode: Show user-logged-form except for the user-edit-panel elements */
+.user-log-status-checkbox:checked ~ .user-edit-checkbox:not(:checked) ~ .container 
+.user-logged-form:not(.user-edit-panel) {
+	display: block;
+}
+
 .user-edit-checkbox:checked ~ .container .user-logged-panel-actions {
 	display: none;
 }
-.user-edit-checkbox:checked ~ .container
+
+/* EDIT mode & not EDIT NAME mode: Hide user-edit-name-inputs */
+.user-edit-checkbox:checked ~ .user-edit-name-checkbox:not(:checked) ~ .container 
+.user-edit-name-inputs {
+	display: none;
+}
+/* EDIT mode & not EDIT EMAIL mode: Hide user-edit-email-inputs */
+.user-edit-checkbox:checked ~ .user-edit-email-checkbox:not(:checked) ~ .container 
+.user-edit-email-inputs {
+	display: none;
+}
+/* EDIT mode & not EDIT PASSWORD mode: Hide user-edit-password-inputs */
+.user-edit-checkbox:checked ~ .user-edit-password-checkbox:not(:checked) ~ .container 
+.user-edit-password-inputs {
+	display: none;
+}
+/* EDIT mode & not EDIT IMAGE mode: Hide user-edit-image-inputs */
+.user-edit-checkbox:checked ~ .user-edit-image-checkbox:not(:checked) ~ .container 
+.user-edit-image-inputs {
+	display: none;
+}
+/* EDIT mode & not DELETE mode: Hide user-delete-inputs */
+.user-edit-checkbox:checked ~ .user-delete-checkbox:not(:checked) ~ .container 
+.user-delete-inputs {
+	display: none;
+}
+
+
+
+/* user EDIT: Show user-edit-panel elements */
+/* .user-edit-checkbox:checked ~ .container .user-edit-panel {
+	display: block;
+} */
+
+
+/* .user-edit-name-checkbox:checked ~ .container 
+:is(.user-edit-name-inputs, .user-edit-confirm-inputs) {
+	display: block;
+}  */
+
+
+
+/* .user-edit-name-checkbox:checked ~ .container 
+:is(.user-edit-name-inputs, .user-edit-confirm-inputs) {
+	display: block;
+} */
+/* .user-edit-form {
+	display: none;
+} */
+/* LOGGED & user EDIT: Hide user-logged-panel-actions */
+/* .user-edit-checkbox:checked ~ .container :is(.user-logged-panel-actions) {
+	display: block;
+} */
+/* LOGGED & user EDIT & not edit-name: Hide user-edit-form */
+/* .user-edit-checkbox:checked ~ .user-edit-name-checkbox:not(:checked) ~ .container 
+.user-edit-form {
+	display: none;
+} */
+/* LOGGED & user EDIT & edit-name: Hide user-edit-form except for  */
+/* .user-log-status-checkbox:checked ~ .user-edit-checkbox:checked ~  */
+/* .user-edit-name-checkbox:checked ~ .container :is(.user-edit-name-inputs, 
+.user-edit-confirm-inputs) {
+	display: block;
+} */
+
+/* LOGGED & user EDIT & edit-email: Hide user-edit-form except for  */
+/* .user-log-status-checkbox:checked ~ .user-edit-checkbox:checked ~  */
+/* .user-edit-email-checkbox:checked ~ .container 
+:is(.user-logged-form, .user-edit-form > :not(.user-edit-email-inputs, .user-edit-confirm-inputs)) 
+{
+	display: none;
+} */
+
+/* LOGGED & user EDIT */
+/* .user-log-status-checkbox:checked ~ .user-edit-checkbox:checked ~ .container
 	:is(.user-edit-image-button, .back-to-user-logged-panel, .user-logged-table img, .user-edit-actions) {
 	display: block;
-}
+} */
+
+/* LOGGED & user EDIT button clicked */
+/* .user-edit-checkbox:checked ~ .user-edit-name-checkbox:not(:checked) ~ .container 
+.user-logged-panel-actions {
+	display: none;
+} */
+/* .user-edit-checkbox:checked ~ .user-edit-name-checkbox:not(:checked) ~ .container
+	:is(.user-edit-image-button, .back-to-user-logged-panel, .user-logged-table img, .user-edit-actions) {
+	display: block;
+} */
 
 /* user EDIT NAME button clicked */
-.user-edit-name-checkbox:checked ~  .container .user-panel-content > :not(.user-change-name-form) {
+/* .user-edit-name-checkbox:checked ~ .container .user-panel-content > .user-edit-form:not(.user-edit-name-inputs) {
 	display: none;
-}
-.user-edit-name-checkbox:checked ~  .container .user-panel-content .user-change-name-form {
+} */
+/* .user-edit-name-checkbox:checked ~ .container 
+:is(.user-edit-image-button, .back-to-user-logged-panel, .user-logged-table img, .user-edit-actions) {
+	display: none;
+} */
+/* .user-edit-name-checkbox:checked ~ .container .user-edit-form :is(.user-edit-name-inputs, .user-edit-confirm-inputs) {
 	display: block;
-}
+} */
 
-/* user DELETE button clicked */
-.user-delete-checkbox:checked ~  .container .user-panel-content > :not(.user-delete-form) {
+/* USER DELETE button clicked */
+/* .user-delete-checkbox:checked ~ .container .user-logged-form {
 	display: none;
-}
-.user-delete-checkbox:checked ~  .container .user-panel-content .user-delete-form {
+} */
+/* .user-delete-checkbox:checked ~ .container .user-delete-form {
 	display: block;
-}
+} */
+/* user DELETE button clicked */
+/* .user-delete-checkbox:checked ~  .container .user-panel-content > :not(.user-delete-form) {
+	display: none;
+} */
+/* .user-delete-checkbox:checked ~  .container .user-panel-content .user-delete-form {
+	display: block;
+} */
+/* *************************************************************** */
+/* .user-delete-confirmation, .retype-password-to-delete-user {
+	display: block;
+} */
+/* .retype-password-to-delete-user {
+	max-width: 12rem;
+	padding: 0.3rem;
+	border-radius: 0.8rem;
+	border: none;
+	font-size: inherit;
+	font-weight: inherit;
+	color: inherit;
+	background-color: rgb(254, 251, 185);
+} */
+
+/* .retype-password-to-delete-user:hover, .retype-password-to-delete-user:focus {
+	background-color: rgb(255, 183, 0);
+	color: black;
+	transition: 0.2s;
+} */
+
+
+

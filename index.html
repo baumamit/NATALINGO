@@ -3,6 +3,7 @@
   Fonts of Google Fonts: https://fonts.googleapis.com
   Stylesheet of Font Awesome: https://use.fontawesome.com
   Icons of: https://www.visualpharm.com/
+  How to use icons: https://www.w3schools.com/icons
  -->
 <html lang="en">
 <head>
@@ -40,13 +41,14 @@
   <!-- ------------ INVISIBLE CHECKBOXES ------------ -->
   <!-- Invisible responsive checkbox to toggle dropdown content visibility -->
   <input id="user-panel-toggle-checkbox" class="user-panel-toggle-checkbox undisplayed" type="checkbox" checked >
-  <!-- Invisible responsive checkbox to toggle dropdown content visibility -->
   <input id="user-log-status-checkbox" class="user-log-status-checkbox undisplayed" type="checkbox">
   <input id="show-terms-checkbox" class="show-terms-checkbox undisplayed" type="checkbox">
   <input id="user-edit-checkbox" class="user-edit-checkbox " type="checkbox">
+  <input id="user-edit-name-checkbox" class="user-edit-name-checkbox " type="checkbox">
+  <input id="user-edit-email-checkbox" class="user-edit-email-checkbox " type="checkbox">
+  <input id="user-edit-password-checkbox" class="user-edit-password-checkbox " type="checkbox">
   <input id="user-edit-image-checkbox" class="user-edit-image-checkbox undisplayed" type="checkbox">
-  <input id="user-edit-name-checkbox" class="user-edit-name-checkbox undisplayed" type="checkbox">
-  <input id="user-delete-checkbox" class="user-delete-checkbox " type="checkbox">
+  <input id="user-delete-checkbox" class="user-delete-checkbox undisplayed" type="checkbox">
   
   <div class="container">
 
@@ -100,7 +102,7 @@
 
           <form id="user-logged-form" class="user-logged-form" >
             <!-- Arrow back button for checkbox - Return to LOGGED panel -->
-            <label id="back-to-user-logged-panel" for="user-edit-checkbox" class="back-to-user-logged-panel" alt="Return to LOGGED panel">
+            <label id="back-to-user-logged-panel" for="user-edit-checkbox" class="back-to-user-logged-panel user-edit-panel" alt="Return to LOGGED panel">
               <img class="arrow-back" src="./images/arrow-back.svg" alt="Arrow back icon">
             </label>
 
@@ -114,7 +116,7 @@
                 </td>
                 <td>
                   <!-- User edit name button for checkbox -->
-                  <label id="user-edit-name-button" for="user-edit-name-checkbox" class="user-edit-name-button" alt="Cambia il nome dell'utente">
+                  <label id="user-edit-name-button" for="user-edit-name-checkbox" class="user-edit-name-button user-edit-panel" alt="Cambia il nome dell'utente">
                     <img class="user-edit-name-icon" src="./images/pencil.png" alt="Pencil icon">
                   </label>
                 </td>
@@ -124,7 +126,7 @@
                 <td><label class="logged-user-email" alt="Logged user email">email</label></td>
                 <td>
                     <!-- User edit email button for checkbox -->
-                    <label id="user-edit-email-button" for="user-edit-email-checkbox" class="user-edit-email-button" alt="Cambia la tua e-mail">
+                    <label id="user-edit-email-button" for="user-edit-email-checkbox" class="user-edit-email-button user-edit-panel" alt="Cambia la tua e-mail">
                     <img class="user-edit-email-icon" src="./images/pencil.png" alt="Pencil icon">
                   </label>
                 </td>
@@ -133,8 +135,8 @@
                 <td>Password:</td>
                 <td><label class="logged-user-password" alt="hidden user password">********</label></td>
                 <td>
-                    <!-- User edit email button for checkbox -->
-                    <label id="user-edit-email-button" for="user-edit-email-checkbox" class="user-edit-email-button" alt="Cambia la tua password">
+                    <!-- User edit password button for checkbox -->
+                    <label id="user-edit-password-button" for="user-edit-password-checkbox" class="user-edit-password-button user-edit-panel" alt="Cambia la tua password">
                     <img class="user-edit-password-icon" src="./images/pencil.png" alt="Pencil icon">
                   </label>
                 </td>
@@ -156,13 +158,7 @@
               <div></div> <!-- Empty div just for aligning buttons vertically in flex display -->
             </div> <!-- user-logged-panel-actions -->
 
-            <div class="user-edit-actions">
-              <!-- User change image button for checkbox
-              <label id="user-change-image-button" for="user-change-image-checkbox" class="user-change-image-button user-action-button" alt="User change image button">
-                <img class="user-icon" src= "./images/change_user_image.svg" alt="User change image icon">
-                Cambia<br>
-                foto
-              </label> -->
+            <div class="user-edit-actions user-edit-panel">
               <!-- User delete button for checkbox -->
               <label id="user-delete-button" for="user-delete-checkbox" class="user-delete-button user-action-button" alt="User delete user button">
                 <img class="user-icon" src= "./images/delete-user.svg" alt="User delete user icon">
@@ -174,79 +170,110 @@
 
           </form> <!-- user-logged-form -->
 
-          <form id="user-change-name-form" class="user-change-name-form" >
-            <!-- Arrow back button for checkbox - Return to user EDIT panel -->
-            <label for="user-edit-name-checkbox" class="back-to-user-edit-panel" alt="Go back to user-edit-panel">
-              <img class="arrow-back" src="./images/arrow-back.svg" alt="Arrow back icon" >
-            </label>
+          <form id="user-edit-form" class="user-edit-form" >
 
-            <table class="user-change-name-table">
-              <tr>
-                <td>Nome:</td>
-                <td><input class="user-new-name-first-input" type="text" placeholder="New first name"></td>
-              </tr>
-              <tr>
-                <td>Cognome:</td>
-                <td><input class="user-new-name-surname-input" type="text" placeholder="New surname" ></td>
-              </tr>
-            </table>
+            <div class="user-edit-name-inputs">
+              <!-- Arrow back button for checkbox - Return to user EDIT panel -->
+              <label for="user-edit-name-checkbox" class="back-to-user-edit-panel" alt="Go back to user-edit-panel">
+                <img class="arrow-back" src="./images/arrow-back.svg" alt="Arrow back icon" >
+              </label>
 
-            <br>
-            <label>
-              Digita la tua password per confermare il cambio:
+              <table class="user-edit-name-table">
+                <tr>
+                  <td>Nome:</td>
+                  <td><input class="user-new-name-first-input" type="text" placeholder="New first name"></td>
+                </tr>
+                <tr>
+                  <td>Cognome:</td>
+                  <td><input class="user-new-name-surname-input" type="text" placeholder="New surname" ></td>
+                </tr>
+              </table> <!-- user-edit-name-table -->
+            </div> <!-- user-edit-name-inputs -->
+
+            <div class="user-edit-email-inputs">
+              <!-- Arrow back button for checkbox - Return to user EDIT panel -->
+              <label for="user-edit-email-checkbox" class="back-to-user-edit-panel" alt="Go back to user-edit-panel">
+                <img class="arrow-back" src="./images/arrow-back.svg" alt="Arrow back icon" >
+              </label>
+
+              <table class="user-edit-email-table">
+                <tr>
+                  <td>Nuovo e-mail:</td>
+                  <td><input class="user-new-email-first-input" type="text" placeholder="New email"></td>
+                </tr>
+              </table> <!-- user-edit-name-table -->
+            </div> <!-- user-edit-email-inputs -->
+
+            <div id="user-edit-password-inputs" class="user-edit-password-inputs">
+              <!-- Arrow back button for checkbox - Return to user EDIT panel -->
+              <label for="user-edit-password-checkbox" class="back-to-user-edit-panel" alt="Go back to user-edit-panel">
+                <img class="arrow-back" src="./images/arrow-back.svg" alt="Arrow back icon" >
+              </label>
+
+              <table class="user-edit-password-table">
+                <tr>
+                  <td>Password attuale:</td>
+                  <td><input class="user-edit-password-old-input" type="text" placeholder="********" ></td>
+                </tr>
+                <tr>
+                  <td>Nuova password:</td>
+                  <td><input class="user-edit-password-new-input" type="text" placeholder="" ></td>
+                </tr>
+                <!-- <tr>
+                  <td>Ridigita la nuova password:</td>
+                  <td><input  id="retype-password-to-edit-user-password-input" class="retype-password-to-edit-user-password-input" type="text" placeholder="********"></td>
+                </tr> -->
+              </table> <!-- user-edit-password-table -->
+
+              <!-- <button class="user-edit-confirm-button user-action-button">Conferma il cambio 
+                <img class="user-icon" src="./images/checkmark.png" alt="Conferma cambio password">
+              </button> -->
+            </div> <!-- user-edit-password-inputs -->
+
+            <div class="user-edit-image-inputs">
+              <!-- Arrow back button for checkbox - Return to user EDIT panel -->
+              <label for="user-edit-image-checkbox" class="back-to-user-edit-panel" alt="Go back to user-edit-panel">
+                <img class="arrow-back" src="./images/arrow-back.svg" alt="Arrow back icon" >
+              </label>
+            </div> <!-- user-edit-image-inputs -->
+
+            <div class="user-edit-confirm-inputs user-edit-name-inputs user-edit-email-inputs user-edit-password-inputs user-edit-image-inputs">
               <br>
-              <input class="user-change-name-retype-password" type="text" placeholder="********" alt="Retype password to confirm change">
-            </label>
+              <label>
+                Digita la tua password per confermare il cambio:
+                <br>
+                <input id="retype-password-to-edit-user-name-input" class="retype-password-to-edit-user-name-input" type="text" placeholder="********" alt="Retype password to confirm change">
+              </label>
 
-            <label id="user-edit-name-confirmation-button" class="user-edit-name-confirmation-button user-action-button" alt="Confirm user name change button">
-              <img class="user-icon" src="./images/checkmark.png" alt="Checkmark icon">
-              Conferma il cambio
-            </label>
-          </form> <!-- user-change-name-form -->
+              <label id="user-edit-name-confirm-button" class="user-edit-name-confirm-button user-action-button" alt="Confirm user name change button">
+                <img class="user-icon" src="./images/checkmark.png" alt="Checkmark icon">
+                Conferma il cambio
+              </label>
+            </div> <!-- user-edit-confirm-inputs -->
 
-          <form id="user-change-password-form" class="user-change-password-form">
-            <!-- Arrow back button for checkbox - Return to user EDIT panel -->
-            <label for="user-edit-password-checkbox" class="back-to-user-edit-panel" alt="Torna indietro">
-              <img class="arrow-back" src="./images/arrow-back.svg" alt="Arrow back icon" >
-            </label>
+            <div id="user-delete-inputs" class="user-delete-inputs">
+              <label alt="Confirm user delete button">Ridigita la tua password per eliminare l'utente
+                <input type="text" id="retype-password-to-delete-user-input" class="retype-password-to-delete-user-input"
+                  placeholder="********">
+              </label>
 
-            <table class="confirmation-change-password">
-              <tr>
-                <td>Password attuale:</td>
-                <td><input class="confirmation-change-password-old" type="text" placeholder="***" ></td>
-              </tr>
-              <tr>
-                <td>Nuova password:</td>
-                <td><input class="confirmation-change-password-new" type="text" placeholder="" ></td>
-              </tr>
-              <tr>
-                <td>Ridigita la nuova password:</td>
-                <td><input class="confirmation-change-password-retype" type="text" placeholder="" ></td>
-              </tr>
-            </table>
+              <p>L'eliminazione di un utente è irreversibile.
+                <br>
+                Sei sicuro di voler eliminare l'utente?
+              </p>
 
-            <button class="user-edit-password-confirmation user-action-button">Conferma il cambio 
-              <img class="user-icon" src="./images/checkmark.png" alt="Conferma cambio password">
-            </button>
-          </form> <!-- user-change-password-form -->
+              <label id="user-delete-cancel-button" for="user-delete-checkbox" class="user-delete-cancel-button user-action-button" alt="User delete cancel button">
+                <img class="user-icon" src="./images/arrow-back.svg" alt="Cancel user DELETE / arrow-back icon">
+                NO<br>Torna indietro
+              </label>
 
-          <form id="user-delete-form" class="user-delete-form">
-            <label alt="Confirm user delete button">Ridigita la tua password per eliminare l'utente
-              <input type="text" class="retype-password-to-delete-user-input" id="retype-password-to-delete-user-input"
-                placeholder="********">
-            </label>
-            <p>L'eliminazione di un utente è irreversibile.
-              <br>
-              Sei sicuro di voler eliminare l'utente?
-            </p>
-            <label id="user-delete-cancel-button" for="user-delete-checkbox" class="user-delete-cancel-button user-action-button" alt="User delete cancel button">
-              <img class="user-icon" src="./images/arrow-back.svg" alt="Cancel user DELETE / arrow-back icon">
-              NO<br>Torna indietro
-            </label>
-            <label id="user-delete-confirm-button" class="user-delete-confirm-button user-action-button" alt="User delete confirm button">
-              <img class="user-icon" src="./images/trash.png" alt="Confirm user DELETE / trash icon">
-              SÌ<br>Elimina utente!</label>
-          </form> <!-- user-delete-form -->
+              <label id="user-delete-confirm-button" class="user-delete-confirm-button user-action-button" alt="User delete confirm button">
+                <img class="user-icon" src="./images/trash.png" alt="Confirm user DELETE / trash icon">
+                SÌ<br>Elimina utente!
+              </label>
+            </div> <!-- user-delete-inputs -->
+
+          </form> <!-- user-edit-form -->
 
           <!-- <form id="user-delete-confirmation-form" class="user-delete-confirmation-form">
             <p>L'eliminazione di un utente è irreversibile.
@@ -265,8 +292,13 @@
     </header>
 
     <main>
-      <img class="fas fa-spin panel" src="images/rabbit.svg" alt="Logo of DELIKAKTUS" width="50px" >
       <div class="terms-panel panel">
+
+        <!-- Loading spinner window -->
+        <label class="loading-window fa-spin">
+          <img class="fa-spin load-spinner" src="images/rabbit.svg" alt="Logo of DELIKAKTUS" >
+        </label>
+      
         <!-- Message to show before login -->
         <p class="unlogged-user-message">Accedi per caricare la tua lista</p>
         <!-- Message to show when the list is empty -->
