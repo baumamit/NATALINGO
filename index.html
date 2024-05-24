@@ -68,7 +68,7 @@
           <span class="user-dropdown-button-login">Accedi</span>
         </label>
         <!-- User edit image button for checkbox -->
-        <label id="user-edit-image-button" for="user-edit-image-checkbox" class="user-edit-image-button" alt="Cambia la foto dell'utente">
+        <label id="user-edit-image-button" for="user-edit-image-checkbox" class="user-edit-image-button  user-edit-panel" alt="Cambia la foto dell'utente">
           <img class="user-edit-image-icon" src="./images/pencil.png" alt="Pencil icon">
         </label>
 
@@ -199,10 +199,10 @@
 
               <table class="user-edit-email-table">
                 <tr>
-                  <td>Nuovo e-mail:</td>
-                  <td><input class="user-new-email-first-input" type="text" placeholder="New email"></td>
+                  <td>Nuovo indirizzo e-mail:</td>
+                  <td><input class="user-new-email-input" type="text" placeholder="New email"></td>
                 </tr>
-              </table> <!-- user-edit-name-table -->
+              </table> <!-- user-edit-email-table -->
             </div> <!-- user-edit-email-inputs -->
 
             <div id="user-edit-password-inputs" class="user-edit-password-inputs">
@@ -212,16 +212,15 @@
               </label>
 
               <table class="user-edit-password-table">
-                <tr>
+                <!-- <tr>
                   <td>Password attuale:</td>
                   <td><input class="user-edit-password-old-input" type="text" placeholder="********" ></td>
-                </tr>
+                </tr> -->
                 <tr>
                   <td>Nuova password:</td>
-                  <td><input class="user-edit-password-new-input" type="text" placeholder="" ></td>
+                  <td><input class="user-new-password-input" type="text" placeholder="" ></td>
                 </tr>
               </table> <!-- user-edit-password-table -->
-
             </div> <!-- user-edit-password-inputs -->
 
             <div class="user-edit-image-inputs">
@@ -229,27 +228,41 @@
               <label for="user-edit-image-checkbox" class="back-to-user-edit-panel" alt="Go back to user-edit-panel">
                 <img class="arrow-back" src="./images/arrow-back.svg" alt="Arrow back icon" >
               </label>
+
+              <label>
+                Carica la tua nuova foto utente:
+                <br>
+                <input id="user-new-image-input" class="user-new-image-input" 
+                  type="file" placeholder="New image" alt="New user image input">
+              </label>
             </div> <!-- user-edit-image-inputs -->
+
 
             <div class="user-edit-confirm-inputs">
               <br>
               <label>
-                Digita la tua password per confermare il cambio:
+                Ridigita la tua password per confermare:
                 <br>
-                <input id="retype-password-to-edit-user-name-input" class="retype-password-to-edit-user-name-input" type="text" placeholder="********" alt="Retype password to confirm change">
+                <input id="retype-password-to-edit-user-input" class="retype-password-to-edit-user-input" 
+                  type="text" placeholder="********" alt="Retype password to confirm change">
               </label>
 
-              <label id="user-edit-name-confirm-button" class="user-edit-name-confirm-button user-action-button" alt="Confirm user name change button">
+              <br>
+              <br>
+              <label id="user-edit-confirm-button" class="user-edit-confirm-button user-action-button" alt="Confirm user edit button">
                 <img class="user-icon" src="./images/checkmark.png" alt="Checkmark icon">
                 Conferma il cambio
               </label>
+
+              <!-- Empty div just for aligning buttons vertically in flex display -->
+              <div></div>
             </div> <!-- user-edit-confirm-inputs -->
 
             <div id="user-delete-inputs" class="user-delete-inputs">
-              <label alt="Confirm user delete button">Ridigita la tua password per eliminare l'utente
+              <!-- <label alt="Confirm user delete button">Ridigita la tua password per eliminare l'utente
                 <input type="text" id="retype-password-to-delete-user-input" class="retype-password-to-delete-user-input"
                   placeholder="********">
-              </label>
+              </label> -->
 
               <p>
                 <br>
@@ -261,7 +274,7 @@
 
               <label id="user-delete-cancel-button" for="user-delete-checkbox" class="user-delete-cancel-button user-action-button" alt="User delete cancel button">
                 <img class="user-icon" src="./images/arrow-back.svg" alt="Cancel user DELETE / arrow-back icon">
-                NO<br>Torna indietro
+                NO<br>Annulla
               </label>
 
               <label id="user-delete-confirm-button" class="user-delete-confirm-button user-action-button" alt="User delete confirm button">

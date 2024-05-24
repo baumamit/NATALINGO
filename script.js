@@ -5,6 +5,12 @@
 // Explaination: https://www.w3schools.com/nodejs/nodejs_filesystem.asp
 // Explaination: https://www.geeksforgeeks.org/node-js-fs-createwritestream-method/
 
+// URL leading to the folder of the REST API server
+// CORS cross-origin
+// https://developer.mozilla.org/en-US/docs/Web/Security/Mixed_content?utm_source=mozilla&utm_medium=firefox-console-errors&utm_campaign=default
+const apiRootPath = 'http://localhost:3000';
+//const apiRootPath = 'https://natalingo.api.delikaktus.com:3000';
+
 // Create a key for the local storage
 const STORAGE_KEY_TERMS = '__natalingo.15__';
 const STORAGE_KEY_LOGIN = '__natalingo.user.02__';
@@ -25,48 +31,51 @@ const loadingWindow = document.querySelector('.loading-window');
   email: document.querySelector('.user-register-email-input'),
   password: document.querySelector('.user-register-password-input')
 }; */
-// Import user-login-form elemetns
-//const userLoginForm = document.forms['user-login-form'];
 
 const emailInput = document.querySelector('.email-input');
 const passwordInput = document.querySelector('.password-input');
 const userLoginButton = document.querySelector('.user-login-button');
 const userRegisterButton = document.querySelector('.user-register-button');
 
-// Import user-logged-form elemetns
-//const userLoggedForm = document.forms['user-logged-form'];
+// Import user-logged-form / info box elemetns
 const loggedUser = {
   first_name: document.querySelector('.logged-user-name-first'),
   surname: document.querySelector('.logged-user-name-surname'),
-  email: document.querySelector('.logged-user-email'),
-  password: document.querySelector('.logged-user-password')
+  email: document.querySelector('.logged-user-email')/* ,
+  password: document.querySelector('.logged-user-password'),
+  image: document.querySelector('.user-dropdown-button-image.src') */
 };
 const userLogoutButton = document.querySelector('.user-logout-button');
 const showTermsCheckbox = document.querySelector('.show-terms-checkbox');
 
-// Import user-edit-panel elemetns
-//const userChangeNameForm = document.forms['user-change-name-form'];
+// Import user EDIT mode elemetns
+// Import EDIT mode checkboxes
+const userEditCheckbox = document.querySelector('.user-edit-checkbox');
+const userEditNameCheckbox = document.querySelector('.user-edit-name-checkbox');
+const userEditEmailCheckbox = document.querySelector('.user-edit-email-checkbox');
+const userEditPasswordCheckbox = document.querySelector('.user-edit-password-checkbox');
+const userEditImageCheckbox = document.querySelector('.user-edit-image-checkbox');
+// Import user edit buttons
 const userEditNameButton = document.querySelector('.user-edit-name-button');
-const userEditName = {
+// Import user edit properties to update
+const userEditInputs = {
   first_name: document.querySelector('.user-new-name-first-input'),
   surname: document.querySelector('.user-new-name-surname-input'),
-  passwordRetype: document.querySelector('.retype-password-to-edit-user-name-input')
+  email: document.querySelector('.user-new-email-input'),
+  password: document.querySelector('.user-new-password-input'),
+  //image:  document.querySelector('.user-new-image-input'),
+  //password_retype: document.querySelector('.retype-password-to-edit-user-input')
 };
-const userEditCheckbox = document.querySelector('.user-edit-checkbox');
-const retypePasswordToEditUserNameInput = document.querySelector('.retype-password-to-edit-user-name-input');
-const userEditNameConfirmButton = document.querySelector('.user-edit-name-confirm-button');
+const passwordRetypeInput = document.querySelector('.retype-password-to-edit-user-input');
 
-//const userChangePasswordForm = document.forms['user-change-password-form'];
+const userEditConfirmButton = document.querySelector('.user-edit-confirm-button');
 
 // Import user-delete-panel elemetns
-//const userDeleteForm = document.forms['user-delete-form'];
-const retypePasswordToDeleteUserInput = document.querySelector('.retype-password-to-delete-user-input');
 const userDeleteConfirmButton = document.querySelector('.user-delete-confirm-button');
 const userDeleteCheckbox = document.querySelector('.user-delete-checkbox');
 
 // ----- Import terms list elemetns from page -----
 const emptyListMessage = document.querySelector('.empty-list-message');
-//const unloggedUserMessage = document.querySelector('.unlogged-user-message');
 const termsList = document.querySelector('.terms-list');
 
 // ----- Import 'new term' panel elemetns from page -----
@@ -100,11 +109,6 @@ let terms = [];
 
 // # _________ DYNAMIC PROCEDURES _________
 
-// Check for user panel clicks
-respondToUserPanelClicks();
-// Check for new user input
-respondToNewTermClick();
-
 // Load user login credentials from local storage
 const storageLogin = localStorage.getItem(STORAGE_KEY_LOGIN);
 // If there were login credentials in the local storage...
@@ -120,6 +124,11 @@ if (storageLogin) {
   }
 }
 
+// Check for user panel clicks
+respondToUserPanelClicks();
+// Check for new user input
+respondToNewTermClick();
+
 /*
 saveToUserFile(user);
 loadFromUserFile(user);*/
@@ -134,12 +143,6 @@ loadFromUserFile(user);*/
 
 //delete_term("662e1f464f1712ac8267fcdf");
 
-
-/* 
-//const userIdToDelete = '123456789012345678901234';
-const userIdToDelete = await loginResponse.id;
-const userTokenToDelete = await loginResponse.token;
-const userLoginCredentials = await delete_user(userIdToDelete, userTokenToDelete); */
 
 // # _________ FUNCTIONS _________
 
@@ -164,7 +167,7 @@ function respondToUserPanelClicks() {
     if ( email.length === 0 ) {
       console.log('Enter a valid email');
     }
-    const password = passwordInput.value.trim();
+    const password = passwordInput.value;
     // If the password input field is empty...
     if ( password.length === 0 ) {
       console.log('Enter a valid password');
@@ -187,7 +190,7 @@ function respondToUserPanelClicks() {
     if ( email.length === 0 ) {
       console.log('Enter a valid email');
     }
-    const password = passwordInput.value.trim();
+    const password = passwordInput.value;
     // If the password input field is empty...
     if ( password.length === 0 ) {
       console.log('Enter a valid password');
@@ -201,7 +204,8 @@ function respondToUserPanelClicks() {
   });
 
   // On a mouse click on the user logout button...
-  userLogoutButton.addEventListener('click', (event) =>  {
+  userLogoutButton.addEventListener('click', () =>  {
+
     // Show loading window while the async function is running
     loadingWindow.style.display = "block";
     // Initialize user login form with the current user credentials
@@ -216,32 +220,24 @@ function respondToUserPanelClicks() {
   });
 
   // On a mouse click on the user edit name button...
-  userEditNameButton.addEventListener('click', async (event) =>  {
-    console.log('user-edit-name-button clicked!')
-    // Initialize user change name form with the current user credentials and empty password field
-    userEditName.first_name.value = userCredentials.first_name;
-    userEditName.surname.value = userCredentials.surname;
-    // Clear the input field of the user edit confirmation password
-    userEditName.passwordRetype.innerText = '';
-    userEditName.passwordRetype.value = '';
-    /* if (userEditName.first_name.value.length > 0) {
-      userEditName.first_name.placeholder = userEditName.first_name.value;
-    } */
-  });
-
-  // On a mouse click on the user edit name button...
-  userEditNameConfirmButton.addEventListener('click', async (event) =>  {
-    console.log('user-edit-name-confirm-button clicked!')
-    // Retreive password retype from the input field
-
-    if ( userEditName.passwordRetype.value === userCredentials.password ) {
-      console.log('\n\n\n\n\n\n\nuserCredentials before = ',userCredentials.first_name, userCredentials.surname);
+  userEditConfirmButton.addEventListener('click', async (event) =>  {
+    // Skip default form functions
+    event.preventDefault();
+        
+    console.log('user-edit-confirm-button clicked!')
+    if ( passwordRetypeInput.value === userCredentials.password ) {
+      console.log('\n\n\n\nuserCredentials before = ',userCredentials.first_name, userCredentials.surname);
       edit_user(userCredentials.id, userCredentials.token);
-      // Save user login credentials in the local storage
-      saveToLocalStorage(STORAGE_KEY_LOGIN,userCredentials);
       // Clear the input field of the user edit confirmation password
-      userEditName.passwordRetype.innerText = '';
-      userEditName.passwordRetype.value = '';
+      passwordRetypeInput.innerText = '';
+      passwordRetypeInput.value = '';
+
+      // Uncheck all the user edit property panels
+      userEditNameCheckbox.checked = false;
+      userEditEmailCheckbox.checked = false;
+      userEditPasswordCheckbox.checked = false;
+      userEditImageCheckbox.checked = false;
+
     } else {
       console.log('Edit failed!\nTry to retype your password or to login again.');
     }
@@ -249,18 +245,20 @@ function respondToUserPanelClicks() {
 
   // On a mouse click on the user delete button...
   userDeleteConfirmButton.addEventListener('click', async (event) =>  {
+    // Skip default form functions
+    event.preventDefault();
+
     console.log('user-delete-confirm-button clicked!')
     // Retreive password retype from the input field
 
-    if ( retypePasswordToDeleteUserInput.value === userCredentials.password ) {
+    if ( passwordRetypeInput.value === userCredentials.password ) {
       delete_user( userCredentials.id, userCredentials.token );
+      // Clear the input field of the user edit confirmation password
+      passwordRetypeInput.innerText = '';
+      passwordRetypeInput.value = '';      
     } else {
       console.log('Delete failed!\nTry to retype your passord or to login again.');
     }
-/*     userDeleteButton.addEventListener('click', (event) =>  {
-      console.log('user-delete-form clicked!')
-    }); */
-
   });
 }
 
@@ -268,7 +266,7 @@ function respondToUserPanelClicks() {
 async function register_new_user(email, password) {
   // Show loading window while the async function is running
   loadingWindow.style.display = "block";
-  const fetchResponse = await fetch('http://localhost:3000/user/register', {
+  const fetchResponse = await fetch(apiRootPath+'/user/register', {
     method: 'POST',
     headers: {
         'Accept': 'application/json',
@@ -283,37 +281,35 @@ async function register_new_user(email, password) {
 
   const status = await fetchResponse.status;
   const json_response = await fetchResponse.json();
-  loadingWindow.style.display = "none";
+  const loginCredentials = json_response.login_request.body;
   switch (status) {
     // Success: User was created
     case 201: {
-      const registerCredentials = json_response.login_request.body;
       console.log(`${json_response.message}\n`,
         `User ID: ${json_response.id}`,
         `\nTo login use your credentials:\n`,
-        `Email: ${registerCredentials.email}\n`,
-        `Password: ${registerCredentials.password}`
+        `Email: ${loginCredentials.email}\n`,
+        `Password: ${loginCredentials.password}`
       );
       // Attempt user login with the new input password
-      login_user(registerCredentials.email, registerCredentials.password);
-      return registerCredentials;
+      login_user(loginCredentials.email, loginCredentials.password);
+      return loginCredentials;
     }      
     // Error: User already registered
     case 409: {
-      const registerCredentials = json_response.login_request.body;
       console.log(`Error ${status}:\n`,
         `${json_response.message}\n`,
         `User ID: ${json_response.id}`,
         `\nTo login use your credentials:\n`,
-        `Email: ${registerCredentials.email}\n`,
-        `Password: ${registerCredentials.password}`
+        `Email: ${loginCredentials.email}\n`,
+        `Password: ${loginCredentials.password}`
       );
       // Initialize user login form with the current user credentials
-      emailInput.value = registerCredentials.email;
-      passwordInput.value = registerCredentials.password;
-      // Attempt user login with the new input password
-      login_user(registerCredentials.email, registerCredentials.password);
-      return registerCredentials;
+      emailInput.value = loginCredentials.email;
+      passwordInput.value = loginCredentials.password;
+      // Attempt user login to create a valid logged token corresponding to the new user properties
+      login_user(loginCredentials.email, loginCredentials.password);
+      return loginCredentials;
     }
     case 500:{
       console.log(`Error ${status}:\n`,
@@ -322,13 +318,14 @@ async function register_new_user(email, password) {
       return '';
     }
   }
+  loadingWindow.style.display = "none";
 }
 
 // Asynchronous function to login a registered user
 async function login_user(email, password) {
   // Show loading window while the async function is running
   loadingWindow.style.display = "block";
-  const fetchResponse = await fetch('http://localhost:3000/user/login', {
+  const fetchResponse = await fetch(apiRootPath+'/user/login', {
     method: 'POST',
     headers: {
         'Accept': 'application/json',
@@ -336,7 +333,7 @@ async function login_user(email, password) {
     },
     body: `{ "email": "${email}", "password": "${password}" }`
   }).catch(err => {
-    console.log(`Critical error 666: Failed to login user (email ${email}, password ${email}) due to an unknown reason.\n\n`,err);
+    console.log(`Critical error 666: Failed to login user (email ${email}, password ${password}) due to an unknown reason.\n\n`,err);
     return  '';
   });
 
@@ -346,7 +343,14 @@ async function login_user(email, password) {
   switch (status) {
     // Success: User was created
     case 200: {
-      userCredentials = json_response.login_request.body;
+      const loggedCredentials = json_response.login_request.body;
+      // Apply the new user credentials
+      Object.keys(loggedCredentials).forEach(key => {
+        userCredentials[key] = loggedCredentials[key];
+      });
+      // Save logged user credentials in the local storage
+      saveToLocalStorage(STORAGE_KEY_LOGIN,userCredentials);
+
       console.log(`${json_response.message}\n`,
         `\nUser credentials:\n`,
         `User ID: ${userCredentials.id}`,
@@ -355,11 +359,25 @@ async function login_user(email, password) {
         `Email: ${userCredentials.email}\n`,
         `Password: ${userCredentials.password}`
       );
-      // Switch user panel mode from LOGIN to LOGGED
+      // Update LOGGED panel user info
       loggedUser.first_name.innerText = userCredentials.first_name;
       loggedUser.surname.innerText = userCredentials.surname;
       loggedUser.email.innerText = userCredentials.email;
       //loggedUser.password.innerText = userCredentials.password;
+      //loggedUser.image = userCredentials.image;
+
+      // Initialize user input form with the current user credentials
+      userEditInputs.first_name.value = userCredentials.first_name;
+      userEditInputs.surname.value = userCredentials.surname;
+      userEditInputs.email.value = userCredentials.email;
+      //userEditInputs.image.value = userCredentials.image;
+      // Empty the user new password input field
+      userEditInputs.password.value = '';
+      userEditInputs.password.innerText = '';
+      // Clear the input field of the user edit confirmation password
+      passwordRetypeInput.value = '';
+      passwordRetypeInput.innerText = '';
+
       userLoginStatusCheckbox.checked = true;
       userPanelToggleCheckbox.checked = false;
       // Save the user login credentials the local storage
@@ -383,21 +401,39 @@ async function login_user(email, password) {
 }
 
 // Asynchronous function to delete a logged user
-async function edit_user(idToEdit,token) {
+async function edit_user(idToEdit,currentToken) {
   // Show loading window while the async function is running
   loadingWindow.style.display = "block";
-  console.log('Attempting to edit user...\n');
-  const fetchResponse = await fetch('http://localhost:3000/user/edit', {
+
+  // Create a request body string
+  let fetchRequestBody = {};
+  // Initialize the request body string at least with the current user password
+  fetchRequestBody[`password`] = `${userCredentials.password}`;
+
+  // Create a request body string of non empty modified user credentials
+  Object.keys(userEditInputs).forEach(key => {
+    const newPropertyValue = userEditInputs[key].value.trim();
+    if ( (newPropertyValue.length > 0) && (userCredentials[key] != newPropertyValue) ) {
+      fetchRequestBody[`${key}`] = `${newPropertyValue}`;
+      console.log('key = ',key,'\nfetchRequestBody[key] = ',fetchRequestBody[key],'\n\nnewPropertyValue = ',newPropertyValue);
+    }
+  });
+
+  console.log(`Attempting to edit user with fetchRequestBody = \n`,JSON.stringify(fetchRequestBody));
+
+  const fetchResponse = await fetch(apiRootPath+'/user/'+idToEdit, {
     method: 'PATCH',
     headers: {
         //'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+        'Authorization': `Bearer ${currentToken}`
     },
-    body: `{ "id": "${idToEdit}", "first_name": "${userEditName.first_name.value.trim()}", "surname": "${userEditName.surname.value.trim()}", "password": "${userEditName.passwordRetype.value.trim()}" }`
+    body: JSON.stringify(fetchRequestBody)
+    //`{${fetchRequestBodyString}}`
+    //`{ "id": "${idToEdit}", "first_name": "${userEditInputs.first_name.value.trim()}", "surname": "${userEditInputs.surname.value.trim()}", "password": "${passwordRetypeInput.value.trim()}" }`
 
   }).catch(err => {
-    console.log(`Critical error 666: Failed to delete user ID ${id} due to an unknown reason.\n\n`,err);
+    console.log(`Critical error 666: Failed to delete user ID ${idToEdit} due to an unknown reason.\n\n`,err);
     // https://www.mongodb.com/docs/manual/reference/bson-types/#objectid
     return '';
   });
@@ -408,22 +444,24 @@ async function edit_user(idToEdit,token) {
   switch (status) {
     // Success: User was deleted
     case 200: {
-      const updatedCredentials = json_response.register_request.body;
+      // Extract the updated user credentials from the response to the fetch request
+      const updatedCredentials = json_response.updatedCredentials;
       // Apply the new user credentials
       Object.keys(updatedCredentials).forEach(key => {
         userCredentials[key] = updatedCredentials[key];
       });
-      console.log('User name after = ',userCredentials.first_name, userCredentials.surname);
+      // Save user login credentials in the local storage
+      saveToLocalStorage(STORAGE_KEY_LOGIN,userCredentials);
 
-      // Clear the input field of the user edit confirmation password
-      userEditName.passwordRetype.innerText = '';
-      userEditName.passwordRetype.value = '';
-      // Switch user panel mode from EDIT to LOGGED and then logout
-      userDeleteCheckbox.checked = false;
-      userEditCheckbox.checked = false;
-      userLogoutButton.click();
-      // Uncheck user login status checkbox before logout
-      //userLoginStatusCheckbox.checked = false;
+      login_user(userCredentials.email,userCredentials.password);
+
+      console.log(`${json_response.message}`,
+        `\nYour updated credentials:\n`,
+        `Name: ${userCredentials.first_name}\n`,
+        `Surname: ${userCredentials.surname}\n`,
+        `Email: ${userCredentials.email}\n`,
+        `Password: ${userCredentials.password}`
+      );
 
       // Returns registration credentials to undo user delete
       return userCredentials;
@@ -443,7 +481,7 @@ async function delete_user(id,token) {
   // Show loading window while the async function is running
   loadingWindow.style.display = "block";
   console.log('Attempting to delete user...\n');
-  const fetchResponse = await fetch('http://localhost:3000/user/'+id, {
+  const fetchResponse = await fetch(apiRootPath+'/user/'+id, {
     method: 'DELETE',
     headers: {
         //'Accept': 'application/json',
@@ -468,8 +506,6 @@ async function delete_user(id,token) {
         `Email: ${registerCredentials.email}\n`,
         `Password: ${registerCredentials.password}`
       );
-      // Clear the input field of the user delete confirmation password
-      retypePasswordToDeleteUserInput.value = '';
       // Switch user panel mode from EDIT to LOGGED and then logout
       userDeleteCheckbox.checked = false;
       userEditCheckbox.checked = false;
@@ -483,7 +519,7 @@ async function delete_user(id,token) {
     // Error status: 404 / 409 / 500
     default: {
       console.log(`Error ${status}:\n`,
-        `${json_response.message}\n`
+        `${json_response.message}\n!!!!!`
       );
       return '';
     }
@@ -492,7 +528,7 @@ async function delete_user(id,token) {
 
 function create_term(name, price) {
   console.log(JSON.stringify({ "name": name, "price": price }))
-  fetch('http://localhost:3000/products/', {
+  fetch(apiRootPath+'/products/', {
     method: 'POST',
     headers: {
         'Accept': 'application/json',
@@ -505,7 +541,7 @@ function create_term(name, price) {
 }
 
 async function update_term(id, propName, newPropertyValue) {
-  const patch_response = await fetch('http://localhost:3000/products/'+id, {
+  const patch_response = await fetch(apiRootPath+'/products/'+id, {
     method: 'PATCH',
     headers: {
         'Accept': 'application/json',
@@ -518,7 +554,7 @@ async function update_term(id, propName, newPropertyValue) {
 }
 
 function delete_term(id) {
-  fetch('http://localhost:3000/products/'+id, {
+  fetch(apiRootPath+'/products/'+id, {
     method: 'DELETE',
     headers: {
         'Accept': 'application/json',

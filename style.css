@@ -38,7 +38,7 @@ input:not(.edit-mode):focus::placeholder {
 /* Animation for spinner loaders */
 .fa-spin {
 	animation-direction: reverse;
-	animation-duration: 10000s;
+	animation-duration: 1000000s;
 }
 .loading-window {
 	display: none;
@@ -141,11 +141,12 @@ h1 {
 	z-index: 1;
 	min-width: 16rem;
 	color: rgb(160, 9, 147);
-}
-
-.user-panel-content table {
 	font-size: 1.2rem;
 }
+
+/* .user-panel-content table {
+	font-size: 1.2rem;
+} */
 .user-panel-content td {
 	padding: 0.1rem;
 }
@@ -470,11 +471,11 @@ switch between user LOGGED and EDIT panels via undisplayed checkbox */
 }
 
 /* EDIT mode & user-edit of any property: Hide user-logged-form */
-.user-edit-name-checkbox:checked ~ .container .user-logged-form,
-.user-edit-email-checkbox:checked ~ .container .user-logged-form,
-.user-edit-password-checkbox:checked ~ .container .user-logged-form,
-.user-edit-image-checkbox:checked ~ .container .user-logged-form,
-.user-delete-checkbox:checked ~ .container .user-logged-form {
+.user-edit-name-checkbox:checked ~ .container :is(.user-edit-image-button, .user-logged-form),
+.user-edit-email-checkbox:checked ~ .container :is(.user-edit-image-button, .user-logged-form),
+.user-edit-password-checkbox:checked ~ .container :is(.user-edit-image-button, .user-logged-form),
+.user-edit-image-checkbox:checked ~ .container :is(.user-edit-image-button, .user-logged-form),
+.user-delete-checkbox:checked ~ .container :is(.user-edit-image-button, .user-logged-form) {
 	display: none;
 }
 
@@ -482,9 +483,9 @@ switch between user LOGGED and EDIT panels via undisplayed checkbox */
 	display: none;
 }
 /* EDIT mode & not EDIT NAME mode: Show user-edit-confirm-inputs*/
-.user-edit-checkbox:checked	~ .user-edit-name-checkbox:checked ~ .container .user-edit-confirm-inputs,
-.user-edit-checkbox:checked	~ .user-edit-email-checkbox:checked ~ .container .user-edit-confirm-inputs,
-.user-edit-checkbox:checked	~ .user-edit-password-checkbox:checked ~ .container .user-edit-confirm-inputs,
-.user-edit-checkbox:checked	~ .user-edit-image-checkbox:checked ~ .container .user-edit-confirm-inputs {
+.user-edit-name-checkbox:checked ~ .container .user-edit-confirm-inputs,
+.user-edit-email-checkbox:checked ~ .container .user-edit-confirm-inputs,
+.user-edit-password-checkbox:checked ~ .container .user-edit-confirm-inputs,
+.user-edit-image-checkbox:checked ~ .container .user-edit-confirm-inputs {
 	display: block;
 }
