@@ -436,9 +436,18 @@ switch between user LOGIN and LOGGED panels via an undisplayed checkbox */
 	display: none;
 }
 
+/* If LOGGED & eye show-checkbox checked: Hide password-mask*/
+.user-log-status-checkbox:checked ~ .user-show-password-checkbox:not(:checked) ~ .container .logged-user-password {
+	display: none;
+}
+/* If LOGGED & eye show-checkbox checked: Hide password-mask*/
+.user-show-password-checkbox:checked ~ .container .logged-user-password-mask {
+	display: none;
+}
+
 /* Apply display for TERMS status (checked via javascript) */
 
-/* If LOGGED & no TERMS (unchecked via javascript): Hide */
+/* If LOGGED & no TERMS (unchecked via javascript): Hide TERMS list*/
 .user-log-status-checkbox:checked ~ .show-terms-checkbox:not(:checked) ~ .container .terms-list {
 	display: none;
 }
@@ -446,6 +455,7 @@ switch between user LOGIN and LOGGED panels via an undisplayed checkbox */
 .show-terms-checkbox:checked ~ .container .empty-list-message {
 	display: none;
 }
+
 
 /*******************************************************************/
 /* Clicks on user-edit and arrow-back 

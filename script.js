@@ -41,8 +41,8 @@ const userRegisterButton = document.querySelector('.user-register-button');
 const loggedUser = {
   first_name: document.querySelector('.logged-user-name-first'),
   surname: document.querySelector('.logged-user-name-surname'),
-  email: document.querySelector('.logged-user-email')/* ,
-  password: document.querySelector('.logged-user-password'),
+  email: document.querySelector('.logged-user-email'),
+  password: document.querySelector('.logged-user-password')/* ,
   image: document.querySelector('.user-dropdown-button-image.src') */
 };
 const userLogoutButton = document.querySelector('.user-logout-button');
@@ -363,7 +363,7 @@ async function login_user(email, password) {
       loggedUser.first_name.innerText = userCredentials.first_name;
       loggedUser.surname.innerText = userCredentials.surname;
       loggedUser.email.innerText = userCredentials.email;
-      //loggedUser.password.innerText = userCredentials.password;
+      loggedUser.password.innerText = userCredentials.password;
       //loggedUser.image = userCredentials.image;
 
       // Initialize user input form with the current user credentials

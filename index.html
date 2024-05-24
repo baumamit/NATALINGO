@@ -43,6 +43,7 @@
   <input id="user-panel-toggle-checkbox" class="user-panel-toggle-checkbox undisplayed" type="checkbox" checked >
   <input id="user-log-status-checkbox" class="user-log-status-checkbox undisplayed" type="checkbox">
   <input id="show-terms-checkbox" class="show-terms-checkbox undisplayed" type="checkbox">
+  <input id="user-show-password-checkbox" class="user-show-password-checkbox " type="checkbox">
   <input id="user-edit-checkbox" class="user-edit-checkbox undisplayed" type="checkbox">
   <input id="user-edit-name-checkbox" class="user-edit-name-checkbox undisplayed" type="checkbox">
   <input id="user-edit-email-checkbox" class="user-edit-email-checkbox undisplayed" type="checkbox">
@@ -125,18 +126,24 @@
                 <td>E-mail:</td>
                 <td><label class="logged-user-email" alt="Logged user email">email</label></td>
                 <td>
-                    <!-- User edit email button for checkbox -->
-                    <label id="user-edit-email-button" for="user-edit-email-checkbox" class="user-edit-email-button user-edit-panel" alt="Cambia la tua e-mail">
+                  <!-- User edit email button for checkbox -->
+                  <label id="user-edit-email-button" for="user-edit-email-checkbox" class="user-edit-email-button user-edit-panel" alt="Cambia la tua e-mail">
                     <img class="user-edit-email-icon" src="./images/pencil.png" alt="Pencil icon">
                   </label>
                 </td>
               </tr>
               <tr>
                 <td>Password:</td>
-                <td><label class="logged-user-password" alt="hidden user password">********</label></td>
                 <td>
-                    <!-- User edit password button for checkbox -->
-                    <label id="user-edit-password-button" for="user-edit-password-checkbox" class="user-edit-password-button user-edit-panel" alt="Cambia la tua password">
+                  <label class="logged-user-password" alt="User password"></label>
+                  <label class="logged-user-password-mask" alt="User password masked">********</label>
+                  <label id="user-show-password-button" for="user-show-password-checkbox" class="user-show-password-button" alt="Show password eye icon">
+                    <img class="user-show-password-icon" src="./images/eye.svg" alt="Eye icon">
+                  </label>
+                </td>
+                <td>
+                  <!-- User edit password button for checkbox -->
+                  <label id="user-edit-password-button" for="user-edit-password-checkbox" class="user-edit-password-button user-edit-panel" alt="Cambia la tua password">
                     <img class="user-edit-password-icon" src="./images/pencil.png" alt="Pencil icon">
                   </label>
                 </td>
