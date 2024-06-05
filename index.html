@@ -41,15 +41,16 @@
   <!-- ------------ INVISIBLE CHECKBOXES ------------ -->
   <!-- Invisible responsive checkbox to toggle dropdown content visibility -->
   <input id="user-panel-toggle-checkbox" class="user-panel-toggle-checkbox undisplayed" type="checkbox" checked >
-  <input id="user-log-status-checkbox" class="user-log-status-checkbox undisplayed" type="checkbox">
-  <input id="show-terms-checkbox" class="show-terms-checkbox undisplayed" type="checkbox">
+  <input id="user-log-status-checkbox" class="user-log-status-checkbox " type="checkbox">
+  <input id="user-login-register-checkbox" class="user-login-register-checkbox " type="checkbox">
+  <input id="show-terms-checkbox" class="show-terms-checkbox " type="checkbox">
   <input id="user-show-password-checkbox" class="user-show-password-checkbox " type="checkbox">
-  <input id="user-edit-checkbox" class="user-edit-checkbox undisplayed" type="checkbox">
-  <input id="user-edit-name-checkbox" class="user-edit-name-checkbox undisplayed" type="checkbox">
-  <input id="user-edit-email-checkbox" class="user-edit-email-checkbox undisplayed" type="checkbox">
-  <input id="user-edit-password-checkbox" class="user-edit-password-checkbox undisplayed" type="checkbox">
-  <input id="user-edit-image-checkbox" class="user-edit-image-checkbox undisplayed" type="checkbox">
-  <input id="user-delete-checkbox" class="user-delete-checkbox undisplayed" type="checkbox">
+  <input id="user-edit-checkbox" class="user-edit-checkbox " type="checkbox">
+  <input id="user-edit-name-checkbox" class="user-edit-name-checkbox " type="checkbox">
+  <input id="user-edit-email-checkbox" class="user-edit-email-checkbox " type="checkbox">
+  <input id="user-edit-password-checkbox" class="user-edit-password-checkbox " type="checkbox">
+  <input id="user-edit-image-checkbox" class="user-edit-image-checkbox " type="checkbox">
+  <input id="user-delete-checkbox" class="user-delete-checkbox " type="checkbox">
   
   <div class="container">
 
@@ -64,44 +65,20 @@
 
         <!-- Respond to user-dropdown-button by toggling the user-panel-toggle-checkbox -->
         <label for="user-panel-toggle-checkbox" class="user-dropdown-button" alt="User panel button" >
-          <!-- User image -->
-          <img class="user-dropdown-button-image" src= "./images/login_user_icon.png" alt="User image">
+          <!-- User image --> <!-- http://localhost:3000/uploads/user_image-66603683a7013be469f2095a.jpeg -->
+          <img id="user-dropdown-button-image" class="user-dropdown-button-image " src="./images/login_user_icon.png" alt="User image">
           <span class="user-dropdown-button-login">Accedi</span>
         </label>
         <!-- User edit image button for checkbox -->
-        <label id="user-edit-image-button" for="user-edit-image-checkbox" class="user-edit-image-button  user-edit-panel" alt="Cambia la foto dell'utente">
+        <label id="user-edit-image-button" for="user-edit-image-checkbox" class="user-edit-image-button user-logged-panel user-edit-panel" alt="Cambia la foto dell'utente">
           <img class="user-edit-image-icon" src="./images/pencil.png" alt="Pencil icon">
         </label>
 
         <div class="user-panel-content panel">
 
-          <form id="user-login-form" class="user-login-form">
-            <table class="credentials-input-table">
-              <tr>
-                <td>E-mail:</td>
-                <td><input class="email-input" type="text" placeholder="" ></td>
-              </tr>
-              <tr>
-                <td>Password:</td>
-                <td><input class="password-input" type="text" placeholder="" ></td>
-              </tr>
-            </table>
+          <div class="user-logged-panel">
+            <!-- <form id="user-logged-form" class="user-logged-form" > -->
 
-            <div class="login-buttons">
-              <!-- User login button for checkbox -->
-              <label class="user-login-button user-login-panel-button" alt="User login button">
-                <img class="user-icon" src="./images/logged-user.svg" alt="Logged user icon">
-                Accedi
-              </label>
-              <!-- User register button for checkbox -->
-              <label class="user-register-button user-login-panel-button" alt="User register button">
-                <img class="user-icon" src="./images/register_user.svg" alt="Register new user icon">
-                Registrati
-              </label>
-            </div>
-          </form> <!-- user-login-form -->
-
-          <form id="user-logged-form" class="user-logged-form" >
             <!-- Arrow back button for checkbox - Return to LOGGED panel -->
             <label id="back-to-user-logged-panel" for="user-edit-checkbox" class="back-to-user-logged-panel user-edit-panel" alt="Return to LOGGED panel">
               <img class="arrow-back" src="./images/arrow-back.svg" alt="Arrow back icon">
@@ -137,14 +114,17 @@
                 <td>
                   <label class="logged-user-password" alt="User password"></label>
                   <label class="logged-user-password-mask" alt="User password masked">********</label>
-                  <label id="user-show-password-button" for="user-show-password-checkbox" class="user-show-password-button" alt="Show password eye icon">
-                    <img class="user-show-password-icon" src="./images/eye.svg" alt="Eye icon">
-                  </label>
                 </td>
                 <td>
                   <!-- User edit password button for checkbox -->
                   <label id="user-edit-password-button" for="user-edit-password-checkbox" class="user-edit-password-button user-edit-panel" alt="Cambia la tua password">
                     <img class="user-edit-password-icon" src="./images/pencil.png" alt="Pencil icon">
+                  </label>
+                </td>
+                <td>
+                  <label id="user-show-password-button" for="user-show-password-checkbox" class="user-show-password-button" alt="Show password eye icon">
+                    <img class="user-show-password-icon" src="./images/eye.svg" alt="Eye icon">
+                    <img class="user-hide-password-icon" src="./images/eye-hide.svg" alt="Eye crossed icon">
                   </label>
                 </td>
               </tr>
@@ -176,9 +156,37 @@
               <div></div> <!-- Empty div just for aligning buttons vertically in flex display -->
             </div> <!-- user-edit-actions -->
 
-          </form> <!-- user-logged-form -->
+            <!-- </form> --> <!-- user-logged-form -->
+          </div> <!-- user-logged-inputs -->
 
-          <form id="user-edit-form" class="user-edit-form" >
+          <div class="login-panel-buttons user-login-panel">
+            <!-- User login button for user-log-status-checkbox (via JavaScript) -->
+            <label class="user-login-button login-panel-action-button" alt="User login button">
+              <img class="user-icon" src="./images/logged-user.svg" alt="Logged user active icon">
+              Accedi
+            </label>
+            <!-- User register button for user-login-register-checkbox -->
+            <label id="user-register-inactive-button" for="user-login-register-checkbox" class="user-register-inactive-button login-panel-inactive-button" alt="User register button">
+              <img class="user-icon" src="./images/register-user.svg" alt="Register new user inactive icon">
+              Registrati
+            </label>
+          </div>
+
+          <div class="register-panel-buttons user-register-panel">
+          <!-- User register button for user-login-register-checkbox -->
+            <label id="user-login-inactive-button" for="user-login-register-checkbox" class="user-login-inactive-button login-panel-inactive-button user-register-panel" alt="User login button">
+              <img class="user-icon" src="./images/logged-user.svg" alt="Register new user inactive icon">
+              Accedi
+            </label>
+            <!-- User register button for user-log-status-checkbox (via JavaScript) -->
+            <label class="user-register-button login-panel-action-button user-register-panel" alt="User register button">
+              <img class="user-icon" src="./images/register-user.svg" alt="Register new user active icon">
+              Registrati
+            </label>
+          </div>
+
+          <!-- <form id="user-edit-form" class="user-edit-form" method="post" enctype="multipart/form-data"> -->
+          <div class="user-credentials-inputs">
 
             <div class="user-edit-name-inputs">
               <!-- Arrow back button for checkbox - Return to user EDIT panel -->
@@ -186,14 +194,14 @@
                 <img class="arrow-back" src="./images/arrow-back.svg" alt="Arrow back icon" >
               </label>
 
-              <table class="user-edit-name-table">
+              <table class="user-edit-name-table user-register-panel">
                 <tr>
                   <td>Nome:</td>
-                  <td><input class="user-new-name-first-input" type="text" placeholder="New first name"></td>
+                  <td><input class="user-new-name-first-input" type="text"></td>
                 </tr>
                 <tr>
                   <td>Cognome:</td>
-                  <td><input class="user-new-name-surname-input" type="text" placeholder="New surname" ></td>
+                  <td><input class="user-new-name-surname-input" type="text"></td>
                 </tr>
               </table> <!-- user-edit-name-table -->
             </div> <!-- user-edit-name-inputs -->
@@ -204,10 +212,10 @@
                 <img class="arrow-back" src="./images/arrow-back.svg" alt="Arrow back icon" >
               </label>
 
-              <table class="user-edit-email-table">
+              <table class="user-edit-email-table user-login-panel user-register-panel">
                 <tr>
-                  <td>Nuovo indirizzo e-mail:</td>
-                  <td><input class="user-new-email-input" type="text" placeholder="New email"></td>
+                  <td>E-mail:</td>
+                  <td><input class="user-new-email-input" type="text"></td>
                 </tr>
               </table> <!-- user-edit-email-table -->
             </div> <!-- user-edit-email-inputs -->
@@ -218,79 +226,102 @@
                 <img class="arrow-back" src="./images/arrow-back.svg" alt="Arrow back icon" >
               </label>
 
-              <table class="user-edit-password-table">
+              <table class="user-edit-password-table user-login-panel user-register-panel">
                 <!-- <tr>
                   <td>Password attuale:</td>
                   <td><input class="user-edit-password-old-input" type="text" placeholder="********" ></td>
                 </tr> -->
                 <tr>
-                  <td>Nuova password:</td>
+                  <td>Password:</td>
                   <td><input class="user-new-password-input" type="text" placeholder="" ></td>
                 </tr>
               </table> <!-- user-edit-password-table -->
             </div> <!-- user-edit-password-inputs -->
 
-            <div class="user-edit-image-inputs">
-              <!-- Arrow back button for checkbox - Return to user EDIT panel -->
-              <label for="user-edit-image-checkbox" class="back-to-user-edit-panel" alt="Go back to user-edit-panel">
-                <img class="arrow-back" src="./images/arrow-back.svg" alt="Arrow back icon" >
-              </label>
+          </div> <!-- user-credentials-inputs -->
 
-              <label>
-                Carica la tua nuova foto utente:
-                <br>
-                <input id="user-new-image-input" class="user-new-image-input" 
-                  type="file" placeholder="New image" alt="New user image input">
-              </label>
-            </div> <!-- user-edit-image-inputs -->
+          <div class="user-edit-image-inputs">
+            <!-- Arrow back button for checkbox - Return to user EDIT panel -->
+            <label for="user-edit-image-checkbox" class="back-to-user-edit-panel" alt="Go back to user-edit-panel">
+              <img class="arrow-back" src="./images/arrow-back.svg" alt="Arrow back icon" >
+            </label>
 
-
-            <div class="user-edit-confirm-inputs">
+            <label class="user-edit-image-section user-register-panel">
               <br>
-              <label>
-                Ridigita la tua password per confermare:
-                <br>
-                <input id="retype-password-to-edit-user-input" class="retype-password-to-edit-user-input" 
-                  type="text" placeholder="********" alt="Retype password to confirm change">
-              </label>
-
+              Carica la tua foto:
+              <br>
+              <input id="user-new-image-input" class="user-new-image-input" 
+                type="file" name='user_image' placeholder="New image" alt="New user image input">
               <br>
               <br>
-              <label id="user-edit-confirm-button" class="user-edit-confirm-button user-action-button" alt="Confirm user edit button">
-                <img class="user-icon" src="./images/checkmark.png" alt="Checkmark icon">
-                Conferma il cambio
-              </label>
+            </label>
+          </div> <!-- user-edit-image-inputs -->
 
-              <!-- Empty div just for aligning buttons vertically in flex display -->
-              <div></div>
-            </div> <!-- user-edit-confirm-inputs -->
+          <div class="user-edit-confirm-inputs">
+            <br>
+            <label class="retype-password-to-edit-user-section">
+              Ridigita la tua password per confermare:
+              <br>
+              <input id="retype-password-to-edit-user-input" class="retype-password-to-edit-user-input" 
+                type="text" placeholder="********" alt="Retype password to confirm change">
+            </label>
 
-            <div id="user-delete-inputs" class="user-delete-inputs">
-              <!-- <label alt="Confirm user delete button">Ridigita la tua password per eliminare l'utente
-                <input type="text" id="retype-password-to-delete-user-input" class="retype-password-to-delete-user-input"
-                  placeholder="********">
-              </label> -->
+            <br>
+            <br>
+            <label id="user-edit-confirm-button" class="user-edit-confirm-button user-action-button" alt="Confirm user edit button">
+              <img class="user-icon" src="./images/checkmark.png" alt="Checkmark icon">
+              Conferma il cambio
+            </label>
 
-              <p>
-                <br>
-                L'eliminazione di un utente è irreversibile.
-                <br>
-                <br>
-                Vuoi veramente eliminare l'utente?
-              </p>
+            <!-- Empty div just for aligning buttons vertically in flex display -->
+            <div></div>
+          </div> <!-- user-edit-confirm-inputs -->
 
-              <label id="user-delete-cancel-button" for="user-delete-checkbox" class="user-delete-cancel-button user-action-button" alt="User delete cancel button">
-                <img class="user-icon" src="./images/arrow-back.svg" alt="Cancel user DELETE / arrow-back icon">
-                NO<br>Annulla
-              </label>
+          <div id="user-delete-inputs" class="user-delete-inputs">
+            <!-- <label alt="Confirm user delete button">Ridigita la tua password per eliminare l'utente
+              <input type="text" id="retype-password-to-delete-user-input" class="retype-password-to-delete-user-input"
+                placeholder="********">
+            </label> -->
 
-              <label id="user-delete-confirm-button" class="user-delete-confirm-button user-action-button" alt="User delete confirm button">
-                <img class="user-icon" src="./images/trash.png" alt="Confirm user DELETE / trash icon">
-                SÌ<br>Elimina utente!
-              </label>
-            </div> <!-- user-delete-inputs -->
+            <p>
+              <br>
+              L'eliminazione di un utente è irreversibile.
+              <br>
+              <br>
+              Vuoi veramente eliminare l'utente?
+            </p>
 
-          </form> <!-- user-edit-form -->
+            <label id="user-delete-cancel-button" for="user-delete-checkbox" class="user-delete-cancel-button user-action-button" alt="User delete cancel button">
+              <img class="user-icon" src="./images/arrow-back.svg" alt="Cancel user DELETE / arrow-back icon">
+              NO, annulla
+            </label>
+
+            <label id="user-delete-confirm-button" class="user-delete-confirm-button user-action-button" alt="User delete confirm button">
+              <img class="user-icon" src="./images/trash.png" alt="Confirm user DELETE / trash icon">
+              SÌ, elimina utente!
+            </label>
+          </div> <!-- user-delete-inputs -->
+
+          <!-- </form> --> <!-- user-edit-form -->
+            
+          <!-- <table class="credentials-input-table">
+            <tr class="user-register-panel">
+              <td>Nome:</td>
+              <td><input class="first-name-input" type="text" placeholder="" ></td>
+            </tr>
+            <tr class="user-register-panel">
+              <td>Cognome:</td>
+              <td><input class="surname-input" type="text" placeholder="" ></td>
+            </tr>
+            <tr class="user-login-panel">
+              <td>E-mail:</td>
+              <td><input class="email-input" type="text" placeholder="" ></td>
+            </tr>
+            <tr class="user-login-panel">
+              <td>Password:</td>
+              <td><input class="password-input" type="text" placeholder="" ></td>
+            </tr>
+          </table> -->
 
         </div> <!-- user-panel-content -->
 
@@ -332,7 +363,7 @@
             <img class="scaling-svg" src="images/add.svg" alt="plus icon" >
           </button>
         </div>
-      </form>
+      </form> <!-- add-new-term-form -->
 
     </main>
   </div>

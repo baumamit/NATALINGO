@@ -30,7 +30,7 @@ input::-moz-selection, input::selection {
 	color: rgb(254, 251, 185);
 	background: rgb(160, 9, 147);
 }
-
+/* Except for class .edit-mode (for editting a term), hide the placeholder after clicking the input field */
 input:not(.edit-mode):focus::placeholder {
 	color: transparent;
 }
@@ -90,7 +90,7 @@ header {
 
 h1 {
 	color: rgb(254, 251, 185);
-	font-size: 1.5rem;
+	font-size: 2rem;
 }
 
 /* Panel */
@@ -107,7 +107,7 @@ h1 {
 	font-weight: 600;
 }
 
-/* Style user panel dropdown button (user image) */
+/* Style user panel dropdown button (user avatar/image) */
 .user-dropdown-button { 
 	display: inline-block;
 	cursor: pointer;
@@ -124,9 +124,9 @@ h1 {
 }
 /* User avatar image in the user dropdown menu button */
 .user-dropdown-button-image{
-	/* display: none; */
-	width: 2.5rem;
-	padding: 0.2rem;
+	width: 4rem;
+	padding: 0.2rem 0.2rem 0 0.2rem;
+	border-radius: 40%;
 }
 /* Text of user dropdown menu button for an unlogged user instead of avatar image */
 .user-dropdown-button-login {
@@ -144,16 +144,24 @@ h1 {
 	font-size: 1.2rem;
 }
 
-/* .user-panel-content table {
-	font-size: 1.2rem;
-} */
 .user-panel-content td {
 	padding: 0.1rem;
 }
-.user-panel-content input {
+.user-panel-content input:not(.user-new-image-input) {
 	max-width: 12rem;
 	padding: 0.3rem;
 	border-radius: 0.8rem;
+	border: none;
+	font-size: inherit;
+	font-weight: inherit;
+	color: inherit;
+	background-color: rgb(254, 251, 185);
+}
+.user-new-image-input {
+	min-width: 5rem;
+	max-width: 18rem;
+	margin: 0.2rem 0;
+	border-radius: 0 0.8rem 0.8rem 0;
 	border: none;
 	font-size: inherit;
 	font-weight: inherit;
@@ -168,31 +176,52 @@ h1 {
 	transition: 0.2s;
 }
 
-.user-panel-content button, .arrow-back, .user-action-button, .user-login-panel-button {
+.user-panel-content button, .arrow-back, .user-action-button, .login-panel-action-button {
 	cursor: pointer;
 	color: rgb(254, 251, 185);
 	background-color: rgb(160, 9, 147);
 	border: none;
 }
-
-.user-panel-content button:hover, .arrow-back:hover, .user-action-button:hover, .user-login-panel-button:hover {
+.user-panel-content button:hover, .arrow-back:hover, .user-action-button:hover, .login-panel-action-button:hover {
 	color: rgb(160, 9, 147);
 	background-color: rgb(254, 251, 185);
 	transition: 0.2s;
 }
-.user-panel-content button:active, .arrow-back:active, .user-action-button:active, .user-login-panel-button:active {
+.user-panel-content button:active, .arrow-back:active, .user-action-button:active, .login-panel-action-button:active {
 	color: black;
 	background-color: rgb(255, 183, 0);
 	transition: 0.2s;
 }
 
-.login-buttons {
+.user-credentials-inputs td {
+	min-width: 100px;
+}
+.login-panel-inactive-button {
+	cursor: pointer;
+	color: rgb(160, 9, 147);
+	background-color: rgb(254, 251, 185, 0);
+	border: 0.15rem solid;
+	transition: 0.2s;
+}
+.login-panel-inactive-button:hover {
+	cursor: pointer;
+	color: rgb(160, 9, 147);
+	background-color: rgb(254, 251, 185);
+	border: 0.15rem solid;
+}
+.login-panel-inactive-button:active {
+	color: black;
+	background-color: rgb(255, 183, 0);
+	transition: 0.2s;
+}
+
+.login-panel-buttons, .register-panel-buttons {
 	display: flex;
 	justify-content: space-around;
 	padding: 0.5rem;
 }
 
-.user-login-panel-button {
+.login-panel-action-button, .login-panel-inactive-button {
 	font-size: 1rem;
 	font-weight: inherit;
 	width: 6rem;
@@ -203,7 +232,7 @@ h1 {
 	line-height: 0;
 }
 
-.user-login-panel-button img {
+.login-panel-action-button img, .login-panel-inactive-button img {
 	width: 5rem;
 }
 
@@ -290,7 +319,6 @@ h1 {
 }
 
 .unlogged-user-message, .empty-list-message {
-	/* display: none; */
 	text-align: center;
 	font-weight: bold;
 	font-size: 2rem;
@@ -415,7 +443,7 @@ h1 {
 /* ______________________________________________________________________ */
 
 /* If user-panel-toggle-checkbox is not checked: Hide dropdown user menu */
-.user-panel-toggle-checkbox:not(:checked) ~ .container .user-panel-content {
+.user-panel-toggle-checkbox:not(:checked) ~ .container :is(.user-panel-content, .user-edit-image-button) {
 	display: none;
 }
 
@@ -426,22 +454,31 @@ switch between user LOGIN and LOGGED panels via an undisplayed checkbox */
 /* Apply display for LOGOUT status (default) */
 /* If LOGOUT: Hide all elements under user panel content except for user login form, empty list message, TERMS list*/
 .user-log-status-checkbox:not(:checked) ~ .container 
-:is(.user-dropdown-button-image, .user-edit-image-button, .user-panel-content > :not(.user-login-form), .terms-list, .empty-list-message, .add-term) {
+:is(.user-dropdown-button-image, .user-logged-panel, .back-to-user-edit-panel, .user-edit-confirm-inputs, .user-delete-inputs, .terms-list, .empty-list-message, .add-term) {
+	display: none;
+}
+
+.user-log-status-checkbox:not(:checked) ~ .user-login-register-checkbox:not(:checked) ~ .container :is(.user-register-panel:not(.user-login-panel), .register-panel-buttons) {
+	display: none;
+}
+.user-login-register-checkbox:checked ~ .container .login-panel-buttons  {
 	display: none;
 }
 
 /* Apply display for LOGGED status (checked via javascript) */
 /* If LOGGED: Hide user avatar label, 'unlogged user' message */
-.user-log-status-checkbox:checked ~ .container :is(.user-dropdown-button-login, .user-login-form, .unlogged-user-message) {
+.user-log-status-checkbox:checked ~ .container :is(.user-dropdown-button-login, .login-panel-buttons, .register-panel-buttons, .unlogged-user-message) {
 	display: none;
 }
 
-/* If LOGGED & eye show-checkbox checked: Hide password-mask*/
-.user-log-status-checkbox:checked ~ .user-show-password-checkbox:not(:checked) ~ .container .logged-user-password {
+/* If LOGGED & eye show-checkbox not checked: Hide password and eye-hidden icon */
+.user-log-status-checkbox:checked ~ .user-show-password-checkbox:not(:active) ~ .container 
+:is(.logged-user-password, .user-hide-password-icon) {
 	display: none;
 }
-/* If LOGGED & eye show-checkbox checked: Hide password-mask*/
-.user-show-password-checkbox:checked ~ .container .logged-user-password-mask {
+/* If LOGGED & eye show-checkbox active: Hide password-mask and eye icon */
+.user-show-password-checkbox:active ~ .container 
+:is(.logged-user-password-mask, .user-show-password-icon) {
 	display: none;
 }
 
@@ -461,41 +498,45 @@ switch between user LOGIN and LOGGED panels via an undisplayed checkbox */
 /* Clicks on user-edit and arrow-back 
 switch between user LOGGED and EDIT panels via undisplayed checkbox */
 
-/* If LOGGED & not user EDIT (default and after arrow-back button clicked): Hide user-edit-panel, user-edit-form  */
+/* If LOGGED & not user EDIT mode (default and after arrow-back button clicked): Hide user-edit-panel, user-edit-form  */
 .user-log-status-checkbox:checked ~ .user-edit-checkbox:not(:checked) ~ .container 
-:is(.user-edit-panel, .user-edit-form) {
+:is(.user-edit-panel, .user-register-panel, .back-to-user-edit-panel, .user-delete-inputs, .user-edit-confirm-inputs) {
 	display: none;
 }
 
-.user-edit-checkbox:checked ~ .container .user-logged-panel-actions {
+/* If LOGGED & in user EDIT mode: Hide user-edit-panel, user-edit-form  */
+.user-edit-checkbox:checked ~ .container 
+:is(.user-show-password-icon, .user-hide-password-icon, .user-logged-panel-actions) {
 	display: none;
 }
 
-/* EDIT mode & not EDIT user credentials mode: Hide all user-edit inputs */
-.user-edit-name-checkbox:not(:checked) ~ .container .user-edit-name-inputs,
-.user-edit-email-checkbox:not(:checked) ~ .container .user-edit-email-inputs,
-.user-edit-password-checkbox:not(:checked) ~ .container .user-edit-password-inputs,
-.user-edit-image-checkbox:not(:checked) ~ .container .user-edit-image-inputs,
-.user-delete-checkbox:not(:checked) ~ .container .user-delete-inputs {
+/* If in user EDIT mode & not user-edit of any property: Hide all user-edit inputs */
+.user-log-status-checkbox:checked ~ .user-edit-name-checkbox:not(:checked) ~ .container :is(.user-edit-name-inputs),
+.user-log-status-checkbox:checked ~ .user-edit-email-checkbox:not(:checked) ~ .container .user-edit-email-inputs,
+.user-log-status-checkbox:checked ~ .user-edit-password-checkbox:not(:checked) ~ .container .user-edit-password-inputs,
+.user-log-status-checkbox:checked ~ .user-edit-image-checkbox:not(:checked) ~ .container .user-edit-image-inputs,
+.user-log-status-checkbox:checked ~ .user-delete-checkbox:not(:checked) ~ .container .user-delete-inputs {
 	display: none;
 }
 
-/* EDIT mode & user-edit of any property: Hide user-logged-form */
-.user-edit-name-checkbox:checked ~ .container :is(.user-edit-image-button, .user-logged-form),
-.user-edit-email-checkbox:checked ~ .container :is(.user-edit-image-button, .user-logged-form),
-.user-edit-password-checkbox:checked ~ .container :is(.user-edit-image-button, .user-logged-form),
-.user-edit-image-checkbox:checked ~ .container :is(.user-edit-image-button, .user-logged-form),
-.user-delete-checkbox:checked ~ .container :is(.user-edit-image-button, .user-logged-form) {
+/* If in user EDIT mode & user-edit of any property: Hide user-logged-panel */
+.user-edit-name-checkbox:checked ~ .container :is(.user-edit-image-button, .user-logged-panel),
+.user-edit-email-checkbox:checked ~ .container :is(.user-edit-image-button, .user-logged-panel),
+.user-edit-password-checkbox:checked ~ .container :is(.user-edit-image-button, .user-logged-panel),
+.user-edit-image-checkbox:checked ~ .container :is(.user-edit-image-button, .user-logged-panel),
+.user-delete-checkbox:checked ~ .container :is( .user-edit-image-button, .user-logged-panel, 
+.user-edit-confirm-inputs :not(.retype-password-to-edit-user-section, input) ) {
 	display: none;
 }
 
 .user-edit-confirm-inputs {
 	display: none;
 }
-/* EDIT mode & not EDIT NAME mode: Show user-edit-confirm-inputs*/
+/* If in user EDIT mode & user-edit of any property: Show user-edit-confirm-inputs*/
 .user-edit-name-checkbox:checked ~ .container .user-edit-confirm-inputs,
 .user-edit-email-checkbox:checked ~ .container .user-edit-confirm-inputs,
 .user-edit-password-checkbox:checked ~ .container .user-edit-confirm-inputs,
-.user-edit-image-checkbox:checked ~ .container .user-edit-confirm-inputs {
+.user-edit-image-checkbox:checked ~ .container .user-edit-confirm-inputs,
+.user-delete-checkbox:checked ~ .container  .user-edit-confirm-inputs {
 	display: block;
 }

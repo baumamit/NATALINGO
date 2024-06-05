@@ -20,6 +20,8 @@ const STORAGE_KEY_LOGIN = '__natalingo.user.02__';
 const userPanel = document.querySelector('.user-panel');
 const userPanelToggleCheckbox = document.querySelector('.user-panel-toggle-checkbox');
 const userLoginStatusCheckbox = document.querySelector('.user-log-status-checkbox');
+const userRegisterCheckbox = document.querySelector('.user-register-checkbox');
+
 const loadingWindow = document.querySelector('.loading-window');
 
 //const userDropdownButton = document.querySelector('.user-dropdown-button');
@@ -32,18 +34,20 @@ const loadingWindow = document.querySelector('.loading-window');
   password: document.querySelector('.user-register-password-input')
 }; */
 
+// Import user-login-form elemetns
 const emailInput = document.querySelector('.email-input');
 const passwordInput = document.querySelector('.password-input');
 const userLoginButton = document.querySelector('.user-login-button');
 const userRegisterButton = document.querySelector('.user-register-button');
 
-// Import user-logged-form / info box elemetns
-const loggedUser = {
+// Import user-logged-inputs / info box elemetns
+let loggedUser = {
   first_name: document.querySelector('.logged-user-name-first'),
   surname: document.querySelector('.logged-user-name-surname'),
   email: document.querySelector('.logged-user-email'),
-  password: document.querySelector('.logged-user-password')/* ,
-  image: document.querySelector('.user-dropdown-button-image.src') */
+  password: document.querySelector('.logged-user-password'),
+  // User image path or URL
+  user_image: document.getElementById('user-dropdown-button-image')
 };
 const userLogoutButton = document.querySelector('.user-logout-button');
 const showTermsCheckbox = document.querySelector('.show-terms-checkbox');
@@ -63,9 +67,8 @@ const userEditInputs = {
   surname: document.querySelector('.user-new-name-surname-input'),
   email: document.querySelector('.user-new-email-input'),
   password: document.querySelector('.user-new-password-input'),
-  //image:  document.querySelector('.user-new-image-input'),
-  //password_retype: document.querySelector('.retype-password-to-edit-user-input')
 };
+const userNewImageInput = document.querySelector('.user-new-image-input');
 const passwordRetypeInput = document.querySelector('.retype-password-to-edit-user-input');
 
 const userEditConfirmButton = document.querySelector('.user-edit-confirm-button');
@@ -117,8 +120,8 @@ if (storageLogin) {
   userCredentials = JSON.parse(storageLogin);
   if (userCredentials.email) {
     // Initialize user login form with the current user credentials
-    emailInput.value = userCredentials.email;
-    passwordInput.value = userCredentials.password;
+    userEditInputs.email.value = userCredentials.email;
+    userEditInputs.password.value = userCredentials.password;
     // Login user
     login_user(userCredentials.email, userCredentials.password);
   }
@@ -161,21 +164,32 @@ function respondToUserPanelClicks() {
   userRegisterButton.addEventListener('click', async (event) =>  {
     // Skip default form functions
     event.preventDefault();
-    // Retreive login credentials from the input fields
-    const email = emailInput.value.trim();
-    // If the email input field is empty...
-    if ( email.length === 0 ) {
-      console.log('Enter a valid email');
+
+    // Create a request body string from the input fields of at least an email and a password
+    let userPropertiesToRegister = {};
+    // Create a request body string of non empty modified user credentials
+    Object.keys(userEditInputs).forEach(key => {
+      userPropertiesToRegister[key] = userEditInputs[key].value.trim();
+    });
+
+    // If the email or password field is empty...
+    if ( !userPropertiesToRegister.email || !userPropertiesToRegister.password ) {
+      console.log('Enter valid email and password!');
     }
-    const password = passwordInput.value;
-    // If the password input field is empty...
-    if ( password.length === 0 ) {
-      console.log('Enter a valid password');
-    }
-    // If the field is not empty...
-    if ( email.length > 0 && password.length ) {
-      // Attempt to register
-      /* const user = await  */register_new_user(email, password);
+    else {
+    // If the email and password fields are not empty attempt to register
+      /* const user = await  */register_new_user(userPropertiesToRegister);
+      // If the user exist and there is a new user image in the input form...
+      if ( userCredentials.user_image && userNewImageInput.value ) {
+        console.log('userNewImageInput.value', userNewImageInput.value);
+        // Create a form to attach a file to the fetch request body
+        let userNewImageFile = new FormData();
+        //const formDataA = {user_image: userNewImageInput.files[0]};
+        userNewImageFile.append('user_image', userNewImageInput.files[0]/* ,'user_image' */);
+        //userNewImageFile.append('user_image', 'hubot');
+        edit_user_image(userNewImageFile);
+      }
+
     }
   });
 
@@ -185,14 +199,14 @@ function respondToUserPanelClicks() {
     event.preventDefault();
 
     // Retreive login credentials from the input fields
-    const email = emailInput.value.trim();
+    const email = userEditInputs.email.value.trim();
     // If the email input field is empty...
-    if ( email.length === 0 ) {
+    if ( !email ) {
       console.log('Enter a valid email');
     }
-    const password = passwordInput.value;
+    const password = userEditInputs.password.value.trim();
     // If the password input field is empty...
-    if ( password.length === 0 ) {
+    if ( !password ) {
       console.log('Enter a valid password');
     }
 
@@ -209,8 +223,8 @@ function respondToUserPanelClicks() {
     // Show loading window while the async function is running
     loadingWindow.style.display = "block";
     // Initialize user login form with the current user credentials
-    emailInput.value = userCredentials.email;
-    passwordInput.value = userCredentials.password;
+    userEditInputs.email.value = userCredentials.email;
+    userEditInputs.password.value = userCredentials.password;
     // Load logged user terms */
     load_user_terms();
     // Save user login credentials in the local storage without password for security
@@ -225,19 +239,49 @@ function respondToUserPanelClicks() {
     event.preventDefault();
         
     console.log('user-edit-confirm-button clicked!')
+    // Compare the current user password with the retyped password to confirm the edit
     if ( passwordRetypeInput.value === userCredentials.password ) {
-      console.log('\n\n\n\nuserCredentials before = ',userCredentials.first_name, userCredentials.surname);
-      edit_user(userCredentials.id, userCredentials.token);
-      // Clear the input field of the user edit confirmation password
-      passwordRetypeInput.innerText = '';
-      passwordRetypeInput.value = '';
+      // If there is a new user image in the input form
+      if (userNewImageInput.value) {
+        console.log('userNewImageInput.value', userNewImageInput.value);
+        // Create a form to attach a file to the fetch request body
+        let userNewImageFile = new FormData();
+        //const formDataA = {user_image: userNewImageInput.files[0]};
+        userNewImageFile.append('user_image', userNewImageInput.files[0]/* ,'user_image' */);
+        //userNewImageFile.append('user_image', 'hubot');
+        edit_user_image(userNewImageFile);
+      }
 
-      // Uncheck all the user edit property panels
-      userEditNameCheckbox.checked = false;
-      userEditEmailCheckbox.checked = false;
-      userEditPasswordCheckbox.checked = false;
-      userEditImageCheckbox.checked = false;
+      // Define a flag to check if new user properties are found in the input fields
+      let editFlag = false;
+      // Create a request body string
+      let userPropertiesToEdit = {};
+      // Create a request body string of non empty modified user credentials
+      Object.keys(userEditInputs).forEach(key => {
+        const newPropertyValue = userEditInputs[key].value.trim();
+        if ( (newPropertyValue.length > 0) && (userCredentials[key] != newPropertyValue) ) {
+          userPropertiesToEdit[key] = newPropertyValue;
+          // At least 1 new user property is found in the input fields and needs to be updated
+          editFlag = true;
+        }
+      });
+      // If there are new user properties to update
+      if (editFlag) {
+        // If there is no new password to update use the current password for verification
+        if (isNaN(userPropertiesToEdit.password)) {
+          // Initialize the request body string at least with the current user password
+          userPropertiesToEdit.password = userCredentials.password;
+        }
+        edit_user(userPropertiesToEdit);
+        // Clear the input field of the user edit confirmation password
+        passwordRetypeInput.innerText = '';
+        passwordRetypeInput.value = '';
 
+        // Uncheck all the user edit property checkbox to hide panels
+        userEditNameCheckbox.checked = false;
+        userEditEmailCheckbox.checked = false;
+        userEditPasswordCheckbox.checked = false;
+      }
     } else {
       console.log('Edit failed!\nTry to retype your password or to login again.');
     }
@@ -263,18 +307,35 @@ function respondToUserPanelClicks() {
 }
 
 // Asynchronous function to register a new user
-async function register_new_user(email, password) {
+async function register_new_user(fetchRequestBody) {
   // Show loading window while the async function is running
   loadingWindow.style.display = "block";
+
+  // Create a request body string
+  //let fetchRequestBody = {};
+  // Initialize the request body string at least with the current user password
+  //fetchRequestBody[`password`] = `${userCredentials.password}`;
+
+  // Create a request body string of non empty modified user credentials
+/*   Object.keys(userEditInputs).forEach(key => {
+    const newPropertyValue = userEditInputs[key].value.trim();
+    if ( (newPropertyValue.length > 0) && (userCredentials[key] != newPropertyValue) ) {
+      fetchRequestBody[`${key}`] = `${newPropertyValue}`;
+      console.log('key = ',key,'\nfetchRequestBody[key] = ',fetchRequestBody[key],'\n\nnewPropertyValue = ',newPropertyValue);
+    }
+  });
+ */
+  console.log(`Attempting to register a new user with fetchRequestBody = \n`,JSON.stringify(fetchRequestBody));
+
   const fetchResponse = await fetch(apiRootPath+'/user/register', {
     method: 'POST',
     headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
     },
-    body: `{ "first_name": "Nome", "surname": "Cognome", "email": "${email}", "password": "${password}" }`
+    body: JSON.stringify(fetchRequestBody)/* ,`{ "first_name": "${userCredentials.first_name}", "surname": "${userCredentials.surname}", "email": "${userCredentials.email}", "password": "${userCredentials.password}" }` */
   }).catch(err => {
-    console.log(`Critical error 666: Failed to register user with the email ${email} due to an unknown reason.\n\n`,err);
+    console.log(`Critical error 666: Failed to register user with the email ${userCredentials.email} due to an unknown reason.\n\n`,err);
     // https://www.mongodb.com/docs/manual/reference/bson-types/#objectid
     return  '';
   });
@@ -289,7 +350,8 @@ async function register_new_user(email, password) {
         `User ID: ${json_response.id}`,
         `\nTo login use your credentials:\n`,
         `Email: ${loginCredentials.email}\n`,
-        `Password: ${loginCredentials.password}`
+        `Password: ${loginCredentials.password}\n`,
+        `Image URL: ${loginCredentials.user_image}\n`
       );
       // Attempt user login with the new input password
       login_user(loginCredentials.email, loginCredentials.password);
@@ -302,11 +364,12 @@ async function register_new_user(email, password) {
         `User ID: ${json_response.id}`,
         `\nTo login use your credentials:\n`,
         `Email: ${loginCredentials.email}\n`,
-        `Password: ${loginCredentials.password}`
+        `Password: ${loginCredentials.password}\n`,
+        `Image URL: ${loginCredentials.user_image}\n`
       );
       // Initialize user login form with the current user credentials
-      emailInput.value = loginCredentials.email;
-      passwordInput.value = loginCredentials.password;
+      userEditInputs.email.value = loginCredentials.email;
+      userEditInputs.password.value = loginCredentials.password;
       // Attempt user login to create a valid logged token corresponding to the new user properties
       login_user(loginCredentials.email, loginCredentials.password);
       return loginCredentials;
@@ -353,24 +416,25 @@ async function login_user(email, password) {
 
       console.log(`${json_response.message}\n`,
         `\nUser credentials:\n`,
-        `User ID: ${userCredentials.id}`,
-        `Name: ${userCredentials.first_name}`,
-        `Surname: ${userCredentials.surname}`,
+        `User ID: ${userCredentials.id}\n`,
+        `Name: ${userCredentials.first_name}\n`,
+        `Surname: ${userCredentials.surname}\n`,
         `Email: ${userCredentials.email}\n`,
-        `Password: ${userCredentials.password}`
+        `Password: ${userCredentials.password}\n`,
+        `Image URL: ${userCredentials.user_image}\n`
       );
-      // Update LOGGED panel user info
+      // Update LOGGED panel user info to be displayed
       loggedUser.first_name.innerText = userCredentials.first_name;
       loggedUser.surname.innerText = userCredentials.surname;
       loggedUser.email.innerText = userCredentials.email;
       loggedUser.password.innerText = userCredentials.password;
-      //loggedUser.image = userCredentials.image;
+      loggedUser.user_image.src = userCredentials.user_image;
 
       // Initialize user input form with the current user credentials
       userEditInputs.first_name.value = userCredentials.first_name;
       userEditInputs.surname.value = userCredentials.surname;
       userEditInputs.email.value = userCredentials.email;
-      //userEditInputs.image.value = userCredentials.image;
+      //userEditInputs.user_image.src = userCredentials.user_image;
       // Empty the user new password input field
       userEditInputs.password.value = '';
       userEditInputs.password.innerText = '';
@@ -401,39 +465,90 @@ async function login_user(email, password) {
 }
 
 // Asynchronous function to delete a logged user
-async function edit_user(idToEdit,currentToken) {
+async function edit_user_image(fetchRequestBody) {
   // Show loading window while the async function is running
   loadingWindow.style.display = "block";
 
-  // Create a request body string
-  let fetchRequestBody = {};
-  // Initialize the request body string at least with the current user password
-  fetchRequestBody[`password`] = `${userCredentials.password}`;
+  console.log(`Attempting to edit user image at url = \n`,apiRootPath+'/user/edit_user_image'+userCredentials.id);
 
-  // Create a request body string of non empty modified user credentials
-  Object.keys(userEditInputs).forEach(key => {
-    const newPropertyValue = userEditInputs[key].value.trim();
-    if ( (newPropertyValue.length > 0) && (userCredentials[key] != newPropertyValue) ) {
-      fetchRequestBody[`${key}`] = `${newPropertyValue}`;
-      console.log('key = ',key,'\nfetchRequestBody[key] = ',fetchRequestBody[key],'\n\nnewPropertyValue = ',newPropertyValue);
-    }
+  const fetchResponse = await fetch(apiRootPath+'/user/edit_user_image'+userCredentials.id, {
+    method: 'PATCH',
+    headers: {
+        //'Accept': '*/*',
+        //'Content-Type': 'multipart/form-data; boundary=<calculated when request is sent>',
+        //'Authorization': `Bearer ${currentToken}`
+    },
+    body: fetchRequestBody
+    //body: JSON.stringify(fetchRequestBody)
+    //`{"first_name": "${userEditInputs.first_name.value.trim()}", "surname": "${userEditInputs.surname.value.trim()}", "password": "${passwordRetypeInput.value.trim()}" }`
+    //file: userNewImageInput
+  }).catch(err => {
+    console.log(`Critical error 666: Failed to delete user ID ${userCredentials.id} due to an unknown reason.\n\n`,err);
+    // https://www.mongodb.com/docs/manual/reference/bson-types/#objectid
+    return '';
   });
+  
+  const status = await fetchResponse.status;
+  const json_response = await fetchResponse.json();
+  loadingWindow.style.display = "none";
+  switch (status) {
+    // Success: User was deleted
+    case 200: {
+      // Extract the updated user credentials from the response to the fetch request
+      const updatedCredentials = json_response.updatedCredentials;
+      // Apply the new user credentials
+      userCredentials.user_image = updatedCredentials.user_image;
+      // Save user login credentials in the local storage
+      saveToLocalStorage(STORAGE_KEY_LOGIN,userCredentials);
+      // Update LOGGED panel user info to be displayed
+      loggedUser.user_image.src = userCredentials.user_image;
+
+      //login_user(userCredentials.email,userCredentials.password);
+
+      console.log(`${json_response.message}`,
+        `\nYour updated image url:\n`,
+        /* apiRootPath+'/upload/'+ */userCredentials.user_image
+      );
+
+      // Update the logged user image to be displayed
+      //loggedUser.user_image.src = userCredentials.user_image;
+      // Clear the input field
+      userNewImageInput.value='';
+      // Uncheck user edit image checkbox to hide panel
+      userEditImageCheckbox.checked = false;
+
+      // Returns registration credentials to undo user delete
+      return userCredentials;
+    }
+    // Error status: 404 / 409 / 500
+    default: {
+      console.log(`Error ${status}:\n`,
+        `${json_response.message}\n`
+      );
+      return '';
+    }
+  }
+}
+
+// Asynchronous function to delete a logged user
+async function edit_user(fetchRequestBody) {
+  // Show loading window while the async function is running
+  loadingWindow.style.display = "block";
 
   console.log(`Attempting to edit user with fetchRequestBody = \n`,JSON.stringify(fetchRequestBody));
 
-  const fetchResponse = await fetch(apiRootPath+'/user/'+idToEdit, {
+  const fetchResponse = await fetch(apiRootPath+'/user/'+userCredentials.id, {
     method: 'PATCH',
     headers: {
         //'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${currentToken}`
+        'Authorization': `Bearer ${userCredentials.token}`
     },
-    body: JSON.stringify(fetchRequestBody)
-    //`{${fetchRequestBodyString}}`
-    //`{ "id": "${idToEdit}", "first_name": "${userEditInputs.first_name.value.trim()}", "surname": "${userEditInputs.surname.value.trim()}", "password": "${passwordRetypeInput.value.trim()}" }`
-
+    body: JSON.stringify(fetchRequestBody),
+    //`{"first_name": "${userEditInputs.first_name.value.trim()}", "surname": "${userEditInputs.surname.value.trim()}", "password": "${passwordRetypeInput.value.trim()}" }`
+    //file: userNewImageInput
   }).catch(err => {
-    console.log(`Critical error 666: Failed to delete user ID ${idToEdit} due to an unknown reason.\n\n`,err);
+    console.log(`Critical error 666: Failed to delete user ID ${userCredentials.id} due to an unknown reason.\n\n`,err);
     // https://www.mongodb.com/docs/manual/reference/bson-types/#objectid
     return '';
   });
@@ -510,8 +625,6 @@ async function delete_user(id,token) {
       userDeleteCheckbox.checked = false;
       userEditCheckbox.checked = false;
       userLogoutButton.click();
-      // Uncheck user login status checkbox before logout
-      //userLoginStatusCheckbox.checked = false;
 
       // Returns registration credentials to undo user delete
       return registerCredentials;
