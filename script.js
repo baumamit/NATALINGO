@@ -24,24 +24,14 @@ const userRegisterCheckbox = document.querySelector('.user-register-checkbox');
 
 const loadingWindow = document.querySelector('.loading-window');
 
-//const userDropdownButton = document.querySelector('.user-dropdown-button');
-
-// Import user-register-form elemetns
-/* const registerUser = {
-  first_name: document.querySelector('.user-register-name-first-input'),
-  surname: document.querySelector('.user-register-name-surname-input'),
-  email: document.querySelector('.user-register-email-input'),
-  password: document.querySelector('.user-register-password-input')
-}; */
-
-// Import user-login-form elemetns
+// Import user-login-panel elemetns
 const emailInput = document.querySelector('.email-input');
 const passwordInput = document.querySelector('.password-input');
 const userLoginButton = document.querySelector('.user-login-button');
 const userRegisterButton = document.querySelector('.user-register-button');
 
 // Import user-logged-inputs / info box elemetns
-let loggedUser = {
+const loggedUser = {
   first_name: document.querySelector('.logged-user-name-first'),
   surname: document.querySelector('.logged-user-name-surname'),
   email: document.querySelector('.logged-user-email'),
@@ -70,10 +60,10 @@ const userEditInputs = {
 };
 const userNewImageInput = document.querySelector('.user-new-image-input');
 const passwordRetypeInput = document.querySelector('.retype-password-to-edit-user-input');
-
 const userEditConfirmButton = document.querySelector('.user-edit-confirm-button');
 
 // Import user-delete-panel elemetns
+const userDeleteButton = document.querySelector('.user-delete-button');
 const userDeleteConfirmButton = document.querySelector('.user-delete-confirm-button');
 const userDeleteCheckbox = document.querySelector('.user-delete-checkbox');
 
@@ -82,7 +72,6 @@ const emptyListMessage = document.querySelector('.empty-list-message');
 const termsList = document.querySelector('.terms-list');
 
 // ----- Import 'new term' panel elemetns from page -----
-//const addTermPanel = document.querySelector('.add-term')
 const newTermForm = document.forms['add-new-term-form'];
 const termType = newTermForm['menu-terms'];
 const newTermInput = document.querySelector('.add-term-input');
@@ -112,11 +101,11 @@ let terms = [];
 
 // # _________ DYNAMIC PROCEDURES _________
 
-// Load user login credentials from local storage
+// Load user login credentials from the browser's local memory storage
 const storageLogin = localStorage.getItem(STORAGE_KEY_LOGIN);
 // If there were login credentials in the local storage...
 if (storageLogin) {
-  //Save the terms list
+  //Initialize the user credentials with the loaded ones
   userCredentials = JSON.parse(storageLogin);
   if (userCredentials.email) {
     // Initialize user login form with the current user credentials
@@ -177,19 +166,9 @@ function respondToUserPanelClicks() {
       console.log('Enter valid email and password!');
     }
     else {
-    // If the email and password fields are not empty attempt to register
-      /* const user = await  */register_new_user(userPropertiesToRegister);
-      // If the user exist and there is a new user image in the input form...
-      if ( userCredentials.user_image && userNewImageInput.value ) {
-        console.log('userNewImageInput.value', userNewImageInput.value);
-        // Create a form to attach a file to the fetch request body
-        let userNewImageFile = new FormData();
-        //const formDataA = {user_image: userNewImageInput.files[0]};
-        userNewImageFile.append('user_image', userNewImageInput.files[0]/* ,'user_image' */);
-        //userNewImageFile.append('user_image', 'hubot');
-        edit_user_image(userNewImageFile);
-      }
-
+    // If the email and password fields are not empty...
+      // attempt to register
+      register_new_user(userPropertiesToRegister);      
     }
   });
 
@@ -233,7 +212,7 @@ function respondToUserPanelClicks() {
     loadingWindow.style.display = "none";
   });
 
-  // On a mouse click on the user edit name button...
+  // On a mouse click on the user edit confirmation button...
   userEditConfirmButton.addEventListener('click', async (event) =>  {
     // Skip default form functions
     event.preventDefault();
@@ -288,6 +267,13 @@ function respondToUserPanelClicks() {
   });
 
   // On a mouse click on the user delete button...
+  userDeleteButton.addEventListener('click', (event) =>  {
+    // Clear the user confirmation password field to assure password retype
+    passwordRetypeInput.innerText = '';
+    passwordRetypeInput.value = '';      
+  });
+
+  // On a mouse click on the user delete confirmation button...
   userDeleteConfirmButton.addEventListener('click', async (event) =>  {
     // Skip default form functions
     event.preventDefault();
@@ -310,21 +296,6 @@ function respondToUserPanelClicks() {
 async function register_new_user(fetchRequestBody) {
   // Show loading window while the async function is running
   loadingWindow.style.display = "block";
-
-  // Create a request body string
-  //let fetchRequestBody = {};
-  // Initialize the request body string at least with the current user password
-  //fetchRequestBody[`password`] = `${userCredentials.password}`;
-
-  // Create a request body string of non empty modified user credentials
-/*   Object.keys(userEditInputs).forEach(key => {
-    const newPropertyValue = userEditInputs[key].value.trim();
-    if ( (newPropertyValue.length > 0) && (userCredentials[key] != newPropertyValue) ) {
-      fetchRequestBody[`${key}`] = `${newPropertyValue}`;
-      console.log('key = ',key,'\nfetchRequestBody[key] = ',fetchRequestBody[key],'\n\nnewPropertyValue = ',newPropertyValue);
-    }
-  });
- */
   console.log(`Attempting to register a new user with fetchRequestBody = \n`,JSON.stringify(fetchRequestBody));
 
   const fetchResponse = await fetch(apiRootPath+'/user/register', {
@@ -354,7 +325,17 @@ async function register_new_user(fetchRequestBody) {
         `Image URL: ${loginCredentials.user_image}\n`
       );
       // Attempt user login with the new input password
-      login_user(loginCredentials.email, loginCredentials.password);
+      const loginResponse = await login_user(loginCredentials.email, loginCredentials.password);
+      // If login was successful and there is a new user image input...
+      if (loginResponse.id && userNewImageInput.value) {
+        // Create a form to attach a file to the fetch request body
+        let userNewImageFile = new FormData();
+        // Add a file to the end of the form
+        userNewImageFile.append('user_image', userNewImageInput.files[0]);
+        // Upload a new user image to replace the previous file
+        edit_user_image(userNewImageFile);
+      }
+
       return loginCredentials;
     }      
     // Error: User already registered
@@ -434,7 +415,6 @@ async function login_user(email, password) {
       userEditInputs.first_name.value = userCredentials.first_name;
       userEditInputs.surname.value = userCredentials.surname;
       userEditInputs.email.value = userCredentials.email;
-      //userEditInputs.user_image.src = userCredentials.user_image;
       // Empty the user new password input field
       userEditInputs.password.value = '';
       userEditInputs.password.innerText = '';
@@ -500,18 +480,11 @@ async function edit_user_image(fetchRequestBody) {
       userCredentials.user_image = updatedCredentials.user_image;
       // Save user login credentials in the local storage
       saveToLocalStorage(STORAGE_KEY_LOGIN,userCredentials);
-      // Update LOGGED panel user info to be displayed
-      loggedUser.user_image.src = userCredentials.user_image;
 
-      //login_user(userCredentials.email,userCredentials.password);
+      // Update LOGGED panel user image to be displayed
+      // Force the broser to retreive the user image by adding a unique fragment identifier to the URL after the hash mark '#'
+      loggedUser.user_image.src = userCredentials.user_image + '#' + new Date().getTime();
 
-      console.log(`${json_response.message}`,
-        `\nYour updated image url:\n`,
-        /* apiRootPath+'/upload/'+ */userCredentials.user_image
-      );
-
-      // Update the logged user image to be displayed
-      //loggedUser.user_image.src = userCredentials.user_image;
       // Clear the input field
       userNewImageInput.value='';
       // Uncheck user edit image checkbox to hide panel
@@ -639,7 +612,7 @@ async function delete_user(id,token) {
   }
 }
 
-function create_term(name, price) {
+/* function create_term(name, price) {
   console.log(JSON.stringify({ "name": name, "price": price }))
   fetch(apiRootPath+'/products/', {
     method: 'POST',
@@ -651,9 +624,9 @@ function create_term(name, price) {
   })
   .then(response => response.json())
   .then(response => console.log(JSON.stringify(response)));
-}
+} */
 
-async function update_term(id, propName, newPropertyValue) {
+/* async function update_term(id, propName, newPropertyValue) {
   const patch_response = await fetch(apiRootPath+'/products/'+id, {
     method: 'PATCH',
     headers: {
@@ -664,9 +637,9 @@ async function update_term(id, propName, newPropertyValue) {
   });
   const clean_patch_response = await patch_response.json();
   return clean_patch_response;
-}
+} */
 
-function delete_term(id) {
+/* function delete_term(id) {
   fetch(apiRootPath+'/products/'+id, {
     method: 'DELETE',
     headers: {
@@ -676,7 +649,7 @@ function delete_term(id) {
   })
   .then(response => response.json())
   .then(response => console.log(JSON.stringify(response)));
-}
+} */
 
 function respondToCategoryChange() {
   termType.addEventListener('change', function () {

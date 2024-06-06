@@ -115,16 +115,18 @@ h1 {
 	border-style:groove;
 	background-color: rgb(254, 211, 225);
 	color: rgba(52, 16, 57);
-	cursor: pointer; 
-	min-height: 3rem;
+	cursor: pointer;
+	padding: 0;
 }
 .user-dropdown-button:hover, .user-dropdown-button:active {
 	color: black;
 	background-color: rgb(255, 183, 0);
 }
 /* User avatar image in the user dropdown menu button */
-.user-dropdown-button-image{
-	width: 4rem;
+.logoOfDELIKAKTUS, .user-dropdown-button-image {
+	max-width: 4rem;
+	min-height: 3rem;
+	max-height: 4rem;
 	padding: 0.2rem 0.2rem 0 0.2rem;
 	border-radius: 40%;
 }
