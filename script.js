@@ -9,7 +9,7 @@
 // CORS cross-origin
 // https://developer.mozilla.org/en-US/docs/Web/Security/Mixed_content?utm_source=mozilla&utm_medium=firefox-console-errors&utm_campaign=default
 //const apiRootPath = 'http://localhost:3000';
-const apiRootPath = 'https://natalingo.api.delikaktus.com:3000';
+const apiRootPath = 'https://natalingo.api.delikaktus.com';
 
 // Create a key for the local storage
 const STORAGE_KEY_TERMS = '__natalingo.15__';
